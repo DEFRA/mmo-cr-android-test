@@ -1,72 +1,69 @@
-import path from 'node:path';
+import { existsSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { appiumPort, baseConfig, cleanReports, uninstallAndroidApp } from './wdio.base.conf';
+import { logInfo } from '../test/common/logger';
 
-const oneMinute = 60 * 1000;
+const appsDir = join(process.cwd(), 'app');
+const apkFile = existsSync(appsDir)
+    ? readdirSync(appsDir).find((file) => file.endsWith('.apk'))
+    : undefined;
+const androidDeviceName = process.env.ANDROID_DEVICE_NAME;
+const androidPlatformVersion = process.env.ANDROID_PLATFORM_VERSION;
+const androidUdid = process.env.ANDROID_UDID;
+const androidAppId = process.env.ANDROID_APP_ID;
+const noReset = process.env.APPIUM_NO_RESET === 'true';
+
+if (!apkFile) {
+    throw new Error('No .apk found in ./app. Place the Record Your Catch APK in the ./app folder.');
+}
 
 export const config: WebdriverIO.Config = {
-    runner: 'local',
-
-    // Appium server started by @wdio/appium-service
-    hostname: '127.0.0.1',
-    port: 4723,
-    path: '/',
-
-    specs: ['../test/specs/android/**/*.ts'],
-    exclude: [],
-    maxInstances: 1,
+    ...baseConfig,
 
     capabilities: [
         {
             platformName: 'Android',
+            'wdio:maxInstances': 1,
             'appium:automationName': 'UiAutomator2',
-            'appium:deviceName': process.env.ANDROID_DEVICE_NAME ?? 'Android Emulator',
-            ...(process.env.ANDROID_PLATFORM_VERSION
-                ? { 'appium:platformVersion': process.env.ANDROID_PLATFORM_VERSION }
-                : {}),
-            'appium:app':
-                process.env.ANDROID_APP_PATH ??
-                path.resolve(import.meta.dirname, '../app/android/app.apk'),
+            ...(androidDeviceName ? { 'appium:deviceName': androidDeviceName } : {}),
+            ...(androidPlatformVersion ? { 'appium:platformVersion': androidPlatformVersion } : {}),
+            ...(androidUdid ? { 'appium:udid': androidUdid } : {}),
+            'appium:app': join(appsDir, apkFile),
+            'appium:orientation': 'PORTRAIT',
             'appium:autoGrantPermissions': true,
+            'appium:ignoreHiddenApiPolicyError': true,
+            'appium:noReset': noReset,
             'appium:newCommandTimeout': 240,
         },
     ],
+
+    specs: ['../test/specs/android/**/*.ts'],
+
+    runner: 'local',
+    bail: 0,
+    connectionRetryTimeout: 120000,
+
+    onPrepare: async () => {
+        cleanReports();
+        await logInfo(
+            'Android onPrepare: Using apk ' + apkFile + ', Device: ' + (androidDeviceName ?? 'auto'),
+        );
+        if (androidAppId) {
+            await uninstallAndroidApp(androidAppId, androidUdid);
+        }
+    },
 
     services: [
         [
             'appium',
             {
-                args: { address: '127.0.0.1', port: 4723 },
-                logPath: './logs',
+                command: 'appium',
+                args: {
+                    port: appiumPort,
+                    relaxedSecurity: true,
+                    log: './logs/appium.log',
+                },
             },
         ],
     ],
-
-    logLevel: 'info',
-    bail: 0,
-    waitforTimeout: 10000,
-    waitforInterval: 200,
-    connectionRetryTimeout: 120000,
-    connectionRetryCount: 3,
-
-    framework: 'mocha',
-
-    reporters: [
-        'spec',
-        [
-            'allure',
-            {
-                outputDir: 'allure-results',
-            },
-        ],
-    ],
-
-    mochaOpts: {
-        ui: 'bdd',
-        timeout: 5 * oneMinute,
-    },
-
-    afterTest: async function (test, context, { error }) {
-        if (error) {
-            await driver.takeScreenshot();
-        }
-    },
 };

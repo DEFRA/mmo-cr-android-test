@@ -1,9 +1,9 @@
-import { Page } from '#page-objects/page'
+import { Page } from '#page-objects/page';
 
 class HomePage extends Page {
-  override open() {
-    return super.open('/')
-  }
+    override open() {
+        return super.open('/');
+    }
 }
 
-export default new HomePage()
+export default new HomePage();

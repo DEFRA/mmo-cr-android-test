@@ -3,15 +3,15 @@ mmo-cr-android-test
 The template to create a service that runs WDIO tests against an environment.
 
 - [Local](#local)
-  - [Requirements](#requirements)
-    - [Node.js](#nodejs)
-  - [Setup](#setup)
-  - [Running local tests](#running-local-tests)
-  - [Debugging local tests](#debugging-local-tests)
+    - [Requirements](#requirements)
+        - [Node.js](#nodejs)
+    - [Setup](#setup)
+    - [Running local tests](#running-local-tests)
+    - [Debugging local tests](#debugging-local-tests)
 - [Production](#production)
-  - [Debugging tests](#debugging-tests)
+    - [Debugging tests](#debugging-tests)
 - [Licence](#licence)
-  - [About the licence](#about-the-licence)
+    - [About the licence](#about-the-licence)
 
 ## Local Development
 

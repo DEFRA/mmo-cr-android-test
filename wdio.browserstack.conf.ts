@@ -7,7 +7,9 @@ import fs from 'node:fs'
 
 const oneMinute = 60 * 1000
 
-export const config = {
+export const config: WebdriverIO.Config & {
+  commonCapabilities: WebdriverIO.Capabilities
+} = {
   //
   // ====================
   // Runner Configuration
@@ -19,7 +21,7 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: `https://mmo-cr-android-test.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
+  baseUrl: `https://mmo-cr-android-test.${process.env.ENVIRONMENT ?? ''}.cdp-int.defra.cloud`,
 
   // You will need to provide your own BrowserStack credentials.
   // These should be added as secrets to the test suite.
@@ -27,14 +29,14 @@ export const config = {
   key: process.env.BROWSERSTACK_KEY,
 
   // Tests to run
-  specs: ['./test/specs/**/*.js'],
+  specs: ['./test/specs/**/*.ts'],
   // Tests to exclude
   exclude: [],
   maxInstances: 1,
 
   commonCapabilities: {
     'bstack:options': {
-      buildName: `mmo-cr-android-test-${process.env.ENVIRONMENT}` // configure as required
+      buildName: `mmo-cr-android-test-${process.env.ENVIRONMENT ?? ''}` // configure as required
     }
   },
 
@@ -58,14 +60,14 @@ export const config = {
           user: process.env.BROWSERSTACK_USER,
           key: process.env.BROWSERSTACK_KEY,
           projectName: 'cdp-node-env-test-suite', // should match project in browserstack
-          buildName: `mmo-cr-android-test-${process.env.ENVIRONMENT}`
+          buildName: `mmo-cr-android-test-${process.env.ENVIRONMENT ?? ''}`
         },
         acceptInsecureCerts: true,
         forceLocal: false,
         browserstackLocal: true,
         opts: {
           proxyHost: 'localhost',
-          proxyPort: 3128
+          proxyPort: '3128'
         }
       }
     ]
@@ -115,7 +117,12 @@ export const config = {
     }
   },
 
-  onComplete: function (exitCode, config, capabilities, results) {
+  onComplete: function (
+    exitCode,
+    config,
+    capabilities,
+    results?: { failed?: number }
+  ) {
     // !Do Not Remove! Required for test status to show correctly in portal.
     if (results?.failed && results.failed > 0) {
       fs.writeFileSync('FAILED', JSON.stringify(results))

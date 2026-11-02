@@ -7,20 +7,21 @@
     "node": ">=24"
   },
   "imports": {
-    "#page-objects/*": "./test/page-objects/*",
-    "#components/*": "./test/components/*"
+    "#page-objects/*": "./test/page-objects/*.ts",
+    "#components/*": "./test/components/*.ts"
   },
   "scripts": {
     "clean": "rm -rf allure-results && rm -rf allure-report",
-    "test": "npm run clean && wdio run wdio.conf.js",
-    "test:browserstack": "NODE_USE_ENV_PROXY=1 npm run clean && wdio run wdio.browserstack.conf.js",
-    "test:local": "npm run clean && wdio run wdio.local.conf.js",
-    "test:local:debug": "npm run clean && DEBUG=true wdio run wdio.local.conf.js",
-    "test:github": "npm run clean && wdio run wdio.github.conf.js",
-    "test:github:browserstack": "npm run clean && wdio run wdio.github.browserstack.conf.js",
-    "format": "prettier --write 'test/**/*.js' '**/*.{js,md,json,config.js}'",
-    "format:check": "prettier --check 'test/**/*.js' '**/*.{js,md,json,config.js}'",
-    "git:pre-commit-hook": "npm run format:check && npm run lint",
+    "test": "npm run clean && wdio run wdio.conf.ts",
+    "test:browserstack": "NODE_USE_ENV_PROXY=1 npm run clean && wdio run wdio.browserstack.conf.ts",
+    "test:local": "npm run clean && wdio run wdio.local.conf.ts",
+    "test:local:debug": "npm run clean && DEBUG=true wdio run wdio.local.conf.ts",
+    "test:github": "npm run clean && wdio run wdio.github.conf.ts",
+    "test:github:browserstack": "npm run clean && wdio run wdio.github.browserstack.conf.ts",
+    "format": "prettier --write '**/*.{js,ts,md,json}'",
+    "format:check": "prettier --check '**/*.{js,ts,md,json}'",
+    "typecheck": "tsc --noEmit",
+    "git:pre-commit-hook": "npm run format:check && npm run lint && npm run typecheck",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "postinstall": "npm run setup:husky",
@@ -43,11 +44,16 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@types/node": "24.19.2",
     "eslint": "10.9.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.6",
     "eslint-plugin-wdio": "9.31.3",
+    "globals": "17.13.0",
     "husky": "9.1.7",
-    "prettier": "3.9.6"
+    "prettier": "3.9.6",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.0"
   }
 }

@@ -4,6 +4,7 @@ import globals from 'globals'
 import eslintPluginPrettier from 'eslint-plugin-prettier'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import { configs as wdioConfig } from 'eslint-plugin-wdio'
+import tseslint from 'typescript-eslint'
 
 export default defineConfig([
   {
@@ -12,10 +13,28 @@ export default defineConfig([
 
   js.configs.recommended,
 
-  wdioConfig['flat/recommended'],
+  {
+    files: ['**/*.ts'],
+    extends: [
+      tseslint.configs.strictTypeChecked,
+      wdioConfig['flat/recommended']
+    ],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname
+      }
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' }
+      ]
+    }
+  },
 
   {
-    files: ['**/*.js'],
+    files: ['**/*.{js,ts}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -30,6 +49,13 @@ export default defineConfig([
     rules: {
       'prettier/prettier': 'error',
       'no-console': 'error',
+      'no-unused-vars': 'off'
+    }
+  },
+
+  {
+    files: ['**/*.js'],
+    rules: {
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
     }
   },

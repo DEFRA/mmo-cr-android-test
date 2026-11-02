@@ -1,8 +1,8 @@
-import allure from 'allure-commandline'
+import fs from 'node:fs'
 
 const oneMinute = 60 * 1000
 
-export const config = {
+export const config: WebdriverIO.Config = {
   //
   // ====================
   // Runner Configuration
@@ -14,20 +14,29 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: `http://localhost:3000`,
+  baseUrl: `https://mmo-cr-android-test.${process.env.ENVIRONMENT ?? ''}.cdp-int.defra.cloud`,
 
   // Connection to remote chromedriver
   hostname: process.env.CHROMEDRIVER_URL || '127.0.0.1',
-  port: process.env.CHROMEDRIVER_PORT || 4444,
+  port: Number(process.env.CHROMEDRIVER_PORT || 4444),
 
   // Tests to run
-  specs: ['./test/specs/**/*.js'],
+  specs: ['./test/specs/**/*.ts'],
   // Tests to exclude
   exclude: [],
   maxInstances: 1,
 
   capabilities: [
     {
+      ...(process.env.HTTP_PROXY
+        ? {
+            proxy: {
+              proxyType: 'manual',
+              httpProxy: new URL(process.env.HTTP_PROXY).host,
+              sslProxy: new URL(process.env.HTTP_PROXY).host
+            }
+          }
+        : {}),
       browserName: 'chrome',
       'goog:chromeOptions': {
         args: [
@@ -59,9 +68,8 @@ export const config = {
   bail: 0,
   waitforTimeout: 10000,
   waitforInterval: 200,
-  connectionRetryTimeout: 120000,
+  connectionRetryTimeout: 6000,
   connectionRetryCount: 3,
-
   framework: 'mocha',
 
   reporters: [
@@ -215,27 +223,15 @@ export const config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {<Object>} results object containing test results
    */
-  onComplete: function (exitCode, config, capabilities, results) {
+  onComplete: function (
+    exitCode,
+    config,
+    capabilities,
+    results?: { failed?: number }
+  ) {
+    // !Do Not Remove! Required for test status to show correctly in portal.
     if (results?.failed && results.failed > 0) {
-      const reportError = new Error('Could not generate Allure report')
-      const generation = allure(['generate', 'allure-results', '--clean'])
-
-      return new Promise((resolve, reject) => {
-        const generationTimeout = setTimeout(
-          () => reject(reportError),
-          oneMinute
-        )
-
-        generation.on('exit', function (exitCode) {
-          clearTimeout(generationTimeout)
-
-          if (exitCode !== 0) {
-            return reject(reportError)
-          }
-
-          resolve()
-        })
-      })
+      fs.writeFileSync('FAILED', JSON.stringify(results))
     }
   }
   /**

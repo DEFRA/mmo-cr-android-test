@@ -16,6 +16,10 @@ export class HomePage extends BasePage {
         return $('//android.widget.TextView[@text="Your catch records"]');
     }
 
+    get royalCrest() {
+        return $('~GOV.UK Royal Crest');
+    }
+
     get createRecordButton() {
         return $(
             '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="Create a new catch record"]]',

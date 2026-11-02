@@ -1,5 +1,6 @@
 import { BasePage } from './basePage';
 import { logStep } from '../common/logger';
+import tripTodayPage from './tripTodayPage';
 
 export class SelectVesselPage extends BasePage {
     get heading() {
@@ -17,12 +18,7 @@ export class SelectVesselPage extends BasePage {
         const option = this.vesselOption(vesselName);
         await option.waitForDisplayed({ timeout: 10000 });
         await option.click();
-    }
-
-    async selectVesselAndContinue(vesselName: string) {
-        logStep(`Selecting vessel and continuing: ${vesselName}`);
-        await this.selectVessel(vesselName);
-        await this.saveAndContinue();
+        await tripTodayPage.heading.waitForDisplayed({ timeout: 10000 });
     }
 }
 

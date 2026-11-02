@@ -8,7 +8,7 @@ export class BasePage {
     }
 
     get govUkLogo() {
-        return $('~GOV.UK Crown Logo');
+        return $('~GOV.UK');
     }
 
     get backButton() {

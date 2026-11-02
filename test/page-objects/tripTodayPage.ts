@@ -1,5 +1,7 @@
 import { BasePage } from './basePage';
 import { logStep } from '../common/logger';
+import departurePortPage from './departurePortPage';
+import tripStartDatePage from './tripStartDatePage';
 
 export class TripTodayPage extends BasePage {
     get heading() {
@@ -20,24 +22,14 @@ export class TripTodayPage extends BasePage {
         logStep('Selecting Yes');
         await this.yesOption.waitForDisplayed({ timeout: 10000 });
         await this.yesOption.click();
+        await departurePortPage.heading.waitForDisplayed({ timeout: 10000 });
     }
 
     async selectNo() {
         logStep('Selecting No');
         await this.noOption.waitForDisplayed({ timeout: 10000 });
         await this.noOption.click();
-    }
-
-    async selectYesAndContinue() {
-        logStep('Selecting Yes and continuing');
-        await this.selectYes();
-        await this.saveAndContinue();
-    }
-
-    async selectNoAndContinue() {
-        logStep('Selecting No and continuing');
-        await this.selectNo();
-        await this.saveAndContinue();
+        await tripStartDatePage.heading.waitForDisplayed({ timeout: 10000 });
     }
 }
 

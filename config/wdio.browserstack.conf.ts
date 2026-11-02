@@ -29,7 +29,7 @@ export const config: WebdriverIO.Config & {
     key: process.env.BROWSERSTACK_KEY,
 
     // Tests to run
-    specs: ['./test/specs/**/*.ts'],
+    specs: ['../test/specs/**/*.ts'],
     // Tests to exclude
     exclude: [],
     maxInstances: 1,

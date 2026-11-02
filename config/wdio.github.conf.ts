@@ -21,7 +21,7 @@ export const config: WebdriverIO.Config = {
     port: Number(process.env.CHROMEDRIVER_PORT || 4444),
 
     // Tests to run
-    specs: ['./test/specs/**/*.ts'],
+    specs: ['../test/specs/**/*.ts'],
     // Tests to exclude
     exclude: [],
     maxInstances: 1,

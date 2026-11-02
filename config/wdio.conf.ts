@@ -1,10 +1,8 @@
-import allure from 'allure-commandline';
+import fs from 'node:fs';
 
 const oneMinute = 60 * 1000;
 
-export const config: WebdriverIO.Config & {
-    commonCapabilities: WebdriverIO.Capabilities;
-} = {
+export const config: WebdriverIO.Config = {
     //
     // ====================
     // Runner Configuration
@@ -16,50 +14,48 @@ export const config: WebdriverIO.Config & {
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
-    baseUrl: `http://localhost:3000`,
+    baseUrl: `https://mmo-cr-android-test.${process.env.ENVIRONMENT ?? ''}.cdp-int.defra.cloud`,
 
-    user: process.env.BROWSERSTACK_USER,
-    key: process.env.BROWSERSTACK_KEY,
+    // Connection to remote chromedriver
+    hostname: process.env.CHROMEDRIVER_URL || '127.0.0.1',
+    port: Number(process.env.CHROMEDRIVER_PORT || 4444),
 
     // Tests to run
-    specs: ['./test/specs/**/*.ts'],
+    specs: ['../test/specs/**/*.ts'],
     // Tests to exclude
     exclude: [],
     maxInstances: 1,
 
-    commonCapabilities: {
-        'bstack:options': {
-            buildName: `mmo-cr-android-test-${process.env.ENVIRONMENT ?? ''}`, // configure as required
-        },
-    },
-
     capabilities: [
         {
-            browserName: 'Chrome', // Set as required
-            'bstack:options': {
-                browserVersion: 'latest',
-                os: 'Windows',
-                osVersion: '11',
+            ...(process.env.HTTP_PROXY
+                ? {
+                      proxy: {
+                          proxyType: 'manual',
+                          httpProxy: new URL(process.env.HTTP_PROXY).host,
+                          sslProxy: new URL(process.env.HTTP_PROXY).host,
+                      },
+                  }
+                : {}),
+            browserName: 'chrome',
+            'goog:chromeOptions': {
+                args: [
+                    '--no-sandbox',
+                    '--disable-infobars',
+                    '--headless',
+                    '--disable-gpu',
+                    '--window-size=1920,1080',
+                    '--enable-features=NetworkService,NetworkServiceInProcess',
+                    '--password-store=basic',
+                    '--use-mock-keychain',
+                    '--dns-prefetch-disable',
+                    '--disable-background-networking',
+                    '--disable-remote-fonts',
+                    '--ignore-certificate-errors',
+                    '--disable-dev-shm-usage',
+                ],
             },
         },
-    ],
-
-    services: [
-        [
-            'browserstack',
-            {
-                testObservability: true, // Disable if you do not want to use the browserstack test observer functionality
-                testObservabilityOptions: {
-                    user: process.env.BROWSERSTACK_USER,
-                    key: process.env.BROWSERSTACK_KEY,
-                    projectName: 'cdp-node-env-test-suite', // should match project in browserstack
-                    buildName: `mmo-cr-android-test-${process.env.ENVIRONMENT ?? ''}`,
-                },
-                acceptInsecureCerts: true,
-                forceLocal: false,
-                browserstackLocal: true,
-            },
-        ],
     ],
 
     logLevel: 'info',
@@ -72,9 +68,8 @@ export const config: WebdriverIO.Config & {
     bail: 0,
     waitforTimeout: 10000,
     waitforInterval: 200,
-    connectionRetryTimeout: 120000,
+    connectionRetryTimeout: 6000,
     connectionRetryCount: 3,
-
     framework: 'mocha',
 
     reporters: [
@@ -228,27 +223,10 @@ export const config: WebdriverIO.Config & {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
-    onComplete: async function (exitCode, config, capabilities, results?: { failed?: number }) {
+    onComplete: function (exitCode, config, capabilities, results?: { failed?: number }) {
+        // !Do Not Remove! Required for test status to show correctly in portal.
         if (results?.failed && results.failed > 0) {
-            const reportError = new Error('Could not generate Allure report');
-            const generation = allure(['generate', 'allure-results', '--clean']);
-
-            await new Promise<void>((resolve, reject) => {
-                const generationTimeout = setTimeout(() => {
-                    reject(reportError);
-                }, oneMinute);
-
-                generation.on('exit', function (exitCode) {
-                    clearTimeout(generationTimeout);
-
-                    if (exitCode !== 0) {
-                        reject(reportError);
-                        return;
-                    }
-
-                    resolve();
-                });
-            });
+            fs.writeFileSync('FAILED', JSON.stringify(results));
         }
     },
     /**

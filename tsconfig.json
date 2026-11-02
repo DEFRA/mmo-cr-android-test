@@ -24,6 +24,6 @@
         "skipLibCheck": true,
         "noEmit": true
     },
-    "include": ["wdio.*.ts", "test/**/*.ts", "types/**/*.d.ts"],
+    "include": ["config/**/*.ts", "test/**/*.ts", "types/**/*.d.ts"],
     "exclude": ["node_modules", "docker", "allure-results", "allure-report"]
 }

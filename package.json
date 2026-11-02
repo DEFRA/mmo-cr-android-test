@@ -18,7 +18,6 @@
         "test:android:spec": "wdio run ./config/wdio.android.conf.ts --spec",
         "test:android:browserstack": "wdio run ./config/wdio.android.browserstack.conf.ts",
         "test:android:browserstack:spec": "wdio run ./config/wdio.android.browserstack.conf.ts --spec",
-        "postinstall": "tsx scripts/patch-webdriver.ts",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "typecheck": "tsc --noEmit",

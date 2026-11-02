@@ -25,6 +25,6 @@
         "skipLibCheck": true,
         "noEmit": true
     },
-    "include": ["config/**/*.ts", "scripts/**/*.ts", "test/**/*.ts", "types/**/*.d.ts"],
-    "exclude": ["node_modules", "docker", "allure-results", "allure-report"]
+    "include": ["config/**/*.ts", "test/**/*.ts"],
+    "exclude": ["node_modules", "allure-results", "allure-report"]
 }

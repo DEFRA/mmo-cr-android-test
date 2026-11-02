@@ -1,6 +1,5 @@
 package-lock.json
 node_modules
-docker
 allure-results
 allure-report
 logs

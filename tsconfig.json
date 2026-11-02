@@ -8,6 +8,7 @@
             "node",
             "@wdio/globals/types",
             "@wdio/mocha-framework",
+            "@wdio/appium-service",
             "@wdio/browserstack-service"
         ],
         "strict": true,
@@ -24,6 +25,6 @@
         "skipLibCheck": true,
         "noEmit": true
     },
-    "include": ["config/**/*.ts", "test/**/*.ts", "types/**/*.d.ts"],
+    "include": ["config/**/*.ts", "scripts/**/*.ts", "test/**/*.ts", "types/**/*.d.ts"],
     "exclude": ["node_modules", "docker", "allure-results", "allure-report"]
 }

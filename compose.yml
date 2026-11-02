@@ -18,52 +18,50 @@
 #
 ################################################################################
 services:
+    ################################################################################
+    # Headless browser, used by the test suite to actually run the tests against the
+    # containers.
+    selenium-chrome:
+        image: selenium/standalone-chrome:123.0
+        ports:
+            - 4444:4444
 
-################################################################################
-# Headless browser, used by the test suite to actually run the tests against the
-# containers.
-  selenium-chrome:
-    image: selenium/standalone-chrome:123.0
-    ports:
-      - 4444:4444
+    ################################################################################
+    mongodb:
+        image: mongo:6
+        volumes:
+            - ./docker/scripts/mongodb:/docker-entrypoint-initdb.d
+        healthcheck:
+            test: ['CMD', 'mongosh', '--eval', 'db.hello().ok']
+            interval: 5s
+            start_period: 5s
+            retries: 3
+    ################################################################################
+    localstack:
+        image: localstack/localstack:3.2.0
+        environment:
+            - LOCALSTACK_HOST=127.0.0.1
+            - SERVICES=s3,sqs,sns,dynamodb
+            - LS_LOG=WARN
+        env_file:
+            - ./docker/config/defaults.env
+        volumes:
+            - ./docker/scripts/localstack:/etc/localstack/init/ready.d
+        healthcheck:
+            test: ['CMD', 'curl', 'localhost:4566']
+            interval: 5s
+            start_period: 5s
+            retries: 3
 
-################################################################################
-  mongodb:
-    image: mongo:6
-    volumes:
-      - ./docker/scripts/mongodb:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.hello().ok"]
-      interval: 5s
-      start_period: 5s
-      retries: 3
-################################################################################
-  localstack:
-    image: localstack/localstack:3.2.0
-    environment:
-      - LOCALSTACK_HOST=127.0.0.1
-      - SERVICES=s3,sqs,sns,dynamodb
-      - LS_LOG=WARN
-    env_file:
-      - ./docker/config/defaults.env
-    volumes:
-      - ./docker/scripts/localstack:/etc/localstack/init/ready.d
-    healthcheck:
-      test: ["CMD", "curl", "localhost:4566"]
-      interval: 5s
-      start_period: 5s
-      retries: 3
-
-################################################################################
-  redis:
-    image: redis:7
-    restart: always
-    healthcheck:
-      test: [ "CMD", "redis-cli", "PING" ]
-      interval: 5s
-      start_period: 2s
-      retries: 5
-
+    ################################################################################
+    redis:
+        image: redis:7
+        restart: always
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'PING']
+            interval: 5s
+            start_period: 2s
+            retries: 5
 
 ################################################################################
 #

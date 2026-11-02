@@ -1,15 +1,14 @@
 mmo-cr-android-test
 
-The template to create a service that runs WDIO tests against an environment.
+WebdriverIO + Appium test automation (TypeScript) for the Record Your Catch Android app.
 
 - [Local](#local)
     - [Requirements](#requirements)
         - [Node.js](#nodejs)
     - [Setup](#setup)
     - [Running local tests](#running-local-tests)
-    - [Debugging local tests](#debugging-local-tests)
 - [Production](#production)
-    - [Debugging tests](#debugging-tests)
+- [BrowserStack](#browserstack)
 - [Licence](#licence)
     - [About the licence](#about-the-licence)
 
@@ -19,7 +18,7 @@ The template to create a service that runs WDIO tests against an environment.
 
 #### Node.js
 
-Please install [Node.js](http://nodejs.org/) `>= v20` and [npm](https://nodejs.org/) `>= v9`. You will find it
+Please install [Node.js](http://nodejs.org/) `>= v20.19` and [npm](https://nodejs.org/) `>= v9`. You will find it
 easier to use the Node Version Manager [nvm](https://github.com/creationix/nvm)
 
 To use the correct version of Node.js for this application, via nvm:
@@ -38,16 +37,13 @@ npm install
 
 ### Running local tests
 
-Start application you are testing on the url specified in `baseUrl` [config/wdio.local.conf.ts](config/wdio.local.conf.ts)
+Requires [Appium](https://appium.io/) with the `uiautomator2` driver, and a running Android emulator or connected device.
+
+Place the APK at `app/android/app.apk`, or set `ANDROID_APP_PATH`. Optionally set `ANDROID_DEVICE_NAME` and `ANDROID_PLATFORM_VERSION`.
 
 ```bash
-npm run test:local
-```
-
-### Debugging local tests
-
-```bash
-npm run test:local:debug
+npm run test:android
+npm run test:android:spec -- test/specs/android/app-launch.e2e.ts
 ```
 
 ## Production
@@ -69,28 +65,16 @@ The results of the test run are made available in the portal.
 
 3. Test reports should be published to S3 using the script in `./bin/publish-tests.sh`
 
-## Running on GitHub
-
-Alternatively you can run the test suite as a GitHub workflow.
-Test runs on GitHub are not able to connect to the CDP Test environments. Instead, they run the tests agains a version of the services running in docker.
-A docker compose `compose.yml` is included as a starting point, which includes the databases (mongodb, redis) and infrastructure (localstack) pre-setup.
-
-Steps:
-
-1. Edit the compose.yml to include your services.
-2. Modify the scripts in docker/scripts to pre-populate the database, if required and create any localstack resources.
-3. Test the setup locally with `docker compose up` and `npm run test:github`
-4. Set up the workflow trigger in `.github/workflows/journey-tests`.
-
-By default, the provided workflow will run when triggered manually from GitHub or when triggered by another workflow.
-
-If you want to use the repository exclusively for running docker composed based test suites consider displaying the publish.yml workflow.
-
 ## BrowserStack
 
-Two wdio configuration files are provided to help run the tests using BrowserStack in both a GitHub workflow (`config/wdio.github.browserstack.conf.ts`) and from the CDP Portal (`config/wdio.browserstack.conf.ts`).
-They can be run from npm using the `npm run test:browserstack` (for running via portal) and `npm run test:github:browserstack` (from GitHib runner).
-See the CDP Documentation for more details.
+[config/wdio.android.browserstack.conf.ts](config/wdio.android.browserstack.conf.ts) runs the tests on real Android devices in BrowserStack App Automate.
+Set `BROWSERSTACK_USERNAME`, `BROWSERSTACK_KEY` and `BROWSERSTACK_APP_ID` (the `bs://...` URL returned when the APK is uploaded).
+
+```bash
+npm run test:android:browserstack
+```
+
+`npm test` runs the same config through the CDP proxy and is used by the CDP Portal.
 
 ## Licence
 

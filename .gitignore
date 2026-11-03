@@ -13,5 +13,3 @@ allure-report/
 allure-results/
 FAILED
 logs/
-app/**/*.apk
-app/**/*.aab

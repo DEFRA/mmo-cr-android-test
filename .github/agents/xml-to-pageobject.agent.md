@@ -23,11 +23,11 @@ Study `test/page-objects/basePage.ts`, `departurePortPage.ts`, `gearPage.ts`, an
 1. **content-desc (accessibility id):** use `$('~<content-desc>')` when a node has a stable, non-empty `content-desc` (e.g. `~GOV.UK`).
 2. **resource-id:** use `$('//*[@resource-id="<pkg>:id/<name>"]')` when a meaningful `resource-id` exists.
 3. **Text-based XPath (the repo's main style):** anchor on visible `@text` and node role, e.g.
-   - Heading: `//android.widget.TextView[@text="..." and @heading="true"]`
-   - Button/link: `//android.view.View[@clickable="true"][.//android.widget.TextView[@text="..."]]`
-   - Radio/checkbox: `//android.view.View[@checkable="true"][.//android.widget.TextView[@text="..."]]`
-   - Input: `//android.widget.EditText` (narrow by sibling label/order only when there are several)
-   - Partial text: `//android.widget.TextView[contains(@text, "...")]`
+    - Heading: `//android.widget.TextView[@text="..." and @heading="true"]`
+    - Button/link: `//android.view.View[@clickable="true"][.//android.widget.TextView[@text="..."]]`
+    - Radio/checkbox: `//android.view.View[@checkable="true"][.//android.widget.TextView[@text="..."]]`
+    - Input: `//android.widget.EditText` (narrow by sibling label/order only when there are several)
+    - Partial text: `//android.widget.TextView[contains(@text, "...")]`
 4. **Scrolling:** use `android=new UiScrollable(new UiSelector().scrollable(true))...` as `BasePage.saveAndContinue()` does.
 
 - Avoid brittle absolute/index-based paths (`/hierarchy/android.widget.FrameLayout[1]/...`, `@bounds`, `@drawing-order`) unless nothing else exists, and flag them inline as `// TODO: brittle selector — confirm a stable id`.

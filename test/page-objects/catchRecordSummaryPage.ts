@@ -1,5 +1,5 @@
 import { BasePage } from './basePage';
-import { logStep, logWarn } from '../common/logger';
+import { logStep } from '../common/logger';
 
 export class CatchRecordSummaryPage extends BasePage {
     get heading() {
@@ -70,13 +70,8 @@ export class CatchRecordSummaryPage extends BasePage {
 
     async acceptAndSubmit() {
         logStep('Clicking accept and submit');
-        try {
-            await this.acceptAndSubmitButton.waitForDisplayed({ timeout: 1000 });
-        } catch (error) {
-            logWarn('CatchRecordSummaryPage: Accept and submit button not visible, scrolling');
-            await $('android=new UiScrollable(new UiSelector().scrollable(true)).scrollForward()');
-            await this.acceptAndSubmitButton.waitForDisplayed({ timeout: 1000 });
-        }
+        await this.scrollUntilDisplayed(this.acceptAndSubmitButton, { maxSwipes: 10 });
+        await this.acceptAndSubmitButton.waitForDisplayed({ timeout: 1000 });
         await this.acceptAndSubmitButton.click();
     }
 }

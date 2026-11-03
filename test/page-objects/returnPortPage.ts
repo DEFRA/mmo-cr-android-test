@@ -2,18 +2,17 @@ import { BasePage } from './basePage';
 import { logStep } from '../common/logger';
 
 export class ReturnPortPage extends BasePage {
+    // The screen shows either the port search heading or, when saved ports exist, the select-port heading.
     get heading() {
         return $(
-            '//android.widget.TextView[@text="Enter the port or closest port you returned to" and @heading="true"]',
+            '//android.widget.TextView[@heading="true" and (@text="Enter the port or closest port you returned to" or @text="Select the port you returned to")]',
         );
     }
 
-    get yesOption() {
-        return $('//android.view.View[@checkable="true"][.//android.widget.TextView[@text="Yes"]]');
-    }
-
-    get noOption() {
-        return $('//android.view.View[@checkable="true"][.//android.widget.TextView[@text="No"]]');
+    get selectPortHeading() {
+        return $(
+            '//android.widget.TextView[@text="Select the port you returned to" and @heading="true"]',
+        );
     }
 
     portOption(portName: string) {
@@ -58,18 +57,6 @@ export class ReturnPortPage extends BasePage {
         );
     }
 
-    async selectYes() {
-        logStep('Selecting Yes');
-        await this.yesOption.waitForDisplayed({ timeout: 10000 });
-        await this.yesOption.click();
-    }
-
-    async selectNo() {
-        logStep('Selecting No');
-        await this.noOption.waitForDisplayed({ timeout: 10000 });
-        await this.noOption.click();
-    }
-
     async selectPort(portName: string) {
         logStep(`Selecting port ${portName}`);
         const option = this.portOption(portName);
@@ -81,18 +68,6 @@ export class ReturnPortPage extends BasePage {
         logStep('Clicking Add port');
         await this.addPortButton.waitForDisplayed({ timeout: 10000 });
         await this.addPortButton.click();
-    }
-
-    async selectYesAndContinue() {
-        logStep('Selecting Yes and continuing');
-        await this.selectYes();
-        await this.saveAndContinue();
-    }
-
-    async selectNoAndContinue() {
-        logStep('Selecting No and continuing');
-        await this.selectNo();
-        await this.saveAndContinue();
     }
 
     async selectPortAndContinue(portName: string) {

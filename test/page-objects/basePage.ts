@@ -60,6 +60,31 @@ export class BasePage {
         return this.offlineBanner.isDisplayed();
     }
 
+    // Swipes the page up until the element is displayed. Pass swipeX to swipe outside gesture-capturing content such as maps.
+    async scrollUntilDisplayed(
+        element: ChainablePromiseElement,
+        { maxSwipes = 5, swipeX }: { maxSwipes?: number; swipeX?: number } = {},
+    ) {
+        const { width, height } = await driver.getWindowSize();
+        const x = swipeX ?? Math.floor(width / 2);
+        for (let attempt = 0; attempt < maxSwipes && !(await element.isDisplayed()); attempt++) {
+            await browser.performActions([
+                {
+                    type: 'pointer',
+                    id: 'page-scroll',
+                    parameters: { pointerType: 'touch' },
+                    actions: [
+                        { type: 'pointerMove', duration: 0, x, y: Math.floor(height * 0.7) },
+                        { type: 'pointerDown', button: 0 },
+                        { type: 'pointerMove', duration: 400, x, y: Math.floor(height * 0.4) },
+                        { type: 'pointerUp', button: 0 },
+                    ],
+                },
+            ]);
+            await browser.pause(300);
+        }
+    }
+
     get homeTab() {
         return $(
             '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="Home"]]',

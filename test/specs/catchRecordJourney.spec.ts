@@ -84,15 +84,7 @@ describe('Catch Record End-to-End Journey', () => {
 
         await androidFlowNavigator.selectVessel('ACHILLES');
 
-        const today = new Date();
-        const twoDaysAgo = new Date(today);
-        twoDaysAgo.setDate(today.getDate() - 2);
-
-        await androidFlowNavigator.selectTripDates(
-            false,
-            formatDate(twoDaysAgo),
-            formatDate(today),
-        );
+        await androidFlowNavigator.selectTripDates(true);
         await androidFlowNavigator.selectPorts('Hastings', 'Dover');
         await androidFlowNavigator.selectGear('Seine nets', 10, 10);
         await androidFlowNavigator.selectAreas('38E95');

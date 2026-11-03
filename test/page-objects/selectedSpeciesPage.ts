@@ -81,18 +81,21 @@ export class SelectedSpeciesPage extends BasePage {
 
     async enterBelowMinWeight(weight: string | number) {
         logStep(`Entering below minimum weight ${weight}`);
+        await this.scrollUntilDisplayed(this.belowMinWeightField);
         await this.belowMinWeightField.waitForDisplayed({ timeout: 10000 });
         await this.belowMinWeightField.setValue(weight.toString());
     }
 
     async enterDiscardedWeight(weight: string | number) {
         logStep(`Entering discarded weight ${weight}`);
+        await this.scrollUntilDisplayed(this.discardedWeightField);
         await this.discardedWeightField.waitForDisplayed({ timeout: 10000 });
         await this.discardedWeightField.setValue(weight.toString());
     }
 
     async clickAddBelowMinWeight() {
         logStep('Clicking add below minimum weight');
+        await this.scrollUntilDisplayed(this.addBelowMinWeightButton);
         await this.addBelowMinWeightButton.waitForDisplayed({ timeout: 10000 });
         await this.addBelowMinWeightButton.click();
     }
@@ -105,6 +108,7 @@ export class SelectedSpeciesPage extends BasePage {
 
     async clickAddDiscardedWeight() {
         logStep('Clicking add discarded weight');
+        await this.scrollUntilDisplayed(this.addDiscardedWeightButton);
         await this.addDiscardedWeightButton.waitForDisplayed({ timeout: 10000 });
         await this.addDiscardedWeightButton.click();
     }

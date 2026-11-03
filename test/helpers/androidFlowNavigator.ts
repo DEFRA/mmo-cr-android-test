@@ -54,14 +54,8 @@ export class AndroidFlowNavigator {
         }
     }
 
-    async selectPorts(departurePort: string, returnPort: string, isClosestPort: boolean = false) {
+    async selectPorts(departurePort: string, returnPort: string) {
         await logStep(`Selecting ports - Departure: ${departurePort}, Return: ${returnPort}`);
-
-        if (isClosestPort) {
-            await departurePortPage.selectYesAndContinue();
-        } else {
-            await departurePortPage.selectNoAndContinue();
-        }
 
         await departurePortPage.heading.waitForDisplayed();
         await departurePortPage.clickAddPort();

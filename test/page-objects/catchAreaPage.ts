@@ -21,9 +21,7 @@ export class CatchAreaPage extends BasePage {
     }
 
     get map() {
-        return $(
-            '//android.view.View[contains(@content-desc, "Map of fisheries statistical sub-rectangles")]',
-        );
+        return $('//android.view.View[contains(@content-desc, "Map of fisheries statistical")]');
     }
 
     get otherButton() {
@@ -32,37 +30,35 @@ export class CatchAreaPage extends BasePage {
         );
     }
 
+    // The selection state is announced in the map's content-desc, e.g. "... Selected area: 30F04 Drag to pan ...".
     get selectedAreaText() {
-        return $(
-            '//android.widget.TextView[contains(@text, "area selected") or contains(@text, "Selected area")]',
-        );
+        return $('//android.view.View[contains(@content-desc, "Selected area:")]');
     }
 
     get noAreaSelectedText() {
-        return $('//android.widget.TextView[@text="No area selected"]');
+        return $('//android.view.View[contains(@content-desc, "No area selected")]');
+    }
+
+    private async getMapDescription(): Promise<string> {
+        return (await this.map.getAttribute('content-desc')) ?? '';
     }
 
     async getSelectedArea(): Promise<string> {
         logStep('Getting selected area text');
-        await this.selectedAreaText.waitForDisplayed({ timeout: 1000 });
-        return this.selectedAreaText.getText();
+        await this.selectedAreaText.waitForExist({ timeout: 1000 });
+        const match = (await this.getMapDescription()).match(/Selected area:\s*\S+/);
+        return match?.[0] ?? '';
     }
 
     async getSelectedAreaCode(): Promise<string | null> {
         logStep('Getting selected area code');
-        const text = await this.getSelectedArea();
-        const match = text.match(/Selected area:\s*(.+)/);
-        return match?.[1]?.trim() ?? null;
+        const match = (await this.getMapDescription()).match(/Selected area:\s*(\S+)/);
+        return match?.[1] ?? null;
     }
 
     async isAreaSelected(): Promise<boolean> {
         logStep('Checking if an area is selected');
-        try {
-            const text = await this.selectedAreaText.getText();
-            return text.startsWith('Selected area:');
-        } catch {
-            return false;
-        }
+        return (await this.getMapDescription()).includes('Selected area:');
     }
 
     async tapMapAt(xPercent: number, yPercent: number) {
@@ -97,8 +93,9 @@ export class CatchAreaPage extends BasePage {
         const location = await this.map.getLocation();
 
         for (let attempt = 0; attempt < 5; attempt++) {
+            // The departure port sits mid-map with land above it, so tap the lower part where the sea sub-areas are.
             const x = Math.floor(size.width * (0.2 + Math.random() * 0.6)) + location.x;
-            const y = Math.floor(size.height * (0.2 + Math.random() * 0.6)) + location.y;
+            const y = Math.floor(size.height * (0.65 + Math.random() * 0.25)) + location.y;
 
             await browser.performActions([
                 {
@@ -113,25 +110,33 @@ export class CatchAreaPage extends BasePage {
                 },
             ]);
 
-            try {
-                await browser.pause(500);
-                const text = await this.selectedAreaText.getText();
-                if (text.startsWith('Selected area:')) {
-                    logStep(`${text}`);
-                    return;
-                }
-            } catch {
-                logWarn(`CatchAreaPage: retry selectRandomLocation (attempt ${attempt + 1})`);
+            await browser.pause(500);
+            if (await this.isAreaSelected()) {
+                logStep(`Selected area: ${await this.getSelectedAreaCode()}`);
+                return;
             }
+            logWarn(`CatchAreaPage: retry selectRandomLocation (attempt ${attempt + 1})`);
         }
 
         throw new Error('Could not select a random catch area on the map.');
     }
 
+    // Swipes in the page margin beside the map, because swiping on the map pans it instead of scrolling the page.
+    private async scrollPastMapTo(target: ChainablePromiseElement) {
+        const { x: mapX } = await this.map.getLocation();
+        await this.scrollUntilDisplayed(target, { swipeX: Math.max(1, Math.floor(mapX / 2)) });
+    }
+
     async clickOther() {
         logStep('Clicking Other');
+        await this.scrollPastMapTo(this.otherButton);
         await this.otherButton.waitForDisplayed({ timeout: 10000 });
         await this.otherButton.click();
+    }
+
+    override async saveAndContinue() {
+        await this.scrollPastMapTo(this.saveAndContinueButton);
+        await super.saveAndContinue();
     }
 
     async selectRandomLocationAndContinue() {

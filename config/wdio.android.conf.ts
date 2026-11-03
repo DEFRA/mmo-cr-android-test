@@ -46,7 +46,10 @@ export const config: WebdriverIO.Config = {
     onPrepare: async () => {
         cleanReports();
         await logInfo(
-            'Android onPrepare: Using apk ' + apkFile + ', Device: ' + (androidDeviceName ?? 'auto'),
+            'Android onPrepare: Using apk ' +
+                apkFile +
+                ', Device: ' +
+                (androidDeviceName ?? 'auto'),
         );
         if (androidAppId) {
             await uninstallAndroidApp(androidAppId, androidUdid);

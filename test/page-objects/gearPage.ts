@@ -20,10 +20,19 @@ export class GearPage extends BasePage {
         );
     }
 
+    get firstGearSuggestion() {
+        return $(
+            '(//android.widget.ScrollView//android.view.View[@clickable="true"][.//android.widget.Button])[1]',
+        );
+    }
+
     async enterGearName(gearName: string) {
         logStep(`Entering gear name ${gearName}`);
         await this.gearSearchField.waitForDisplayed({ timeout: 10000 });
         await this.gearSearchField.setValue(gearName);
+        if (gearName.trim().length >= 2) {
+            await this.firstGearSuggestion.waitForDisplayed({ timeout: 10000 });
+        }
     }
 
     async enterGearNameAndContinue(gearName: string) {

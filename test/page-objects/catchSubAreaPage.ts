@@ -58,10 +58,11 @@ export class CatchSubAreaPage extends BasePage {
     async selectFirstSubArea() {
         logStep('Selecting first available sub area');
         const codes = await this.getAvailableSubAreas();
-        if (codes.length === 0) {
+        const [firstCode] = codes;
+        if (!firstCode) {
             throw new Error('No sub area options available');
         }
-        await this.selectSubArea(codes[0]);
+        await this.selectSubArea(firstCode);
     }
 
     async selectOther() {

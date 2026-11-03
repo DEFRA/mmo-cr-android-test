@@ -62,10 +62,11 @@ export class CatchSubAreaSearchPage extends BasePage {
     async selectFirstResult() {
         logStep('Selecting first search result');
         const results = await this.allSearchResults;
-        if ((await results.length) === 0) {
+        const firstResult = results[0];
+        if (!firstResult) {
             throw new Error('No search results available');
         }
-        await results[0].click();
+        await firstResult.click();
     }
 
     async searchAndSelect(searchText: string, areaCode: string) {

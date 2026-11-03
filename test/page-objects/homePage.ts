@@ -36,7 +36,6 @@ export class HomePage extends BasePage {
         return $('//android.widget.TextView[@text="You have no catch records yet."]');
     }
 
-
     get tripEndDateHeader() {
         return $('//android.widget.TextView[@text="Trip end date"]');
     }
@@ -100,9 +99,7 @@ export class HomePage extends BasePage {
     }
 
     pageNumber(page: number) {
-        return $(
-            `//android.view.View[starts-with(@content-desc, "Page ${page}")]`,
-        );
+        return $(`//android.view.View[starts-with(@content-desc, "Page ${page}")]`);
     }
 
     statusBadge(status: string) {

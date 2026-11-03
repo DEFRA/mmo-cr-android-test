@@ -33,9 +33,7 @@ export class CatchRecordSummaryPage extends BasePage {
     }
 
     get declarationBulletToleranceLevels() {
-        return $(
-            '//android.widget.TextView[@text="This is within permitted tolerance levels"]',
-        );
+        return $('//android.widget.TextView[@text="This is within permitted tolerance levels"]');
     }
 
     get declarationBulletFishingAuthorities() {

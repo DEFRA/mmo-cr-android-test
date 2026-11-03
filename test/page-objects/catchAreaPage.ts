@@ -52,7 +52,7 @@ export class CatchAreaPage extends BasePage {
         logStep('Getting selected area code');
         const text = await this.getSelectedArea();
         const match = text.match(/Selected area:\s*(.+)/);
-        return match ? match[1].trim() : null;
+        return match?.[1]?.trim() ?? null;
     }
 
     async isAreaSelected(): Promise<boolean> {

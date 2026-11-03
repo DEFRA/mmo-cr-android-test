@@ -4,7 +4,7 @@ import { logStep } from '../common/logger';
 export class ReturnPortPage extends BasePage {
     get heading() {
         return $(
-            '//android.widget.TextView[@text="Which port or closest port did you return to?" and @heading="true"]',
+            '//android.widget.TextView[@text="Enter the port or closest port you returned to" and @heading="true"]',
         );
     }
 
@@ -49,6 +49,12 @@ export class ReturnPortPage extends BasePage {
     get allPortSuggestions() {
         return $$(
             '//android.widget.ScrollView//android.view.View[@clickable="true"][.//android.widget.Button]',
+        );
+    }
+
+    get firstPortSuggestion() {
+        return $(
+            '(//android.widget.ScrollView//android.view.View[@clickable="true"][.//android.widget.Button])[1]',
         );
     }
 
@@ -99,6 +105,9 @@ export class ReturnPortPage extends BasePage {
         logStep(`Entering port name ${portName}`);
         await this.portSearchField.waitForDisplayed({ timeout: 10000 });
         await this.portSearchField.setValue(portName);
+        if (portName.trim().length >= 2) {
+            await this.firstPortSuggestion.waitForDisplayed({ timeout: 10000 });
+        }
     }
 
     async enterPortNameAndContinue(portName: string) {

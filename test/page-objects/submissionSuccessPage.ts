@@ -70,7 +70,7 @@ export class SubmissionSuccessPage extends BasePage {
         const prefix = 'reference ';
         let reference = text;
         if (text.includes(prefix)) {
-            reference = text.split(prefix)[1].trim();
+            reference = text.split(prefix)[1]?.trim() ?? text;
         }
         logStep(`Record reference is ${reference}`);
         return reference;

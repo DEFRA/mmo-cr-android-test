@@ -4,7 +4,7 @@ import { logStep } from '../common/logger';
 export class DeparturePortPage extends BasePage {
     get heading() {
         return $(
-            '//android.widget.TextView[@text="Which port or closest port did you set off from?" and @heading="true"]',
+            '//android.widget.TextView[@text="Enter the port or closest port you set off from" and @heading="true"]',
         );
     }
 
@@ -64,6 +64,12 @@ export class DeparturePortPage extends BasePage {
         );
     }
 
+    get firstPortSuggestion() {
+        return $(
+            '(//android.widget.ScrollView//android.view.View[@clickable="true"][.//android.widget.Button])[1]',
+        );
+    }
+
     async selectYes() {
         logStep('Selecting Yes');
         await this.yesOption.waitForDisplayed({ timeout: 10000 });
@@ -111,6 +117,9 @@ export class DeparturePortPage extends BasePage {
         logStep(`Entering port name ${portName}`);
         await this.portSearchField.waitForDisplayed({ timeout: 10000 });
         await this.portSearchField.setValue(portName);
+        if (portName.trim().length >= 2) {
+            await this.firstPortSuggestion.waitForDisplayed({ timeout: 10000 });
+        }
     }
 
     async enterPortNameAndContinue(portName: string) {

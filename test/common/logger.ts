@@ -11,3 +11,7 @@ export function logStep(message: string): void {
 export function logWarn(message: string): void {
     console.warn(`[${timestamp()}] WARN ${message}`);
 }
+
+export function logError(message: string): void {
+    console.error(`[${timestamp()}] ERROR ${message}`);
+}

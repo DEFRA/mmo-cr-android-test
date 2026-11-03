@@ -16,7 +16,7 @@ export class SpeciesPage extends BasePage {
         logStep('Extracting gear context from heading');
         const text = await this.heading.getText();
         const match = text.match(/Which species did you catch with (.+)\?/);
-        return match ? match[1] : null;
+        return match?.[1] ?? null;
     }
 
     get searchField() {

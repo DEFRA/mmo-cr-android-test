@@ -1,5 +1,4 @@
 import { BasePage } from './basePage';
-import { logStep } from '../common/logger';
 
 export class NotificationsPage extends BasePage {
     get heading() {

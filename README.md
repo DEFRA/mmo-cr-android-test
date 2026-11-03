@@ -39,12 +39,21 @@ npm install
 
 Requires [Appium](https://appium.io/) with the `uiautomator2` driver, and a running Android emulator or connected device.
 
-Place the APK at `app/android/app.apk`, or set `ANDROID_APP_PATH`. Optionally set `ANDROID_DEVICE_NAME` and `ANDROID_PLATFORM_VERSION`.
+Place the APK directly in `app/`. Optionally set `ANDROID_DEVICE_NAME` and `ANDROID_PLATFORM_VERSION`.
 
 ```bash
 npm run test:android
-npm run test:android:spec -- test/specs/android/app-launch.e2e.ts
+npm run test:android:spec -- test/specs/signIn.spec.ts
 ```
+
+To run every spec sequentially with a fresh app installation for each spec file:
+
+```bash
+APPIUM_FULL_RESET=true APPIUM_NO_RESET=false npm run test:android
+```
+
+Full reset uninstalls the app and clears its data between spec files, not between individual tests.
+`APPIUM_FULL_RESET` and `APPIUM_NO_RESET` cannot both be `true`.
 
 ## Production
 

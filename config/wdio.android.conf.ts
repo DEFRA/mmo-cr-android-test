@@ -12,6 +12,11 @@ const androidPlatformVersion = process.env.ANDROID_PLATFORM_VERSION;
 const androidUdid = process.env.ANDROID_UDID;
 const androidAppId = process.env.ANDROID_APP_ID;
 const noReset = process.env.APPIUM_NO_RESET === 'true';
+const fullReset = process.env.APPIUM_FULL_RESET === 'true';
+
+if (noReset && fullReset) {
+    throw new Error('APPIUM_NO_RESET and APPIUM_FULL_RESET cannot both be true.');
+}
 
 if (!apkFile) {
     throw new Error('No .apk found in ./app. Place the Record Your Catch APK in the ./app folder.');
@@ -33,11 +38,12 @@ export const config: WebdriverIO.Config = {
             'appium:autoGrantPermissions': true,
             'appium:ignoreHiddenApiPolicyError': true,
             'appium:noReset': noReset,
+            'appium:fullReset': fullReset,
             'appium:newCommandTimeout': 240,
         },
     ],
 
-    specs: ['../test/specs/android/**/*.ts'],
+    specs: ['../test/specs/**/*.spec.ts'],
 
     runner: 'local',
     bail: 0,

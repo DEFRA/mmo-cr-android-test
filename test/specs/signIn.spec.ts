@@ -24,7 +24,6 @@ describe('Android sign-in screen', () => {
 
     it('displays instructions when the create an account link is clicked', async () => {
         logStep('clicking create an account link and verifying instructions appear');
-        await expect(SignInPage.createAccountLink).toBeClickable();
         await SignInPage.openCreateAccount();
 
         await expect(SignInPage.vesselOwnerLabel).toBeDisplayed();

@@ -13,7 +13,7 @@ Feature: Selected species weight validations
         And I select catch area "38E95"
         And I search "br" and add species "Brown crab (TBC)"
 
-    Scenario: Validate all weight entry requirements (AC1-AC11)
+    Scenario: Validate all weight entry requirements
         # AC1 & AC2: catch weight and optional weights
         When I select the species "Brown crab (TBC)"
         Then the retained weight field is displayed
@@ -57,7 +57,7 @@ Feature: Selected species weight validations
         And I save and continue
         Then a message containing "Are you delaying the landing" is displayed
 
-    Scenario: Add and remove species (AC4 & AC5)
+    Scenario: Add and remove species
         When I choose to add another species
         Then the species search screen is displayed
         When I search "Atlantic cod" and add species "Atlantic cod"

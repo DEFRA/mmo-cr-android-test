@@ -1,4 +1,5 @@
-@catchRecord @drafts
+@catchRecord
+@drafts
 Feature: Catch record drafts and dependencies
 
     Background:
@@ -33,9 +34,9 @@ Feature: Catch record drafts and dependencies
         When I go back 2 times
         And I deselect "Seine nets"
         Then a message containing any of these is displayed:
-            | dependent data   |
-            | will be removed  |
-            | Are you sure     |
+            | dependent data  |
+            | will be removed |
+            | Are you sure    |
         And I confirm the removal
 
     Scenario: TC-4.6 Record legally discarded catch with blank retained weight
@@ -75,7 +76,7 @@ Feature: Catch record drafts and dependencies
         And I go back 3 times
         And I deselect "Brown crab"
         Then a message containing any of these is displayed:
-            | dependent data   |
-            | stored catch     |
-            | will be removed  |
+            | dependent data  |
+            | stored catch    |
+            | will be removed |
         And I confirm the removal

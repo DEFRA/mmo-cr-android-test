@@ -1,4 +1,5 @@
-@catchRecord @selectedSpecies
+@catchRecord
+@selectedSpecies
 Feature: Selected species weight validations
 
     Background:

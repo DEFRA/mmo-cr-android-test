@@ -1,4 +1,5 @@
-@catchRecord @reviewAndAmend
+@catchRecord
+@reviewAndAmend
 Feature: Catch record review and amend journey
 
     Background:

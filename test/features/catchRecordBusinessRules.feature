@@ -1,4 +1,5 @@
-@catchRecord @businessRules
+@catchRecord
+@businessRules
 Feature: Catch record business rules and offline handling
 
     Background:
@@ -28,6 +29,7 @@ Feature: Catch record business rules and offline handling
 
     @skip
     Scenario: Save and maintain favourites
+
 
     Scenario: Late submission warning (trip more than 24 hours ago)
         When I start a catch record
@@ -65,8 +67,10 @@ Feature: Catch record business rules and offline handling
     @skip
     Scenario: Auto-save draft records and prevent data loss
 
+
     @skip
     Scenario: Duplicate submission and conflict resolution
+
 
     Scenario: Invalid trip dates (return date before departure date)
         When I start a catch record

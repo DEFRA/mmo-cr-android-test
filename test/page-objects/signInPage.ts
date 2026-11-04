@@ -2,10 +2,6 @@ import { BasePage } from './basePage';
 import { logStep } from '../common/logger';
 
 export class SignInPage extends BasePage {
-    get crownLogo() {
-        return $('~GOV.UK Crown Logo');
-    }
-
     get heading() {
         return $('//android.widget.TextView[@text="Sign in" and @heading="true"]');
     }
@@ -22,10 +18,6 @@ export class SignInPage extends BasePage {
         return $(
             '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="Sign in"]]',
         );
-    }
-
-    get troubleSigningInText() {
-        return $('//android.widget.TextView[@text="Having trouble signing in?"]');
     }
 
     get forgottenPasswordLink() {
@@ -73,12 +65,6 @@ export class SignInPage extends BasePage {
         await this.enterEmail(email);
         await this.enterPassword(password);
         await this.signInButton.click();
-    }
-
-    async openForgottenPassword() {
-        logStep('Opening forgotten password link');
-        await this.forgottenPasswordLink.waitForDisplayed();
-        await this.forgottenPasswordLink.click();
     }
 
     async openCreateAccount() {

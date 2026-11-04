@@ -6,38 +6,14 @@ export class SelectedGearsPage extends BasePage {
         return $('//android.widget.TextView[@text="What gear did you use?" and @heading="true"]');
     }
 
-    get instructionText() {
-        return $('//android.widget.TextView[@text="Select all the gears used on your vessel."]');
-    }
-
     gearItemRow(gearName: string) {
         return $(
             `//android.view.View[@checkable="true" and .//android.widget.TextView[@text="${gearName}"]]`,
         );
     }
 
-    gearItemMeasurement(gearName: string) {
-        return $(
-            `//android.view.View[@checkable="true" and .//android.widget.TextView[@text="${gearName}"]]//android.widget.TextView[2]`,
-        );
-    }
-
-    get shotsLabel() {
-        return $('//android.widget.TextView[@text="Number of times gear was shot on trip"]');
-    }
-
     get shotsField() {
         return $('//android.widget.EditText');
-    }
-
-    get removeGearButton() {
-        return $('//android.widget.Button[@text="Remove gear"]');
-    }
-
-    get addAnotherGearButton() {
-        return $(
-            '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="Add another gear"]]',
-        );
     }
 
     async selectGearCheckbox(gearName: string) {
@@ -45,24 +21,6 @@ export class SelectedGearsPage extends BasePage {
         const row = this.gearItemRow(gearName);
         await row.waitForDisplayed();
         await row.click();
-    }
-
-    async clickRemoveGear() {
-        logStep('Clicking remove gear');
-        await this.removeGearButton.waitForEnabled();
-        await this.removeGearButton.click();
-    }
-
-    async removeGear(gearName: string) {
-        logStep(`Removing gear ${gearName}`);
-        await this.selectGearCheckbox(gearName);
-        await this.clickRemoveGear();
-    }
-
-    async clickAddAnotherGear() {
-        logStep('Clicking add another gear');
-        await this.addAnotherGearButton.waitForDisplayed();
-        await this.addAnotherGearButton.click();
     }
 
     async enterShots(shots: string | number) {

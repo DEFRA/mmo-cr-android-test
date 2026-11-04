@@ -9,22 +9,6 @@ export class ReturnPortPage extends BasePage {
         );
     }
 
-    get selectPortHeading() {
-        return $(
-            '//android.widget.TextView[@text="Select the port you returned to" and @heading="true"]',
-        );
-    }
-
-    portOption(portName: string) {
-        return $(
-            `//android.view.View[@checkable="true"][.//android.widget.TextView[@text="${portName}"]]`,
-        );
-    }
-
-    get allPortOptions() {
-        return $$('//android.view.View[@checkable="true"]');
-    }
-
     get addPortButton() {
         return $(
             '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="Add port"]]',
@@ -35,19 +19,9 @@ export class ReturnPortPage extends BasePage {
         return $('//android.widget.EditText');
     }
 
-    get validationError() {
-        return $('//android.widget.TextView[@text="Select a port or choose one from the list"]');
-    }
-
     portSuggestion(portName: string) {
         return $(
             `//android.view.View[@clickable="true"][.//android.widget.TextView[@text="${portName}"]]`,
-        );
-    }
-
-    get allPortSuggestions() {
-        return $$(
-            '//android.widget.ScrollView//android.view.View[@clickable="true"][.//android.widget.Button]',
         );
     }
 
@@ -57,23 +31,10 @@ export class ReturnPortPage extends BasePage {
         );
     }
 
-    async selectPort(portName: string) {
-        logStep(`Selecting port ${portName}`);
-        const option = this.portOption(portName);
-        await option.waitForDisplayed();
-        await option.click();
-    }
-
     async clickAddPort() {
         logStep('Clicking Add port');
         await this.addPortButton.waitForDisplayed();
         await this.addPortButton.click();
-    }
-
-    async selectPortAndContinue(portName: string) {
-        logStep(`Selecting port and continuing: ${portName}`);
-        await this.selectPort(portName);
-        await this.saveAndContinue();
     }
 
     async enterPortName(portName: string) {
@@ -83,12 +44,6 @@ export class ReturnPortPage extends BasePage {
         if (portName.trim().length >= 2) {
             await this.firstPortSuggestion.waitForDisplayed();
         }
-    }
-
-    async enterPortNameAndContinue(portName: string) {
-        logStep(`Entering port name and continuing: ${portName}`);
-        await this.enterPortName(portName);
-        await this.saveAndContinue();
     }
 
     async searchAndSelectPort(searchText: string, portName: string) {

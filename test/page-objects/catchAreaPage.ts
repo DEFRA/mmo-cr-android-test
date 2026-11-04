@@ -8,18 +8,6 @@ export class CatchAreaPage extends BasePage {
         );
     }
 
-    get instructionText1() {
-        return $('//android.widget.TextView[contains(@text, "The statistical areas nearest")]');
-    }
-
-    get instructionText2() {
-        return $('//android.widget.TextView[contains(@text, "Select the area where most")]');
-    }
-
-    get instructionText3() {
-        return $('//android.widget.TextView[contains(@text, "If it is not listed, select Other")]');
-    }
-
     get map() {
         return $('//android.view.View[contains(@content-desc, "Map of fisheries statistical")]');
     }
@@ -31,23 +19,8 @@ export class CatchAreaPage extends BasePage {
     }
 
     // The selection state is announced in the map's content-desc, e.g. "... Selected area: 30F04 Drag to pan ...".
-    get selectedAreaText() {
-        return $('//android.view.View[contains(@content-desc, "Selected area:")]');
-    }
-
-    get noAreaSelectedText() {
-        return $('//android.view.View[contains(@content-desc, "No area selected")]');
-    }
-
     private async getMapDescription(): Promise<string> {
         return (await this.map.getAttribute('content-desc')) ?? '';
-    }
-
-    async getSelectedArea(): Promise<string> {
-        logStep('Getting selected area text');
-        await this.selectedAreaText.waitForExist({ timeout: 1000 });
-        const match = (await this.getMapDescription()).match(/Selected area:\s*\S+/);
-        return match?.[0] ?? '';
     }
 
     async getSelectedAreaCode(): Promise<string | null> {
@@ -59,30 +32,6 @@ export class CatchAreaPage extends BasePage {
     async isAreaSelected(): Promise<boolean> {
         logStep('Checking if an area is selected');
         return (await this.getMapDescription()).includes('Selected area:');
-    }
-
-    async tapMapAt(xPercent: number, yPercent: number) {
-        logStep(`Tapping map at ${xPercent}%, ${yPercent}%`);
-        await this.map.waitForDisplayed();
-
-        const size = await this.map.getSize();
-        const location = await this.map.getLocation();
-
-        const x = Math.floor(size.width * xPercent) + location.x;
-        const y = Math.floor(size.height * yPercent) + location.y;
-
-        await browser.performActions([
-            {
-                type: 'pointer',
-                id: 'catch-area-map-tap',
-                parameters: { pointerType: 'touch' },
-                actions: [
-                    { type: 'pointerMove', duration: 0, x, y },
-                    { type: 'pointerDown', button: 0 },
-                    { type: 'pointerUp', button: 0 },
-                ],
-            },
-        ]);
     }
 
     async selectRandomLocation() {

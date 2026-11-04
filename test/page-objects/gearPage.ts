@@ -6,10 +6,6 @@ export class GearPage extends BasePage {
         return $('//android.widget.TextView[@text="What gear did you use?" and @heading="true"]');
     }
 
-    get gearSearchLabel() {
-        return $('//android.widget.TextView[@text="Enter the gear you used"]');
-    }
-
     get gearSearchField() {
         return $('//android.widget.EditText');
     }
@@ -33,12 +29,6 @@ export class GearPage extends BasePage {
         if (gearName.trim().length >= 2) {
             await this.firstGearSuggestion.waitForDisplayed();
         }
-    }
-
-    async enterGearNameAndContinue(gearName: string) {
-        logStep(`Entering gear name and continuing: ${gearName}`);
-        await this.enterGearName(gearName);
-        await this.saveAndContinue();
     }
 
     async searchAndSelectGear(searchText: string, gearName: string) {

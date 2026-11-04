@@ -9,37 +9,9 @@ export class DeparturePortPage extends BasePage {
         );
     }
 
-    get selectPortHeading() {
-        return $(
-            '//android.widget.TextView[@text="Select the port you set off from" and @heading="true"]',
-        );
-    }
-
-    get portConfirmationText() {
-        return $(
-            '//android.widget.TextView[contains(@text, "the port or the closest port you set off from")]',
-        );
-    }
-
-    portOption(portName: string) {
-        return $(
-            `//android.view.View[@checkable="true"][.//android.widget.TextView[@text="${portName}"]]`,
-        );
-    }
-
-    get allPortOptions() {
-        return $$('//android.view.View[@checkable="true"]');
-    }
-
     get addPortButton() {
         return $(
             '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="Add port"]]',
-        );
-    }
-
-    get portSearchLabel() {
-        return $(
-            '//android.widget.TextView[@text="Enter the port or closest port you set off from"]',
         );
     }
 
@@ -47,19 +19,9 @@ export class DeparturePortPage extends BasePage {
         return $('//android.widget.EditText');
     }
 
-    get validationError() {
-        return $('//android.widget.TextView[@text="Select a port or choose one from the list"]');
-    }
-
     portSuggestion(portName: string) {
         return $(
             `//android.view.View[@clickable="true"][.//android.widget.TextView[@text="${portName}"]]`,
-        );
-    }
-
-    get allPortSuggestions() {
-        return $$(
-            '//android.widget.ScrollView//android.view.View[@clickable="true"][.//android.widget.Button]',
         );
     }
 
@@ -69,23 +31,10 @@ export class DeparturePortPage extends BasePage {
         );
     }
 
-    async selectPort(portName: string) {
-        logStep(`Selecting port ${portName}`);
-        const option = this.portOption(portName);
-        await option.waitForDisplayed();
-        await option.click();
-    }
-
     async clickAddPort() {
         logStep('Clicking Add port');
         await this.addPortButton.waitForDisplayed();
         await this.addPortButton.click();
-    }
-
-    async selectPortAndContinue(portName: string) {
-        logStep(`Selecting port and continuing: ${portName}`);
-        await this.selectPort(portName);
-        await this.saveAndContinue();
     }
 
     async enterPortName(portName: string) {
@@ -95,12 +44,6 @@ export class DeparturePortPage extends BasePage {
         if (portName.trim().length >= 2) {
             await this.firstPortSuggestion.waitForDisplayed();
         }
-    }
-
-    async enterPortNameAndContinue(portName: string) {
-        logStep(`Entering port name and continuing: ${portName}`);
-        await this.enterPortName(portName);
-        await this.saveAndContinue();
     }
 
     async searchAndSelectPort(searchText: string, portName: string) {

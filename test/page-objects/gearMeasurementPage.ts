@@ -8,26 +8,8 @@ export class GearMeasurementPage extends BasePage {
         );
     }
 
-    dynamicHeading(gearName: string) {
-        return $(
-            `//android.widget.TextView[@text="Enter the measurements for ${gearName}" and @heading="true"]`,
-        );
-    }
-
-    get instructionText() {
-        return $('//android.widget.TextView[@text="All gear measurements must be whole numbers."]');
-    }
-
-    get meshSizeLabel() {
-        return $('//android.widget.TextView[@text="Mesh size (mm)"]');
-    }
-
     get meshSizeField() {
         return $('//android.widget.EditText');
-    }
-
-    measurementFieldByIndex(index: number) {
-        return $(`(//android.widget.EditText)[${index}]`);
     }
 
     async enterMeshSize(size: string | number) {

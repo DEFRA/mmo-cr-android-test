@@ -2,18 +2,6 @@ import { BasePage } from './basePage';
 import { logStep } from '../common/logger';
 
 export abstract class BaseDatePage extends BasePage {
-    get dayField() {
-        return $('//android.widget.SeekBar[@content-desc="Day"]');
-    }
-
-    get monthField() {
-        return $('//android.widget.SeekBar[@content-desc="Month"]');
-    }
-
-    get yearField() {
-        return $('//android.widget.SeekBar[@content-desc="Year"]');
-    }
-
     async enterDay(day: string) {
         logStep(`Selecting day ${day}`);
         await this.scrollPickerToValue('Day', day);

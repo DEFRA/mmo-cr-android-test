@@ -19,13 +19,6 @@ export class NetworkHelper {
         await this.setServiceEnabled('wifi', true);
         await this.setServiceEnabled('data', true);
     }
-
-    static async enableAirplaneMode() {
-        logStep('Enabling Airplane Mode');
-        if (typeof driver.setNetworkConnection === 'function') {
-            await driver.setNetworkConnection(1 as any);
-        }
-    }
 }
 
 export default NetworkHelper;

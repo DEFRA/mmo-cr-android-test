@@ -8,7 +8,6 @@ import departurePortPage from '../page-objects/departurePortPage';
 import returnPortPage from '../page-objects/returnPortPage';
 import catchAreaPage from '../page-objects/catchAreaPage';
 import catchSubAreaPage from '../page-objects/catchSubAreaPage';
-import catchSubAreaSearchPage from '../page-objects/catchSubAreaSearchPage';
 import gearPage from '../page-objects/gearPage';
 import gearMeasurementPage from '../page-objects/gearMeasurementPage';
 import selectedGearsPage from '../page-objects/selectedGearsPage';
@@ -86,12 +85,6 @@ export class AndroidFlowNavigator {
         } else {
             await catchSubAreaPage.selectFirstSubAreaAndContinue();
         }
-    }
-
-    async searchAndSelectSubArea(searchText: string, areaCode: string) {
-        logStep(`Searching and selecting sub area: ${areaCode}`);
-        await catchSubAreaSearchPage.heading.waitForDisplayed();
-        await catchSubAreaSearchPage.searchSelectAndContinue(searchText, areaCode);
     }
 
     async selectGear(gearName: string, meshSize: string | number, shots: string | number) {

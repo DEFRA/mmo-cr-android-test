@@ -8,16 +8,6 @@ export class CatchSubAreaPage extends BasePage {
         );
     }
 
-    get instructionText1() {
-        return $('//android.widget.TextView[contains(@text, "The statistical areas nearest")]');
-    }
-
-    get instructionText2() {
-        return $(
-            '//android.widget.TextView[contains(@text, "Select the area where most of your catch was caught")]',
-        );
-    }
-
     subAreaOption(areaCode: string) {
         return $(
             `//android.view.View[@checkable="true"][.//android.widget.TextView[@text="${areaCode}"]]`,
@@ -26,12 +16,6 @@ export class CatchSubAreaPage extends BasePage {
 
     get subAreaOptions() {
         return $$('//android.view.View[@checkable="true"][.//android.widget.RadioButton]');
-    }
-
-    get otherOption() {
-        return $(
-            '//android.view.View[@checkable="true"][.//android.widget.TextView[@text="Other"]]',
-        );
     }
 
     async getAvailableSubAreas(): Promise<string[]> {
@@ -65,12 +49,6 @@ export class CatchSubAreaPage extends BasePage {
         await this.selectSubArea(firstCode);
     }
 
-    async selectOther() {
-        logStep('Selecting Other');
-        await this.otherOption.waitForDisplayed();
-        await this.otherOption.click();
-    }
-
     async selectSubAreaAndContinue(areaCode: string) {
         logStep(`Selecting sub area and continuing: ${areaCode}`);
         await this.selectSubArea(areaCode);
@@ -80,12 +58,6 @@ export class CatchSubAreaPage extends BasePage {
     async selectFirstSubAreaAndContinue() {
         logStep('Selecting first sub area and continuing');
         await this.selectFirstSubArea();
-        await this.saveAndContinue();
-    }
-
-    async selectOtherAndContinue() {
-        logStep('Selecting Other and continuing');
-        await this.selectOther();
         await this.saveAndContinue();
     }
 }

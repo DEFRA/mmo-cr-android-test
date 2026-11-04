@@ -8,18 +8,10 @@ export class SelectedSpeciesPage extends BasePage {
         );
     }
 
-    get instructionText() {
-        return $('//android.widget.TextView[contains(@text, "Select all the species you caught")]');
-    }
-
     speciesItemRow(speciesName: string) {
         return $(
             `//android.view.View[@checkable="true" and .//android.widget.TextView[@text="${speciesName}"]]`,
         );
-    }
-
-    get retainedWeightLabel() {
-        return $('//android.widget.TextView[@text="Weight above minimum size retained (kg)"]');
     }
 
     get retainedWeightField() {
@@ -44,16 +36,8 @@ export class SelectedSpeciesPage extends BasePage {
         return $('//android.widget.Button[@text="Add weight below minimum size retained (kg)"]');
     }
 
-    get removeBelowMinWeightButton() {
-        return $('//android.widget.Button[@text="Remove weight below minimum size retained (kg)"]');
-    }
-
     get addDiscardedWeightButton() {
         return $('//android.widget.Button[@text="Add weight legally discarded (kg)"]');
-    }
-
-    get removeDiscardedWeightButton() {
-        return $('//android.widget.Button[@text="Remove weight legally discarded (kg)"]');
     }
 
     get removeSpeciesButton() {
@@ -100,23 +84,11 @@ export class SelectedSpeciesPage extends BasePage {
         await this.addBelowMinWeightButton.click();
     }
 
-    async clickRemoveBelowMinWeight() {
-        logStep('Clicking remove below minimum weight');
-        await this.removeBelowMinWeightButton.waitForDisplayed();
-        await this.removeBelowMinWeightButton.click();
-    }
-
     async clickAddDiscardedWeight() {
         logStep('Clicking add discarded weight');
         await this.scrollUntilDisplayed(this.addDiscardedWeightButton);
         await this.addDiscardedWeightButton.waitForDisplayed();
         await this.addDiscardedWeightButton.click();
-    }
-
-    async clickRemoveDiscardedWeight() {
-        logStep('Clicking remove discarded weight');
-        await this.removeDiscardedWeightButton.waitForDisplayed();
-        await this.removeDiscardedWeightButton.click();
     }
 
     async clickRemoveSpecies() {

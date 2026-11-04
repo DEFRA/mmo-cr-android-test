@@ -8,17 +8,6 @@ export class SpeciesPage extends BasePage {
         );
     }
 
-    get searchLabel() {
-        return $('//android.widget.TextView[@text="Type to search (minimum 2 characters)"]');
-    }
-
-    async getGearContextFromHeading(): Promise<string | null> {
-        logStep('Extracting gear context from heading');
-        const text = await this.heading.getText();
-        const match = text.match(/Which species did you catch with (.+)\?/);
-        return match?.[1] ?? null;
-    }
-
     get searchField() {
         return $('//android.widget.EditText');
     }

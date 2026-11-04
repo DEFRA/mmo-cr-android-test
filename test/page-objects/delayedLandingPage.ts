@@ -18,13 +18,13 @@ export class DelayedLandingPage extends BasePage {
 
     async selectYes() {
         logStep('Selecting Yes');
-        await this.yesOption.waitForDisplayed({ timeout: 10000 });
+        await this.yesOption.waitForDisplayed();
         await this.yesOption.click();
     }
 
     async selectNo() {
         logStep('Selecting No');
-        await this.noOption.waitForDisplayed({ timeout: 10000 });
+        await this.noOption.waitForDisplayed();
         await this.noOption.click();
     }
 

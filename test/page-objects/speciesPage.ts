@@ -31,7 +31,7 @@ export class SpeciesPage extends BasePage {
 
     async enterSpeciesName(species: string) {
         logStep(`Entering species name ${species}`);
-        await this.searchField.waitForDisplayed({ timeout: 10000 });
+        await this.searchField.waitForDisplayed();
         await this.searchField.setValue(species);
     }
 
@@ -39,7 +39,7 @@ export class SpeciesPage extends BasePage {
         logStep(`Searching for ${searchText} and selecting species ${speciesName}`);
         await this.enterSpeciesName(searchText);
         const option = this.speciesOption(speciesName);
-        await option.waitForDisplayed({ timeout: 10000 });
+        await option.waitForDisplayed();
         await option.click();
     }
 

@@ -20,16 +20,16 @@ export class TripTodayPage extends BasePage {
 
     async selectYes() {
         logStep('Selecting Yes');
-        await this.yesOption.waitForDisplayed({ timeout: 10000 });
+        await this.yesOption.waitForDisplayed();
         await this.yesOption.click();
-        await departurePortPage.heading.waitForDisplayed({ timeout: 10000 });
+        await departurePortPage.heading.waitForDisplayed();
     }
 
     async selectNo() {
         logStep('Selecting No');
-        await this.noOption.waitForDisplayed({ timeout: 10000 });
+        await this.noOption.waitForDisplayed();
         await this.noOption.click();
-        await tripStartDatePage.heading.waitForDisplayed({ timeout: 10000 });
+        await tripStartDatePage.heading.waitForDisplayed();
     }
 }
 

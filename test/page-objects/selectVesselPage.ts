@@ -16,9 +16,9 @@ export class SelectVesselPage extends BasePage {
     async selectVessel(vesselName: string) {
         logStep(`Selecting vessel ${vesselName}`);
         const option = this.vesselOption(vesselName);
-        await option.waitForDisplayed({ timeout: 10000 });
+        await option.waitForDisplayed();
         await option.click();
-        await tripTodayPage.heading.waitForDisplayed({ timeout: 10000 });
+        await tripTodayPage.heading.waitForDisplayed();
     }
 }
 

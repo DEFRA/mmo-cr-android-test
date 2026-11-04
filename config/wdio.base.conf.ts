@@ -5,11 +5,9 @@ import { promisify } from 'node:util';
 import { logInfo } from '../test/common/logger';
 
 const execFileAsync = promisify(execFile);
-const oneMinute = 60 * 1000;
+export const oneMinute = 60 * 1000;
 
 export const appiumPort = Number(process.env.APPIUM_PORT ?? 4723);
-
-export const featureSpecs = ['../test/features/**/*.feature'];
 
 export function cucumberOptions(timeout: number): WebdriverIO.CucumberOpts {
     const tags = ['not @skip', process.env.CUCUMBER_TAGS && `(${process.env.CUCUMBER_TAGS})`]
@@ -28,7 +26,7 @@ export function cucumberOptions(timeout: number): WebdriverIO.CucumberOpts {
     };
 }
 
-export async function screenshotOnFailedStep(
+async function screenshotOnFailedStep(
     _step: unknown,
     _scenario: unknown,
     result: { passed: boolean },
@@ -48,23 +46,23 @@ export async function uninstallAndroidApp(appId: string, udid?: string): Promise
     const args = [...(udid ? ['-s', udid] : []), 'uninstall', appId];
     try {
         await execFileAsync('adb', args);
-        await logInfo(`Uninstalled ${appId}`);
+        logInfo(`Uninstalled ${appId}`);
     } catch {
-        await logInfo(`${appId} was not installed or could not be uninstalled`);
+        logInfo(`${appId} was not installed or could not be uninstalled`);
     }
 }
 
 export const baseConfig: Omit<WebdriverIO.Config, 'capabilities'> = {
-    hostname: '127.0.0.1',
-    port: appiumPort,
-    path: '/',
-
+    runner: 'local',
+    specs: ['../test/features/**/*.feature'],
     exclude: [],
     maxInstances: 1,
+    bail: 0,
 
     logLevel: 'info',
     waitforTimeout: 10000,
     waitforInterval: 200,
+    connectionRetryTimeout: 2 * oneMinute,
     connectionRetryCount: 3,
     // WebdriverIO 10 defaults this to true; Compose screen transitions briefly keep both screens in the tree,
     // so selectors can transiently match twice. Keep WebdriverIO 9 first-match behaviour.

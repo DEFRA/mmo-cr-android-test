@@ -125,13 +125,13 @@ export class HomePage extends BasePage {
 
     async clickRetrySubmission() {
         logStep('Clicking Retry Submission button');
-        await this.retrySubmissionButton.waitForDisplayed({ timeout: 10000 });
+        await this.retrySubmissionButton.waitForDisplayed();
         await this.retrySubmissionButton.click();
     }
 
     async clickCreateRecordButton() {
         logStep('Clicking create record button');
-        await this.createRecordButton.waitForDisplayed({ timeout: 10000 });
+        await this.createRecordButton.waitForDisplayed();
         await this.createRecordButton.click();
     }
 

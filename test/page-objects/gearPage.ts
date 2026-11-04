@@ -28,10 +28,10 @@ export class GearPage extends BasePage {
 
     async enterGearName(gearName: string) {
         logStep(`Entering gear name ${gearName}`);
-        await this.gearSearchField.waitForDisplayed({ timeout: 10000 });
+        await this.gearSearchField.waitForDisplayed();
         await this.gearSearchField.setValue(gearName);
         if (gearName.trim().length >= 2) {
-            await this.firstGearSuggestion.waitForDisplayed({ timeout: 10000 });
+            await this.firstGearSuggestion.waitForDisplayed();
         }
     }
 
@@ -45,7 +45,7 @@ export class GearPage extends BasePage {
         logStep(`Searching for ${searchText} and selecting gear ${gearName}`);
         await this.enterGearName(searchText);
         const option = this.gearOption(gearName);
-        await option.waitForDisplayed({ timeout: 10000 });
+        await option.waitForDisplayed();
         await option.click();
     }
 

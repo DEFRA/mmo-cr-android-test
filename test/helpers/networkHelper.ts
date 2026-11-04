@@ -21,7 +21,7 @@ export class NetworkHelper {
     }
 
     static async enableAirplaneMode() {
-        await logStep('Enabling Airplane Mode');
+        logStep('Enabling Airplane Mode');
         if (typeof driver.setNetworkConnection === 'function') {
             await driver.setNetworkConnection(1 as any);
         }

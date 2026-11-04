@@ -64,7 +64,7 @@ export class SubmissionSuccessPage extends BasePage {
 
     async getRecordReference(): Promise<string> {
         logStep('Getting record reference');
-        await this.referenceText.waitForDisplayed({ timeout: 10000 });
+        await this.referenceText.waitForDisplayed();
         const text = await this.referenceText.getText();
 
         const prefix = 'reference ';
@@ -78,7 +78,7 @@ export class SubmissionSuccessPage extends BasePage {
 
     async clickViewRecords() {
         logStep('Clicking view records');
-        await this.viewRecordsButton.waitForDisplayed({ timeout: 10000 });
+        await this.viewRecordsButton.waitForDisplayed();
         await this.viewRecordsButton.click();
     }
 }

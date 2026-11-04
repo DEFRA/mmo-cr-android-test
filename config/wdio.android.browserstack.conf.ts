@@ -1,12 +1,11 @@
 import fs from 'node:fs';
-import { cucumberOptions, featureSpecs, screenshotOnFailedStep } from './wdio.base.conf';
+import { baseConfig, cucumberOptions, oneMinute } from './wdio.base.conf';
 
 /**
  * On the CDP Portal the proxy is enabled using NODE_USE_ENV_PROXY=1 (see `npm test`).
  * This is required for the test suite to be able to talk to BrowserStack.
  */
 
-const oneMinute = 60 * 1000;
 const projectName = 'mmo-cr-android-test';
 const buildName = `${projectName}-${process.env.ENVIRONMENT ?? 'local'}`;
 const proxy = process.env.HTTP_PROXY ? new URL(process.env.HTTP_PROXY) : undefined;
@@ -33,23 +32,12 @@ const androidDevices = [
 export const config: WebdriverIO.Config & {
     commonCapabilities: WebdriverIO.Capabilities;
 } = {
-    //
-    // ====================
-    // Runner Configuration
-    // ====================
-    // WebdriverIO supports running e2e tests as well as unit and component tests.
-    runner: 'local',
+    ...baseConfig,
 
     // You will need to provide your own BrowserStack credentials.
     // These should be added as secrets to the test suite.
     user: process.env.BROWSERSTACK_USERNAME,
     key: process.env.BROWSERSTACK_KEY,
-
-    // Tests to run
-    specs: featureSpecs,
-    // Tests to exclude
-    exclude: [],
-    maxInstances: 1,
 
     commonCapabilities,
 
@@ -105,17 +93,6 @@ export const config: WebdriverIO.Config & {
         ],
     ],
 
-    logLevel: 'info',
-
-    // Number of failures before the test suite bails.
-    bail: 0,
-    waitforTimeout: 10000,
-    waitforInterval: 200,
-    connectionRetryTimeout: 6000,
-    connectionRetryCount: 3,
-
-    framework: 'cucumber',
-
     reporters: [
         [
             // Spec reporter provides rolling output to the logger so you can see it in-progress
@@ -137,9 +114,6 @@ export const config: WebdriverIO.Config & {
     ],
 
     cucumberOpts: cucumberOptions(oneMinute),
-
-    // Hooks
-    afterStep: screenshotOnFailedStep,
 
     onComplete: function (exitCode, config, capabilities, results?: { failed?: number }) {
         // !Do Not Remove! Required for test status to show correctly in portal.

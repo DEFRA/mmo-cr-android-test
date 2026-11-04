@@ -42,20 +42,20 @@ export class CatchSubAreaSearchPage extends BasePage {
 
     async enterSearchText(searchText: string) {
         logStep(`Entering search text: ${searchText}`);
-        await this.searchField.waitForDisplayed({ timeout: 10000 });
+        await this.searchField.waitForDisplayed();
         await this.searchField.setValue(searchText);
     }
 
     async clearSearchText() {
         logStep('Clearing search text');
-        await this.searchField.waitForDisplayed({ timeout: 10000 });
+        await this.searchField.waitForDisplayed();
         await this.searchField.clearValue();
     }
 
     async selectResult(areaCode: string) {
         logStep(`Selecting search result: ${areaCode}`);
         const result = this.searchResult(areaCode);
-        await result.waitForDisplayed({ timeout: 10000 });
+        await result.waitForDisplayed();
         await result.click();
     }
 

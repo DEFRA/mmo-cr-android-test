@@ -43,13 +43,13 @@ export class SelectedGearsPage extends BasePage {
     async selectGearCheckbox(gearName: string) {
         logStep(`Selecting gear checkbox ${gearName}`);
         const row = this.gearItemRow(gearName);
-        await row.waitForDisplayed({ timeout: 10000 });
+        await row.waitForDisplayed();
         await row.click();
     }
 
     async clickRemoveGear() {
         logStep('Clicking remove gear');
-        await this.removeGearButton.waitForEnabled({ timeout: 10000 });
+        await this.removeGearButton.waitForEnabled();
         await this.removeGearButton.click();
     }
 
@@ -61,13 +61,13 @@ export class SelectedGearsPage extends BasePage {
 
     async clickAddAnotherGear() {
         logStep('Clicking add another gear');
-        await this.addAnotherGearButton.waitForDisplayed({ timeout: 10000 });
+        await this.addAnotherGearButton.waitForDisplayed();
         await this.addAnotherGearButton.click();
     }
 
     async enterShots(shots: string | number) {
         logStep(`Entering shots ${shots}`);
-        await this.shotsField.waitForDisplayed({ timeout: 10000 });
+        await this.shotsField.waitForDisplayed();
         await this.shotsField.setValue(shots.toString());
     }
 }

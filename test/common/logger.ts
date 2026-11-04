@@ -1,6 +1,6 @@
 const timestamp = () => new Date().toISOString();
 
-export async function logInfo(message: string): Promise<void> {
+export function logInfo(message: string): void {
     console.info(`[${timestamp()}] INFO ${message}`);
 }
 

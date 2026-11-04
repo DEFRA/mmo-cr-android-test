@@ -20,18 +20,18 @@ export type DateData = { day: string; month: string; year: string };
 
 export class AndroidFlowNavigator {
     async startCatchRecord() {
-        await logStep('Starting catch record journey');
+        logStep('Starting catch record journey');
         await homePage.clickCreateRecordButton();
     }
 
     async selectVessel(vesselName: string) {
-        await logStep(`Selecting vessel: ${vesselName}`);
+        logStep(`Selecting vessel: ${vesselName}`);
         await selectVesselPage.heading.waitForDisplayed();
         await selectVesselPage.selectVessel(vesselName);
     }
 
     async selectTripDates(tripToday: boolean, startDate?: DateData, endDate?: DateData) {
-        await logStep(`Selecting trip dates (tripToday: ${tripToday})`);
+        logStep(`Selecting trip dates (tripToday: ${tripToday})`);
         await tripTodayPage.heading.waitForDisplayed();
 
         if (tripToday) {
@@ -55,19 +55,19 @@ export class AndroidFlowNavigator {
     }
 
     async selectPorts(departurePort: string, returnPort: string) {
-        await logStep(`Selecting ports - Departure: ${departurePort}, Return: ${returnPort}`);
+        logStep(`Selecting ports - Departure: ${departurePort}, Return: ${returnPort}`);
 
         await departurePortPage.heading.waitForDisplayed();
         await departurePortPage.clickAddPort();
         await departurePortPage.searchSelectAndContinue(departurePort, departurePort);
 
         await returnPortPage.heading.waitForDisplayed();
-        await departurePortPage.clickAddPort();
+        await returnPortPage.clickAddPort();
         await returnPortPage.searchSelectAndContinue(returnPort, returnPort);
     }
 
     async selectAreas(catchArea?: string, subArea?: string) {
-        await logStep(`Selecting catch area${catchArea ? `: ${catchArea}` : ' (random)'}`);
+        logStep(`Selecting catch area${catchArea ? `: ${catchArea}` : ' (random)'}`);
         await catchAreaPage.heading.waitForDisplayed();
 
         if (catchArea === 'Other') {
@@ -79,7 +79,7 @@ export class AndroidFlowNavigator {
     }
 
     async selectSubAreas(subArea?: string) {
-        await logStep(`Selecting sub area${subArea ? `: ${subArea}` : ' (first available)'}`);
+        logStep(`Selecting sub area${subArea ? `: ${subArea}` : ' (first available)'}`);
         await catchSubAreaPage.heading.waitForDisplayed();
         if (subArea) {
             await catchSubAreaPage.selectSubAreaAndContinue(subArea);
@@ -89,13 +89,13 @@ export class AndroidFlowNavigator {
     }
 
     async searchAndSelectSubArea(searchText: string, areaCode: string) {
-        await logStep(`Searching and selecting sub area: ${areaCode}`);
+        logStep(`Searching and selecting sub area: ${areaCode}`);
         await catchSubAreaSearchPage.heading.waitForDisplayed();
         await catchSubAreaSearchPage.searchSelectAndContinue(searchText, areaCode);
     }
 
     async selectGear(gearName: string, meshSize: string | number, shots: string | number) {
-        await logStep(`Selecting gear: ${gearName} (mesh: ${meshSize}mm, shots: ${shots})`);
+        logStep(`Selecting gear: ${gearName} (mesh: ${meshSize}mm, shots: ${shots})`);
         await gearPage.heading.waitForDisplayed();
         await gearPage.searchSelectAndContinue(gearName, gearName);
 
@@ -114,7 +114,7 @@ export class AndroidFlowNavigator {
         belowMinWeight: string | number,
         discardedWeight: string | number,
     ) {
-        await logStep(
+        logStep(
             `Selecting species: ${speciesName} (weights: ${retainedWeight} / ${belowMinWeight} / ${discardedWeight})`,
         );
         await speciesPage.heading.waitForDisplayed();
@@ -135,7 +135,7 @@ export class AndroidFlowNavigator {
     }
 
     async selectDelayedLanding(isDelayed: boolean) {
-        await logStep(`Selecting delayed landing: ${isDelayed}`);
+        logStep(`Selecting delayed landing: ${isDelayed}`);
         await delayedLandingPage.heading.waitForDisplayed();
         if (isDelayed) {
             await delayedLandingPage.selectYesAndContinue();

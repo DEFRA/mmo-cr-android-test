@@ -63,7 +63,7 @@ export class CatchAreaPage extends BasePage {
 
     async tapMapAt(xPercent: number, yPercent: number) {
         logStep(`Tapping map at ${xPercent}%, ${yPercent}%`);
-        await this.map.waitForDisplayed({ timeout: 10000 });
+        await this.map.waitForDisplayed();
 
         const size = await this.map.getSize();
         const location = await this.map.getLocation();
@@ -87,7 +87,7 @@ export class CatchAreaPage extends BasePage {
 
     async selectRandomLocation() {
         logStep('Selecting a random location on the map');
-        await this.map.waitForDisplayed({ timeout: 10000 });
+        await this.map.waitForDisplayed();
 
         const size = await this.map.getSize();
         const location = await this.map.getLocation();
@@ -130,7 +130,7 @@ export class CatchAreaPage extends BasePage {
     async clickOther() {
         logStep('Clicking Other');
         await this.scrollPastMapTo(this.otherButton);
-        await this.otherButton.waitForDisplayed({ timeout: 10000 });
+        await this.otherButton.waitForDisplayed();
         await this.otherButton.click();
     }
 

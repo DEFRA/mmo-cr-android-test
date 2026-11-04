@@ -58,13 +58,13 @@ export class SignInPage extends BasePage {
 
     async enterEmail(email: string) {
         logStep('Entering email ' + email.substring(0, 3) + '***');
-        await this.emailField.waitForDisplayed({ timeout: 10000 });
+        await this.emailField.waitForDisplayed();
         await this.emailField.setValue(email);
     }
 
     async enterPassword(password: string) {
         logStep('Entering password');
-        await this.passwordField.waitForDisplayed({ timeout: 10000 });
+        await this.passwordField.waitForDisplayed();
         await this.passwordField.setValue(password);
     }
 
@@ -77,13 +77,13 @@ export class SignInPage extends BasePage {
 
     async openForgottenPassword() {
         logStep('Opening forgotten password link');
-        await this.forgottenPasswordLink.waitForDisplayed({ timeout: 10000 });
+        await this.forgottenPasswordLink.waitForDisplayed();
         await this.forgottenPasswordLink.click();
     }
 
     async openCreateAccount() {
         logStep('Opening create account link');
-        await this.createAccountLink.waitForDisplayed({ timeout: 10000 });
+        await this.createAccountLink.waitForDisplayed();
         await this.createAccountLink.click();
     }
 }

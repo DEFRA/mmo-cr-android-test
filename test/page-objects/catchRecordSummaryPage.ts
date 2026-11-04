@@ -57,14 +57,14 @@ export class CatchRecordSummaryPage extends BasePage {
     async getFieldValue(label: string): Promise<string> {
         logStep(`Getting field value for ${label}`);
         const field = this.fieldValue(label);
-        await field.waitForDisplayed({ timeout: 10000 });
+        await field.waitForDisplayed();
         return field.getText();
     }
 
     async clickChangeForField(label: string) {
         logStep(`Clicking change for field ${label}`);
         const btn = this.changeButton(label);
-        await btn.waitForDisplayed({ timeout: 10000 });
+        await btn.waitForDisplayed();
         await btn.click();
     }
 

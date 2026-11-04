@@ -49,7 +49,7 @@ export abstract class BaseDatePage extends BasePage {
         }
 
         const picker = $(`//android.widget.SeekBar[@content-desc="${label}"]`);
-        await picker.waitForDisplayed({ timeout: 10000 });
+        await picker.waitForDisplayed();
 
         const size = await picker.getSize();
         const location = await picker.getLocation();

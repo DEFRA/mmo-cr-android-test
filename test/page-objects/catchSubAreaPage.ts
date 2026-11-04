@@ -51,7 +51,7 @@ export class CatchSubAreaPage extends BasePage {
     async selectSubArea(areaCode: string) {
         logStep(`Selecting sub area ${areaCode}`);
         const option = this.subAreaOption(areaCode);
-        await option.waitForDisplayed({ timeout: 10000 });
+        await option.waitForDisplayed();
         await option.click();
     }
 
@@ -67,7 +67,7 @@ export class CatchSubAreaPage extends BasePage {
 
     async selectOther() {
         logStep('Selecting Other');
-        await this.otherOption.waitForDisplayed({ timeout: 10000 });
+        await this.otherOption.waitForDisplayed();
         await this.otherOption.click();
     }
 

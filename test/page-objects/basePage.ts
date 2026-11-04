@@ -105,19 +105,19 @@ export class BasePage {
 
     async goToHome() {
         logStep('Going to home tab');
-        await this.homeTab.waitForDisplayed({ timeout: 10000 });
+        await this.homeTab.waitForDisplayed();
         await this.homeTab.click();
     }
 
     async goToNotifications() {
         logStep('Going to notifications tab');
-        await this.notificationsTab.waitForDisplayed({ timeout: 10000 });
+        await this.notificationsTab.waitForDisplayed();
         await this.notificationsTab.click();
     }
 
     async goToSettings() {
         logStep('Going to settings tab');
-        await this.settingsTab.waitForDisplayed({ timeout: 10000 });
+        await this.settingsTab.waitForDisplayed();
         await this.settingsTab.click();
     }
 
@@ -155,7 +155,7 @@ export class BasePage {
     async navigateTo(tab: string) {
         logStep(`Navigating to tab ${tab}`);
         const tabElement = $(`~${tab}`);
-        await tabElement.waitForDisplayed({ timeout: 10000 });
+        await tabElement.waitForDisplayed();
         await tabElement.click();
     }
 

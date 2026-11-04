@@ -60,13 +60,13 @@ export class ReturnPortPage extends BasePage {
     async selectPort(portName: string) {
         logStep(`Selecting port ${portName}`);
         const option = this.portOption(portName);
-        await option.waitForDisplayed({ timeout: 10000 });
+        await option.waitForDisplayed();
         await option.click();
     }
 
     async clickAddPort() {
         logStep('Clicking Add port');
-        await this.addPortButton.waitForDisplayed({ timeout: 10000 });
+        await this.addPortButton.waitForDisplayed();
         await this.addPortButton.click();
     }
 
@@ -78,10 +78,10 @@ export class ReturnPortPage extends BasePage {
 
     async enterPortName(portName: string) {
         logStep(`Entering port name ${portName}`);
-        await this.portSearchField.waitForDisplayed({ timeout: 10000 });
+        await this.portSearchField.waitForDisplayed();
         await this.portSearchField.setValue(portName);
         if (portName.trim().length >= 2) {
-            await this.firstPortSuggestion.waitForDisplayed({ timeout: 10000 });
+            await this.firstPortSuggestion.waitForDisplayed();
         }
     }
 
@@ -95,7 +95,7 @@ export class ReturnPortPage extends BasePage {
         logStep(`Searching for ${searchText} and selecting port ${portName}`);
         await this.enterPortName(searchText);
         const suggestion = this.portSuggestion(portName);
-        await suggestion.waitForDisplayed({ timeout: 10000 });
+        await suggestion.waitForDisplayed();
         await suggestion.click();
     }
 

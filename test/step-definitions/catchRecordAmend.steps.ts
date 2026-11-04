@@ -120,8 +120,6 @@ When('I change the departure port to {string} from the summary', async (port: st
     await expect(departurePortPage.heading).toBeDisplayed();
     await departurePortPage.clickAddPort();
     await departurePortPage.searchSelectAndContinue(port, port);
-    await $('//android.widget.TextView[contains(@text, "Check")]').waitForDisplayed({
-        timeout: 10000,
-    });
+    await $('//android.widget.TextView[contains(@text, "Check")]').waitForDisplayed();
     return undefined;
 });

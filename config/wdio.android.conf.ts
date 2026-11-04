@@ -1,12 +1,6 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import {
-    appiumPort,
-    baseConfig,
-    cleanReports,
-    featureSpecs,
-    uninstallAndroidApp,
-} from './wdio.base.conf';
+import { appiumPort, baseConfig, cleanReports, uninstallAndroidApp } from './wdio.base.conf';
 import { logInfo } from '../test/common/logger';
 
 const appsDir = join(process.cwd(), 'app');
@@ -31,6 +25,10 @@ if (!apkFile) {
 export const config: WebdriverIO.Config = {
     ...baseConfig,
 
+    hostname: '127.0.0.1',
+    port: appiumPort,
+    path: '/',
+
     capabilities: [
         {
             platformName: 'Android',
@@ -49,15 +47,9 @@ export const config: WebdriverIO.Config = {
         },
     ],
 
-    specs: featureSpecs,
-
-    runner: 'local',
-    bail: 0,
-    connectionRetryTimeout: 120000,
-
     onPrepare: async () => {
         cleanReports();
-        await logInfo(
+        logInfo(
             'Android onPrepare: Using apk ' +
                 apkFile +
                 ', Device: ' +

@@ -69,65 +69,65 @@ export class SelectedSpeciesPage extends BasePage {
     async selectSpeciesCheckbox(speciesName: string) {
         logStep(`Selecting species checkbox ${speciesName}`);
         const row = this.speciesItemRow(speciesName);
-        await row.waitForDisplayed({ timeout: 10000 });
+        await row.waitForDisplayed();
         await row.click();
     }
 
     async enterRetainedWeight(weight: string | number) {
         logStep(`Entering retained weight ${weight}`);
-        await this.retainedWeightField.waitForDisplayed({ timeout: 10000 });
+        await this.retainedWeightField.waitForDisplayed();
         await this.retainedWeightField.setValue(weight.toString());
     }
 
     async enterBelowMinWeight(weight: string | number) {
         logStep(`Entering below minimum weight ${weight}`);
         await this.scrollUntilDisplayed(this.belowMinWeightField);
-        await this.belowMinWeightField.waitForDisplayed({ timeout: 10000 });
+        await this.belowMinWeightField.waitForDisplayed();
         await this.belowMinWeightField.setValue(weight.toString());
     }
 
     async enterDiscardedWeight(weight: string | number) {
         logStep(`Entering discarded weight ${weight}`);
         await this.scrollUntilDisplayed(this.discardedWeightField);
-        await this.discardedWeightField.waitForDisplayed({ timeout: 10000 });
+        await this.discardedWeightField.waitForDisplayed();
         await this.discardedWeightField.setValue(weight.toString());
     }
 
     async clickAddBelowMinWeight() {
         logStep('Clicking add below minimum weight');
         await this.scrollUntilDisplayed(this.addBelowMinWeightButton);
-        await this.addBelowMinWeightButton.waitForDisplayed({ timeout: 10000 });
+        await this.addBelowMinWeightButton.waitForDisplayed();
         await this.addBelowMinWeightButton.click();
     }
 
     async clickRemoveBelowMinWeight() {
         logStep('Clicking remove below minimum weight');
-        await this.removeBelowMinWeightButton.waitForDisplayed({ timeout: 10000 });
+        await this.removeBelowMinWeightButton.waitForDisplayed();
         await this.removeBelowMinWeightButton.click();
     }
 
     async clickAddDiscardedWeight() {
         logStep('Clicking add discarded weight');
         await this.scrollUntilDisplayed(this.addDiscardedWeightButton);
-        await this.addDiscardedWeightButton.waitForDisplayed({ timeout: 10000 });
+        await this.addDiscardedWeightButton.waitForDisplayed();
         await this.addDiscardedWeightButton.click();
     }
 
     async clickRemoveDiscardedWeight() {
         logStep('Clicking remove discarded weight');
-        await this.removeDiscardedWeightButton.waitForDisplayed({ timeout: 10000 });
+        await this.removeDiscardedWeightButton.waitForDisplayed();
         await this.removeDiscardedWeightButton.click();
     }
 
     async clickRemoveSpecies() {
         logStep('Clicking remove species');
-        await this.removeSpeciesButton.waitForDisplayed({ timeout: 10000 });
+        await this.removeSpeciesButton.waitForDisplayed();
         await this.removeSpeciesButton.click();
     }
 
     async clickAddSpecies() {
         logStep('Clicking add species');
-        await this.addSpeciesButton.waitForDisplayed({ timeout: 10000 });
+        await this.addSpeciesButton.waitForDisplayed();
         await this.addSpeciesButton.click();
     }
 }

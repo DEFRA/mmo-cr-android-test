@@ -10,7 +10,7 @@ export class TripEndDatePage extends BaseDatePage {
 
     override async enterDateAndContinue(day: string, month: string, year: string) {
         await super.enterDateAndContinue(day, month, year);
-        await departurePortPage.heading.waitForDisplayed({ timeout: 10000 });
+        await departurePortPage.heading.waitForDisplayed();
     }
 }
 

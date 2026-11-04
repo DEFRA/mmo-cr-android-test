@@ -32,7 +32,7 @@ export class GearMeasurementPage extends BasePage {
 
     async enterMeshSize(size: string | number) {
         logStep(`Entering mesh size ${size}`);
-        await this.meshSizeField.waitForDisplayed({ timeout: 10000 });
+        await this.meshSizeField.waitForDisplayed();
         await this.meshSizeField.setValue(size.toString());
     }
 

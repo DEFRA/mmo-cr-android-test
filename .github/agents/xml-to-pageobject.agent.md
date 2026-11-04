@@ -3,7 +3,13 @@ description: "Use when the user provides an Android Appium page source XML dump 
 name: 'XML → Page Object'
 tools: [read, search, edit, todo, mcp-appium/*, webdriverio/*]
 argument-hint: "Paste the Android Appium page source XML (and, if known, the screen name, e.g. 'gear')"
-model: ['Claude Opus 5.5 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.5 (copilot)', 'GPT-5.1 (copilot)']
+model:
+    [
+        'Claude Opus 5.5 (copilot)',
+        'Claude Opus 4.5 (copilot)',
+        'Claude Sonnet 4.5 (copilot)',
+        'GPT-5.1 (copilot)',
+    ]
 ---
 
 You are a Page Object authoring specialist for this **Android-only** WebdriverIO + Appium automation repo (Record Your Catch Android app). Your one job is to convert a raw Appium **page source XML** dump into a TypeScript Page Object class that matches the existing conventions exactly.

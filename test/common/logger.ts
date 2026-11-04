@@ -1,3 +1,5 @@
+import allure from '@wdio/allure-reporter';
+
 const timestamp = () => new Date().toISOString();
 
 export function logInfo(message: string): void {
@@ -6,6 +8,7 @@ export function logInfo(message: string): void {
 
 export function logStep(message: string): void {
     console.info(`[${timestamp()}] STEP ${message}`);
+    allure.addStep(message);
 }
 
 export function logWarn(message: string): void {

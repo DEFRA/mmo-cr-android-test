@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { baseConfig, cucumberOptions, oneMinute } from './wdio.base.conf';
+import { allureReporter, baseConfig, cucumberOptions, oneMinute } from './wdio.base.conf';
 
 /**
  * On the CDP Portal the proxy is enabled using NODE_USE_ENV_PROXY=1 (see `npm test`).
@@ -103,14 +103,8 @@ export const config: WebdriverIO.Config & {
                 color: false,
             },
         ],
-        [
-            // Allure is used to generate the final HTML report
-            'allure',
-            {
-                outputDir: 'allure-results',
-                useCucumberStepReporter: true,
-            },
-        ],
+        // Allure is used to generate the final HTML report
+        allureReporter,
     ],
 
     cucumberOpts: cucumberOptions(oneMinute),

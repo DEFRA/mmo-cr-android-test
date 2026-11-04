@@ -52,6 +52,16 @@ export async function uninstallAndroidApp(appId: string, udid?: string): Promise
     }
 }
 
+export const allureReporter: NonNullable<WebdriverIO.Config['reporters']>[number] = [
+    'allure',
+    {
+        outputDir: 'allure-results',
+        useCucumberStepReporter: true,
+        // Raw findElement/isElementDisplayed calls are noise; logStep messages are reported instead.
+        disableWebdriverStepsReporting: true,
+    },
+];
+
 export const baseConfig: Omit<WebdriverIO.Config, 'capabilities'> = {
     runner: 'local',
     specs: ['../test/features/**/*.feature'],
@@ -70,16 +80,7 @@ export const baseConfig: Omit<WebdriverIO.Config, 'capabilities'> = {
 
     framework: 'cucumber',
 
-    reporters: [
-        'spec',
-        [
-            'allure',
-            {
-                outputDir: 'allure-results',
-                useCucumberStepReporter: true,
-            },
-        ],
-    ],
+    reporters: ['spec', allureReporter],
 
     cucumberOpts: cucumberOptions(5 * oneMinute),
 

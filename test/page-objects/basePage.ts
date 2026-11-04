@@ -121,30 +121,31 @@ export class BasePage {
         await this.settingsTab.click();
     }
 
-    async openApp() {
+    async openApp(maxAttempts = 3) {
         let lastError: unknown;
 
         logStep(`Opening app with ID ${this.appId}`);
-        for (let attempt = 1; attempt <= 3; attempt++) {
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
             try {
                 await driver.activateApp(this.appId);
-                await driver.waitUntil(async () => (await driver.getPageSource()).length > 0, {
+                // 4 = running in foreground
+                await driver.waitUntil(async () => (await driver.queryAppState(this.appId)) === 4, {
                     timeout: 20000,
-                    timeoutMsg: 'App did not finish launching.',
+                    timeoutMsg: 'App did not reach the foreground.',
                 });
                 logInfo(`BasePage: Successfully opened app on attempt ${attempt}`);
                 return;
             } catch (error) {
                 lastError = error;
                 logWarn(`BasePage: Failed to open app on attempt ${attempt}. Error: ${error}`);
-                if (attempt < 3) {
-                    await new Promise((resolve) => setTimeout(resolve, attempt * 2000));
+                if (attempt < maxAttempts) {
+                    await browser.pause(attempt * 2000);
                 }
             }
         }
 
-        logError(`BasePage: Failed to activate app ${this.appId} after 3 attempts`);
-        throw lastError ?? new Error(`Failed to activate app ${this.appId}.`);
+        logError(`BasePage: Failed to activate app ${this.appId} after ${maxAttempts} attempts`);
+        throw lastError;
     }
 
     async close() {

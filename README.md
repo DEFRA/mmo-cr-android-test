@@ -41,18 +41,23 @@ Requires [Appium](https://appium.io/) with the `uiautomator2` driver, and a runn
 
 Place the APK directly in `app/`. Optionally set `ANDROID_DEVICE_NAME` and `ANDROID_PLATFORM_VERSION`.
 
+Tests are written in Gherkin (`test/features/*.feature`) and run with Cucumber. Step definitions live in `test/step-definitions/` and call the page objects in `test/page-objects/`.
+
 ```bash
 npm run test:android
-npm run test:android:spec -- test/specs/signIn.spec.ts
+npm run test:android:spec -- test/features/signIn.feature
+CUCUMBER_TAGS='@catchRecord and not @offline' npm run test:android
 ```
 
-To run every spec sequentially with a fresh app installation for each spec file:
+Scenarios tagged `@skip` are never run.
+
+To run every feature sequentially with a fresh app installation for each feature file:
 
 ```bash
 APPIUM_FULL_RESET=true APPIUM_NO_RESET=false npm run test:android
 ```
 
-Full reset uninstalls the app and clears its data between spec files, not between individual tests.
+Full reset uninstalls the app and clears its data between feature files, not between individual scenarios.
 `APPIUM_FULL_RESET` and `APPIUM_NO_RESET` cannot both be `true`.
 
 ## Production

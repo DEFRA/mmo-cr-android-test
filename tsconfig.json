@@ -7,7 +7,7 @@
         "types": [
             "node",
             "@wdio/globals/types",
-            "@wdio/mocha-framework",
+            "@wdio/cucumber-framework",
             "@wdio/appium-service",
             "@wdio/browserstack-service"
         ],

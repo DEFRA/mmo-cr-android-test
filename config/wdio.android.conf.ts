@@ -1,6 +1,12 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { appiumPort, baseConfig, cleanReports, uninstallAndroidApp } from './wdio.base.conf';
+import {
+    appiumPort,
+    baseConfig,
+    cleanReports,
+    featureSpecs,
+    uninstallAndroidApp,
+} from './wdio.base.conf';
 import { logInfo } from '../test/common/logger';
 
 const appsDir = join(process.cwd(), 'app');
@@ -43,7 +49,7 @@ export const config: WebdriverIO.Config = {
         },
     ],
 
-    specs: ['../test/specs/**/*.spec.ts'],
+    specs: featureSpecs,
 
     runner: 'local',
     bail: 0,

@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { cucumberOptions, featureSpecs, screenshotOnFailedStep } from './wdio.base.conf';
 
 /**
  * On the CDP Portal the proxy is enabled using NODE_USE_ENV_PROXY=1 (see `npm test`).
@@ -45,7 +46,7 @@ export const config: WebdriverIO.Config & {
     key: process.env.BROWSERSTACK_KEY,
 
     // Tests to run
-    specs: ['../test/specs/android/**/*.ts'],
+    specs: featureSpecs,
     // Tests to exclude
     exclude: [],
     maxInstances: 1,
@@ -113,7 +114,7 @@ export const config: WebdriverIO.Config & {
     connectionRetryTimeout: 6000,
     connectionRetryCount: 3,
 
-    framework: 'mocha',
+    framework: 'cucumber',
 
     reporters: [
         [
@@ -130,23 +131,15 @@ export const config: WebdriverIO.Config & {
             'allure',
             {
                 outputDir: 'allure-results',
+                useCucumberStepReporter: true,
             },
         ],
     ],
 
-    // Options to be passed to Mocha.
-    // See the full list at http://mochajs.org/
-    mochaOpts: {
-        ui: 'bdd',
-        timeout: oneMinute,
-    },
+    cucumberOpts: cucumberOptions(oneMinute),
 
     // Hooks
-    afterTest: async function (test, context, { error }) {
-        if (error) {
-            await browser.takeScreenshot();
-        }
-    },
+    afterStep: screenshotOnFailedStep,
 
     onComplete: function (exitCode, config, capabilities, results?: { failed?: number }) {
         // !Do Not Remove! Required for test status to show correctly in portal.

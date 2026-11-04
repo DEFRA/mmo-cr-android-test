@@ -2,6 +2,7 @@ import { logError, logInfo, logStep, logWarn } from '../common/logger';
 
 export class BasePage {
     protected readonly appId = process.env.ANDROID_APP_ID ?? 'mmo.catchrecording.android';
+    protected readonly appName = process.env.ANDROID_APP_NAME ?? 'Catch Records';
 
     get languageToggle() {
         return $('//android.widget.TextView[@text="CYM"]');
@@ -124,7 +125,7 @@ export class BasePage {
     async openApp(maxAttempts = 3) {
         let lastError: unknown;
 
-        logStep(`Opening app with ID ${this.appId}`);
+        logStep(`Opening app ${this.appName}`);
         for (let attempt = 1; attempt <= maxAttempts; attempt++) {
             try {
                 await driver.activateApp(this.appId);

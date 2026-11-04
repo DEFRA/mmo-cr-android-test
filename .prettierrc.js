@@ -1,5 +1,4 @@
 export default {
-    plugins: ['prettier-plugin-gherkin'],
     semi: true,
     singleQuote: true,
     tabWidth: 4,

@@ -41,6 +41,8 @@ Install application dependencies:
 npm install
 ```
 
+You can put environment variables in `.env`, or set `ENV_FILE` to load a different file.
+
 ### Project structure
 
 ```

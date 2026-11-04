@@ -1,8 +1,13 @@
 import { execFile } from 'node:child_process';
-import { rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, rmSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { logInfo } from '../test/common/logger';
+
+const envPath = resolve(process.cwd(), process.env.ENV_FILE ?? '.env');
+if (existsSync(envPath)) {
+    process.loadEnvFile(envPath);
+}
 
 const execFileAsync = promisify(execFile);
 export const oneMinute = 60 * 1000;

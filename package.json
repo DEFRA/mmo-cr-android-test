@@ -14,8 +14,8 @@
         "test:android:feature": "wdio run ./config/wdio.android.conf.ts --spec",
         "test:android:browserstack": "wdio run ./config/wdio.android.browserstack.conf.ts",
         "test:android:browserstack:feature": "wdio run ./config/wdio.android.browserstack.conf.ts --spec",
-        "format": "prettier --write .",
-        "format:check": "prettier --check .",
+        "format": "prettier --write '**/*.{ts,md,json}'",
+        "format:check": "prettier --check '**/*.{ts,md,json}'",
         "typecheck": "tsc --noEmit",
         "report": "allure generate allure-results --clean",
         "report:publish": "npm run report; ./bin/publish-tests.sh",
@@ -35,7 +35,6 @@
         "@wdio/spec-reporter": "10.1.0",
         "allure-commandline": "2.46.1",
         "prettier": "3.9.10",
-        "prettier-plugin-gherkin": "4.0.0",
         "tsx": "4.23.15",
         "typescript": "7.0.2"
     },

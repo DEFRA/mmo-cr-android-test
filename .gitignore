@@ -1,4 +1,5 @@
 .DS_Store
+.env
 .npm/
 .vscode
 .idea
@@ -11,3 +12,4 @@ coverage
 allure-report/
 allure-results/
 FAILED
+logs/

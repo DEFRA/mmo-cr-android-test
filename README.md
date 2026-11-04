@@ -1,17 +1,22 @@
 mmo-cr-android-test
 
-The template to create a service that runs WDIO tests against an environment.
+WebdriverIO + Appium + Cucumber test automation (TypeScript) for the Record Your Catch Android app.
 
-- [Local](#local)
-  - [Requirements](#requirements)
-    - [Node.js](#nodejs)
-  - [Setup](#setup)
-  - [Running local tests](#running-local-tests)
-  - [Debugging local tests](#debugging-local-tests)
+- [Local Development](#local-development)
+    - [Requirements](#requirements)
+        - [Node.js](#nodejs)
+    - [Setup](#setup)
+    - [Project structure](#project-structure)
+    - [Running local tests](#running-local-tests)
+    - [Tags](#tags)
+    - [Environment variables](#environment-variables)
+    - [Writing tests](#writing-tests)
+    - [Checks](#checks)
+    - [Reports](#reports)
 - [Production](#production)
-  - [Debugging tests](#debugging-tests)
+- [BrowserStack](#browserstack)
 - [Licence](#licence)
-  - [About the licence](#about-the-licence)
+    - [About the licence](#about-the-licence)
 
 ## Local Development
 
@@ -19,7 +24,7 @@ The template to create a service that runs WDIO tests against an environment.
 
 #### Node.js
 
-Please install [Node.js](http://nodejs.org/) `>= v20` and [npm](https://nodejs.org/) `>= v9`. You will find it
+Please install [Node.js](http://nodejs.org/) `>= v20.19` and [npm](https://nodejs.org/) `>= v9`. You will find it
 easier to use the Node Version Manager [nvm](https://github.com/creationix/nvm)
 
 To use the correct version of Node.js for this application, via nvm:
@@ -36,18 +41,107 @@ Install application dependencies:
 npm install
 ```
 
-### Running local tests
+### Project structure
 
-Start application you are testing on the url specified in `baseUrl` [wdio.local.conf.js](wdio.local.conf.js)
-
-```bash
-npm run test:local
+```
+config/                 WebdriverIO configs (base, local Android, BrowserStack)
+test/features/          Gherkin feature files (*.feature)
+test/step-definitions/  Cucumber step definitions (*.steps.ts) and hooks.ts
+test/page-objects/      Page objects, one per app screen
+test/helpers/           Journey navigator, network and credential helpers
+test/common/            Logger and date utilities
 ```
 
-### Debugging local tests
+`hooks.ts` opens the app before and closes it after every scenario, and restores the network after `@offline` scenarios.
+
+### Running local tests
+
+Requires [Appium](https://appium.io/) with the `uiautomator2` driver, and a running Android emulator or connected device.
+
+Place the APK directly in `app/` and set `ANDROID_TEST_EMAIL` and `ANDROID_TEST_PASSWORD`.
 
 ```bash
-npm run test:local:debug
+# All features
+npm run test:android
+
+# A single feature
+npm run test:android:feature -- test/features/signIn.feature
+
+# A single scenario (line number of the Scenario: line)
+npm run test:android:feature -- test/features/signIn.feature:4
+```
+
+To run every feature sequentially with a fresh app installation for each feature file:
+
+```bash
+APPIUM_FULL_RESET=true APPIUM_NO_RESET=false npm run test:android
+```
+
+Full reset uninstalls the app and clears its data between feature files, not between individual scenarios.
+`APPIUM_FULL_RESET` and `APPIUM_NO_RESET` cannot both be `true`.
+
+### Tags
+
+Filter scenarios with a [Cucumber tag expression](https://cucumber.io/docs/cucumber/api/#tag-expressions) in `CUCUMBER_TAGS`:
+
+```bash
+CUCUMBER_TAGS='@reviewAndAmend' npm run test:android
+CUCUMBER_TAGS='@catchRecord and not @offline' npm run test:android
+```
+
+| Tag                                                                | Meaning                                              |
+| ------------------------------------------------------------------ | ---------------------------------------------------- |
+| `@signIn`                                                          | Sign-in screen                                       |
+| `@catchRecord`                                                     | All catch record features                            |
+| `@businessRules`, `@drafts`, `@reviewAndAmend`, `@selectedSpecies` | Individual catch record features                     |
+| `@offline`                                                         | Runs offline; network is restored after the scenario |
+| `@skip`                                                            | Not implemented yet; never run                       |
+
+### Environment variables
+
+| Variable                                                          | Purpose                                |
+| ----------------------------------------------------------------- | -------------------------------------- |
+| `ANDROID_TEST_EMAIL`, `ANDROID_TEST_PASSWORD`                     | Account used by `Given I am signed in` |
+| `ANDROID_DEVICE_NAME`, `ANDROID_PLATFORM_VERSION`, `ANDROID_UDID` | Optional device selection              |
+| `ANDROID_APP_ID`                                                  | Uninstalls this app before the run     |
+| `APPIUM_PORT`                                                     | Appium port (default `4723`)           |
+| `APPIUM_NO_RESET`, `APPIUM_FULL_RESET`                            | Appium reset behaviour                 |
+| `CUCUMBER_TAGS`                                                   | Tag expression to filter scenarios     |
+
+### Writing tests
+
+1. Add or update a `.feature` file in `test/features/` with a feature-level tag.
+2. Reuse existing steps where possible (search `test/step-definitions/`); shared steps live in `common.steps.ts`.
+3. New steps must call page objects rather than use raw selectors.
+
+The **BDD → Test Case** Copilot agent (`.github/agents/`) can generate features and step definitions from plain-text scenarios.
+
+For step navigation and "undefined step" warnings in VS Code, point the Cucumber extension at this project's folders in `.vscode/settings.json`:
+
+```json
+{
+    "cucumber.features": ["test/features/**/*.feature"],
+    "cucumber.glue": ["test/step-definitions/**/*.ts"]
+}
+```
+
+### Checks
+
+```bash
+npm run typecheck
+npm run format:check
+
+# Verify every Gherkin step matches exactly one step definition (no device needed)
+NODE_OPTIONS="--import tsx" npx cucumber-js --dry-run --import 'test/step-definitions/**/*.ts' test/features
+```
+
+### Reports
+
+Results are written to `allure-results/`, with a screenshot attached for any failed step.
+
+```bash
+npm run report            # generate allure-report/
+npm run generate:report   # generate and open in a browser
 ```
 
 ## Production
@@ -69,28 +163,20 @@ The results of the test run are made available in the portal.
 
 3. Test reports should be published to S3 using the script in `./bin/publish-tests.sh`
 
-## Running on GitHub
-
-Alternatively you can run the test suite as a GitHub workflow.
-Test runs on GitHub are not able to connect to the CDP Test environments. Instead, they run the tests agains a version of the services running in docker.
-A docker compose `compose.yml` is included as a starting point, which includes the databases (mongodb, redis) and infrastructure (localstack) pre-setup.
-
-Steps:
-
-1. Edit the compose.yml to include your services.
-2. Modify the scripts in docker/scripts to pre-populate the database, if required and create any localstack resources.
-3. Test the setup locally with `docker compose up` and `npm run test:github`
-4. Set up the workflow trigger in `.github/workflows/journey-tests`.
-
-By default, the provided workflow will run when triggered manually from GitHub or when triggered by another workflow.
-
-If you want to use the repository exclusively for running docker composed based test suites consider displaying the publish.yml workflow.
-
 ## BrowserStack
 
-Two wdio configuration files are provided to help run the tests using BrowserStack in both a GitHub workflow (`wdio.github.browserstack.conf.js`) and from the CDP Portal (`wdio.browserstack.conf.js`).
-They can be run from npm using the `npm run test:browserstack` (for running via portal) and `npm run test:github:browserstack` (from GitHib runner).
-See the CDP Documentation for more details.
+[config/wdio.android.browserstack.conf.ts](config/wdio.android.browserstack.conf.ts) runs the tests on real Android devices in BrowserStack App Automate.
+Set `BROWSERSTACK_USERNAME`, `BROWSERSTACK_KEY` and `BROWSERSTACK_APP_ID` (the `bs://...` URL returned when the APK is uploaded).
+
+```bash
+npm run test:android:browserstack
+npm run test:android:browserstack:feature -- test/features/signIn.feature
+CUCUMBER_TAGS='@signIn' npm run test:android:browserstack
+```
+
+It shares the settings in [config/wdio.base.conf.ts](config/wdio.base.conf.ts) with the local config, but uses a 1-minute step timeout (5 minutes locally).
+
+`npm test` runs the same config through the CDP proxy and is used by the CDP Portal. If any scenario fails, a `FAILED` file is written so `entrypoint.sh` exits with a non-zero code.
 
 ## Licence
 

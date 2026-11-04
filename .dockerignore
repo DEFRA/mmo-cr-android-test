@@ -2,4 +2,9 @@ node_modules
 Dockerfile
 .git
 .github
-.husky
+FAILED
+allure-results
+allure-report
+logs
+app/**/*.apk
+app/**/*.aab

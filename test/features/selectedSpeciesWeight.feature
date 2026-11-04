@@ -5,7 +5,8 @@ Feature: Selected species weight validations
         Given I am signed in
         And I start a catch record
         And I select vessel "ACHILLES"
-        And I select trip dates from 2 days ago to today
+        And I enter a trip start date of 2 days ago
+        And I enter a trip end date of today
         And I select departure port "Hastings" and return port "Dover"
         And I select gear "Seine nets" with mesh size 10 and 10 shots
         And I select catch area "38E95"

@@ -54,7 +54,7 @@ Use these to ground selectors in the ACTUAL running app instead of guessing. Onl
 
 - Create/update the `.feature` file with `create_file` (new) or edit tools (existing): one `Feature` per file with a feature-level tag (e.g. `@catchRecord`), one `Scenario` per scenario, `Scenario Outline` + `Examples` for data-driven cases. Tag unimplemented scenarios `@skip`.
 - Match the import style (relative imports, e.g. `'../page-objects/signInPage'`, `'../helpers/androidFlowNavigator'`), naming, and 4-space formatting of existing files (see `test/features/catchRecordJourney.feature` and `test/step-definitions/catchRecord.steps.ts`).
-- After writing, remind the user to run `npm run typecheck` and `npm run format`. Executing features needs an Android emulator/device + Appium + `ANDROID_TEST_EMAIL`/`ANDROID_TEST_PASSWORD` (`npm run test:android:spec -- <feature path>`, or filter by tag with `CUCUMBER_TAGS='@tag' npm run test:android`), or BrowserStack (`npm run test:android:browserstack:spec -- <feature path>`).
+- After writing, remind the user to run `npm run typecheck` and `npm run format`. Executing features needs an Android emulator/device + Appium + `ANDROID_TEST_EMAIL`/`ANDROID_TEST_PASSWORD` (`npm run test:android:feature -- <feature path>`, or filter by tag with `CUCUMBER_TAGS='@tag' npm run test:android`), or BrowserStack (`npm run test:android:browserstack:feature -- <feature path>`).
 
 ## Constraints
 

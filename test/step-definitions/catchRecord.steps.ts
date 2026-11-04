@@ -2,7 +2,6 @@ import { Then, When } from '@wdio/cucumber-framework';
 import androidFlowNavigator from '../helpers/androidFlowNavigator';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import submissionSuccessPage from '../page-objects/submissionSuccessPage';
-import selectVesselPage from '../page-objects/selectVesselPage';
 import tripTodayPage from '../page-objects/tripTodayPage';
 import tripStartDatePage from '../page-objects/tripStartDatePage';
 import tripEndDatePage from '../page-objects/tripEndDatePage';
@@ -29,11 +28,6 @@ When('I select vessel {string}', async (vessel: string) => {
     await androidFlowNavigator.selectVessel(vessel);
 });
 
-When('I continue without selecting a vessel', async () => {
-    await selectVesselPage.heading.waitForDisplayed();
-    await selectVesselPage.saveAndContinue();
-});
-
 When(/^I enter a trip start date of (today|\d+ days? ago)$/, async (when: string) => {
     const { day, month, year } = dateFromPhrase(when);
     await tripTodayPage.heading.waitForDisplayed();
@@ -46,13 +40,6 @@ When(/^I enter a trip end date of (today|\d+ days? ago)$/, async (when: string) 
     const { day, month, year } = dateFromPhrase(when);
     await tripEndDatePage.heading.waitForDisplayed();
     await tripEndDatePage.enterDateAndContinue(day, month, year);
-});
-
-When('I select trip dates from {int} days ago to today', async (daysAgo: number) => {
-    const today = new Date();
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - daysAgo);
-    await androidFlowNavigator.selectTripDates(false, formatDate(startDate), formatDate(today));
 });
 
 When('I select a trip for today', async () => {

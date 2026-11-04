@@ -3,6 +3,7 @@ import selectVesselPage from '../page-objects/selectVesselPage';
 import departurePortPage from '../page-objects/departurePortPage';
 import returnPortPage from '../page-objects/returnPortPage';
 import selectedGearsPage from '../page-objects/selectedGearsPage';
+import speciesPage from '../page-objects/speciesPage';
 import { logInfo } from '../common/logger';
 
 const continueOrSaveButton = () =>
@@ -48,9 +49,7 @@ When('I confirm the removal', async () => {
 When(
     'I add species {string} with only a legally discarded weight of {string}',
     async (species: string, weight: string) => {
-        await $('//android.widget.EditText').setValue(species.substring(0, 3));
-        await $(`//android.widget.TextView[@text="${species}"]`).click();
-        await continueOrSaveButton().click();
+        await speciesPage.searchSelectAndContinue(species.substring(0, 3), species);
 
         const addDiscardedButton = $(
             '//android.widget.Button[contains(@text, "Add legally discarded weight")]',

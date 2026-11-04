@@ -41,14 +41,10 @@ Then('the home screen is displayed', async () => {
     await expect(homePage.heading).toBeDisplayed();
 });
 
-Then('a message containing {string} is displayed', async (text: string) => {
-    await expect(textContainingAnyOf([text])).toBeDisplayed();
-});
-
 Then(
-    'a message containing {string} or {string} is displayed',
-    async (first: string, second: string) => {
-        await expect(textContainingAnyOf([first, second])).toBeDisplayed();
+    /^a message containing "([^"]*)"(?: or "([^"]*)")? is displayed$/,
+    async (first: string, second?: string) => {
+        await expect(textContainingAnyOf(second ? [first, second] : [first])).toBeDisplayed();
     },
 );
 

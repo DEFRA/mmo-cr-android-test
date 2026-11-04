@@ -6,7 +6,8 @@ Feature: Catch record business rules and offline handling
 
     Scenario: Mandatory single-choice questions (vessel selection)
         When I start a catch record
-        And I continue without selecting a vessel
+        Then the vessel selection screen is displayed
+        When I save and continue
         Then a message containing "problem" or "Select" is displayed
 
     Scenario: Restrict historical trip dates (365 days limit)

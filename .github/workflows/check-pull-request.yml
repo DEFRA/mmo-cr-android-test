@@ -10,8 +10,23 @@ on:
             - reopened
             - synchronize
             - ready_for_review
+    merge_group:
 
 jobs:
+    branch-name:
+        name: Validate Branch Name
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check branch matches feature/CRAR-<number>_<description>
+              if: github.event_name == 'pull_request'
+              env:
+                  BRANCH: ${{ github.head_ref }}
+              run: |
+                  if [[ ! "$BRANCH" =~ ^feature/CRAR-[0-9]+_[a-z0-9]+([_-][a-z0-9]+)*$ ]]; then
+                    echo "::error::Branch '$BRANCH' must match feature/CRAR-<number>_<description> (e.g. feature/CRAR-123_add_species_weight)"
+                    exit 1
+                  fi
+
     cdp-workflows:
         name: Run Pull Request Checks
         runs-on: ubuntu-latest

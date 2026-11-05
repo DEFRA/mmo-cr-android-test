@@ -9,8 +9,11 @@ export class SelectVesselPage extends BasePage {
         );
     }
 
+    // Option labels include the PLN (e.g. "ACHILLES PH1234"), so match by name prefix.
     vesselOption(vesselName: string) {
-        return $(`//android.widget.TextView[@text="${vesselName}"]`);
+        return $(
+            `//android.view.View[@checkable="true"][.//android.widget.TextView[starts-with(@text, "${vesselName}")]]`,
+        );
     }
 
     async selectVessel(vesselName: string) {

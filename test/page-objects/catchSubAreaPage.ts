@@ -18,6 +18,110 @@ export class CatchSubAreaPage extends BasePage {
         return $$('//android.view.View[@checkable="true"][.//android.widget.RadioButton]');
     }
 
+    get otherOption() {
+        return this.subAreaOption('Other');
+    }
+
+    get subAreaSearchField() {
+        return $('//android.widget.EditText');
+    }
+
+    // Each result row holds the code and "ICES rectangle 27E1, centre 49.25°N, 8.83°W"; rows clipped off screen have no text.
+    get suggestions() {
+        return $$(
+            '//android.view.View[@clickable="true" and not(@checkable="true")][.//android.widget.TextView[contains(@text, "°")]]',
+        );
+    }
+
+    suggestion(areaCode: string) {
+        return $(
+            `//android.view.View[@clickable="true" and not(@checkable="true")][.//android.widget.TextView[@text="${areaCode}"]]`,
+        );
+    }
+
+    // Shows "No area selected" until a result is chosen.
+    get selectedArea() {
+        return $('//android.widget.EditText/following-sibling::android.widget.TextView[1]');
+    }
+
+    private async hideKeyboard() {
+        if (await driver.isKeyboardShown()) {
+            await driver.hideKeyboard();
+        }
+    }
+
+    // Choosing "Other" opens a separate manual-entry screen with the type-ahead field.
+    async selectOther() {
+        logStep('Selecting Other sub area');
+        await this.scrollUntilDisplayed(this.otherOption);
+        await this.otherOption.click();
+        try {
+            await this.subAreaSearchField.waitForDisplayed({ timeout: 3000 });
+        } catch {
+            await this.saveAndContinue();
+            await this.subAreaSearchField.waitForDisplayed();
+        }
+    }
+
+    async enterSubAreaCode(text: string) {
+        logStep(`Entering sub area code: ${text}`);
+        await this.subAreaSearchField.waitForDisplayed();
+        await this.subAreaSearchField.setValue(text);
+    }
+
+    override async saveAndContinue() {
+        await this.hideKeyboard();
+        await super.saveAndContinue();
+    }
+
+    async getSuggestionTexts(): Promise<string[][]> {
+        logStep('Getting sub area suggestions');
+        await driver.waitUntil(async () => (await this.suggestions.length) > 0, {
+            timeoutMsg: 'No sub area suggestions were displayed.',
+        });
+        const results: string[][] = [];
+        for (const suggestion of await this.suggestions) {
+            const texts: string[] = [];
+            for (const textView of await suggestion.$$('android.widget.TextView')) {
+                texts.push(await textView.getText());
+            }
+            results.push(texts);
+        }
+        return results;
+    }
+
+    async getSuggestionText(areaCode: string): Promise<string[]> {
+        const suggestion = this.suggestion(areaCode);
+        await this.hideKeyboard();
+        await this.scrollUntilDisplayed(suggestion);
+        await suggestion.waitForDisplayed();
+        const texts: string[] = [];
+        for (const textView of await suggestion.$$('android.widget.TextView')) {
+            texts.push(await textView.getText());
+        }
+        return texts;
+    }
+
+    async selectSuggestion(areaCode: string) {
+        logStep(`Selecting sub area suggestion ${areaCode}`);
+        const suggestion = this.suggestion(areaCode);
+        await this.hideKeyboard();
+        await this.scrollUntilDisplayed(suggestion);
+        await suggestion.waitForDisplayed();
+        await suggestion.click();
+    }
+
+    // Returns the "49.25°N, 8.83°W" part of the result's ICES rectangle line.
+    async getSuggestionCoordinates(areaCode: string): Promise<string> {
+        logStep(`Getting coordinates for sub area ${areaCode}`);
+        const texts = await this.getSuggestionText(areaCode);
+        const match = texts.join(' ').match(/centre\s+(.+°[NS],\s*.+°[EW])/);
+        if (!match?.[1]) {
+            throw new Error(`No coordinates shown for sub area ${areaCode}: ${texts.join(' | ')}`);
+        }
+        return match[1];
+    }
+
     async getAvailableSubAreas(): Promise<string[]> {
         logStep('Getting available sub area codes');
         const options = await this.subAreaOptions;

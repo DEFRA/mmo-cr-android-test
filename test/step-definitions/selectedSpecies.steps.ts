@@ -36,6 +36,22 @@ When('I enter a legally discarded weight of {string}', async (weight: string) =>
     await selectedSpeciesPage.enterDiscardedWeight(weight);
 });
 
+When('I enter {string} in the {string} weight field', async (weight: string, field: string) => {
+    switch (field) {
+        case 'above minimum size retained':
+            await selectedSpeciesPage.enterRetainedWeight(weight);
+            break;
+        case 'below minimum size retained':
+            await selectedSpeciesPage.enterBelowMinWeight(weight);
+            break;
+        case 'legally discarded':
+            await selectedSpeciesPage.enterDiscardedWeight(weight);
+            break;
+        default:
+            throw new Error(`Unsupported species weight field: ${field}`);
+    }
+});
+
 When('I choose to add another species', async () => {
     await selectedSpeciesPage.clickAddSpecies();
 });

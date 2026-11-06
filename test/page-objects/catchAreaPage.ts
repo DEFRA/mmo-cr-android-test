@@ -153,27 +153,11 @@ export class CatchAreaPage extends BasePage {
 
     async zoomMap(direction: 'in' | 'out') {
         logStep(`Zooming ${direction} on the map`);
-        const { width, height, centreX, centreY } = await this.mapBounds();
-        const near = 20;
-        const far = Math.floor(Math.min(width, height) / 3);
-        // Zoom in spreads the fingers out from the centre; zoom out pinches them back to it.
-        const [start, end] = direction === 'in' ? [near, far] : [far, near];
-
-        const finger = (id: string, sign: 1 | -1) => ({
-            type: 'pointer' as const,
-            id,
-            parameters: { pointerType: 'touch' as const },
-            actions: [
-                { type: 'pointerMove', duration: 0, x: centreX + sign * start, y: centreY },
-                { type: 'pointerDown', button: 0 },
-                { type: 'pause', duration: 100 },
-                { type: 'pointerMove', duration: 600, x: centreX + sign * end, y: centreY },
-                { type: 'pointerUp', button: 0 },
-            ],
-        });
-
-        await browser.performActions([finger('finger1', -1), finger('finger2', 1)]);
-        await browser.releaseActions();
+        const map = await this.map;
+        await driver.execute(
+            direction === 'in' ? 'mobile: pinchOpenGesture' : 'mobile: pinchCloseGesture',
+            { elementId: map.elementId, percent: 0.5 },
+        );
         await this.waitForMapToSettle();
     }
 

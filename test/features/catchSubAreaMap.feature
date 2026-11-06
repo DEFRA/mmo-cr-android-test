@@ -28,7 +28,7 @@ Feature:(CRAR-120) Select statistical sub area using the map
     Scenario: No area selected
         Given the catch area map is displayed
         When I select Save and Continue without selecting an area
-        Then the no area selected error is displayed
+        Then a message containing "Select the statistical sub area where the majority of your catch was caught." is displayed
 
     Scenario: Zoom in and out of the map
         Given the catch area map is displayed

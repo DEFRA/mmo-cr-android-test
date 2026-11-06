@@ -70,10 +70,10 @@ export class AndroidFlowNavigator {
         await catchAreaPage.heading.waitForDisplayed();
 
         if (catchArea === 'Other') {
-            await catchAreaPage.clickOtherAndContinue();
+            await catchAreaPage.clickOther();
             await this.selectSubAreas(subArea);
         } else {
-            await catchAreaPage.selectRandomLocationAndContinue();
+            await catchAreaPage.selectLocationAndContinue();
         }
     }
 

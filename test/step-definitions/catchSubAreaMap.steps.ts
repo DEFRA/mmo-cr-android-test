@@ -26,7 +26,7 @@ Then('the map view changes', async () => {
 });
 
 async function selectAreaOnMap() {
-    await catchAreaPage.selectRandomLocation();
+    await catchAreaPage.selectLocation();
     selectedAreaCode = await catchAreaPage.getSelectedAreaCode();
     expect(selectedAreaCode).toBeTruthy();
 }
@@ -51,10 +51,6 @@ Then('the selected area is highlighted', async () => {
 
 Then('the corresponding list item is selected', async () => {
     expect(await catchAreaPage.isSelectedAreaTextDisplayed(selectedAreaCode!)).toBe(true);
-});
-
-Then('the no area selected error is displayed', async () => {
-    expect(await catchAreaPage.isNoAreaSelectedErrorDisplayed()).toBe(true);
 });
 
 Then('I proceed to the next step of the catch recording journey', async () => {

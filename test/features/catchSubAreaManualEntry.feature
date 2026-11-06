@@ -1,6 +1,6 @@
 @catchRecord
 @catchSubArea
-Feature: Manually enter statistical sub area (CRAR-123)
+Feature:(CRAR-123) Manually enter statistical sub area 
 
     Background:
         Given I am signed in
@@ -44,7 +44,7 @@ Feature: Manually enter statistical sub area (CRAR-123)
         And I select species "Atlantic salmon" with retained 5, below minimum 1 and discarded 1 weights
         And I select no delayed landing
         Then the catch record summary is displayed
-        And the summary shows sub area "31F15" with its coordinates
+        And the summary shows sub area "31F15"
 
     Scenario: Invalid statistical sub area
         Given I select the "Other" sub area

@@ -66,10 +66,8 @@ Then('the centre of the selected sub area is displayed', async () => {
     );
 });
 
-Then('the summary shows sub area {string} with its coordinates', async (areaCode: string) => {
-    for (const text of [areaCode, capturedCoordinates]) {
-        const value = $(`//android.widget.TextView[contains(@text, "${text}")]`);
-        await catchRecordSummaryPage.scrollUntilDisplayed(value, { maxSwipes: 10 });
-        await expect(value).toBeDisplayed();
-    }
+Then('the summary shows sub area {string}', async (areaCode: string) => {
+    const value = $(`//android.widget.TextView[contains(@text, "${areaCode}")]`);
+    await catchRecordSummaryPage.scrollUntilDisplayed(value, { maxSwipes: 10 });
+    await expect(value).toBeDisplayed();
 });

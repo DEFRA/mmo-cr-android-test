@@ -100,6 +100,7 @@ When('I choose the "Other" catch area', async () => {
 });
 
 Then('the catch sub area screen is displayed', async () => {
+    await catchSubAreaPage.scrollToTop();
     await expect(catchSubAreaPage.heading).toBeDisplayed();
 });
 

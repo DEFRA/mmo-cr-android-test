@@ -22,6 +22,10 @@ export class CatchSubAreaPage extends BasePage {
         return this.subAreaOption('Other');
     }
 
+    get otherRadioButton() {
+        return this.otherOption.$('android.widget.RadioButton');
+    }
+
     get subAreaSearchField() {
         return $('//android.widget.EditText');
     }
@@ -50,11 +54,21 @@ export class CatchSubAreaPage extends BasePage {
         }
     }
 
-    // Choosing "Other" opens a separate manual-entry screen with the type-ahead field.
+    // The screen can open already scrolled down, leaving the heading off screen.
+    async scrollToTop() {
+        await $('android=new UiScrollable(new UiSelector().scrollable(true)).scrollToBeginning(5)');
+    }
+
     async selectOther() {
         logStep('Selecting Other sub area');
         await this.scrollUntilDisplayed(this.otherOption);
         await this.otherOption.click();
+        await this.otherRadioButton.waitForDisplayed();
+        await this.otherRadioButton.click();
+        await driver.waitUntil(
+            async () => (await this.otherOption.getAttribute('checked')) === 'true',
+            { timeoutMsg: 'Other sub area radio button was not selected.' },
+        );
         try {
             await this.subAreaSearchField.waitForDisplayed({ timeout: 3000 });
         } catch {

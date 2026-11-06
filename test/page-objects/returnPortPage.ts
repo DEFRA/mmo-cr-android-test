@@ -31,7 +31,12 @@ export class ReturnPortPage extends BasePage {
         );
     }
 
+    // "Add port" only appears once saved ports exist; on first use the search field is shown directly.
     async clickAddPort() {
+        if (await this.portSearchField.isDisplayed()) {
+            logStep('No saved ports, port search already displayed');
+            return;
+        }
         logStep('Clicking Add port');
         await this.addPortButton.waitForDisplayed();
         await this.addPortButton.click();
@@ -50,6 +55,11 @@ export class ReturnPortPage extends BasePage {
         logStep(`Searching for ${searchText} and selecting port ${portName}`);
         await this.enterPortName(searchText);
         const suggestion = this.portSuggestion(portName);
+        // The keyboard overlaps the lower results, so swipes and taps would land on it.
+        if (await driver.isKeyboardShown()) {
+            await driver.hideKeyboard();
+        }
+        await this.scrollUntilDisplayed(suggestion);
         await suggestion.waitForDisplayed();
         await suggestion.click();
     }

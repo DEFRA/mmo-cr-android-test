@@ -60,8 +60,10 @@ Then('the sub area coordinates have changed', async () => {
     expect(capturedCoordinates).not.toEqual(previousCoordinates);
 });
 
-Then('the selected sub area is {string}', async (areaCode: string) => {
-    await expect(catchSubAreaPage.selectedArea).toHaveText(expect.stringContaining(areaCode));
+Then('the centre of the selected sub area is displayed', async () => {
+    await expect(catchSubAreaPage.selectedAreaCentre).toHaveText(
+        expect.stringContaining(capturedCoordinates),
+    );
 });
 
 Then('the summary shows sub area {string} with its coordinates', async (areaCode: string) => {

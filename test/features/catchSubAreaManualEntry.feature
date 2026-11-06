@@ -39,9 +39,9 @@ Feature: Manually enter statistical sub area (CRAR-123)
         And I enter sub area code "31F"
         When I select the sub area result "31F15"
         Then the sub area field shows "31F15"
-        And the selected sub area is "31F15"
+        And the centre of the selected sub area is displayed
         When I save and continue
-        And I select species "Brown crab (TBC)" with retained 5, below minimum 1 and discarded 1 weights
+        And I select species "Atlantic salmon" with retained 5, below minimum 1 and discarded 1 weights
         And I select no delayed landing
         Then the catch record summary is displayed
         And the summary shows sub area "31F15" with its coordinates

@@ -43,9 +43,9 @@ export class CatchSubAreaPage extends BasePage {
         );
     }
 
-    // Shows "No area selected" until a result is chosen.
-    get selectedArea() {
-        return $('//android.widget.EditText/following-sibling::android.widget.TextView[1]');
+    // Shows "Centre of area: 51.25°N, 1.50°E" once a result is chosen.
+    get selectedAreaCentre() {
+        return $('//android.widget.TextView[starts-with(@text, "Centre of area")]');
     }
 
     private async hideKeyboard() {
@@ -62,13 +62,9 @@ export class CatchSubAreaPage extends BasePage {
     async selectOther() {
         logStep('Selecting Other sub area');
         await this.scrollUntilDisplayed(this.otherOption);
-        await this.otherOption.click();
         await this.otherRadioButton.waitForDisplayed();
+        // Selecting Other navigates straight to the manual-entry screen, so the row is gone afterwards.
         await this.otherRadioButton.click();
-        await driver.waitUntil(
-            async () => (await this.otherOption.getAttribute('checked')) === 'true',
-            { timeoutMsg: 'Other sub area radio button was not selected.' },
-        );
         try {
             await this.subAreaSearchField.waitForDisplayed({ timeout: 3000 });
         } catch {

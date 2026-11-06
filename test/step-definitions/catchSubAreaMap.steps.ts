@@ -15,7 +15,9 @@ When(
     /^I drag the map (up|down|left|right)$/,
     async (direction: 'up' | 'down' | 'left' | 'right') => {
         mapSnapshot = await catchAreaPage.getMapSnapshot();
-        await catchAreaPage.dragMap(direction);
+        for (let i = 0; i < 3; i++) {
+            await catchAreaPage.dragMap(direction);
+        }
     },
 );
 
@@ -48,7 +50,11 @@ Then('the selected area is highlighted', async () => {
 });
 
 Then('the corresponding list item is selected', async () => {
-    expect(await catchAreaPage.isSubAreaListItemSelected(selectedAreaCode!)).toBe(true);
+    expect(await catchAreaPage.isSelectedAreaTextDisplayed(selectedAreaCode!)).toBe(true);
+});
+
+Then('the no area selected error is displayed', async () => {
+    expect(await catchAreaPage.isNoAreaSelectedErrorDisplayed()).toBe(true);
 });
 
 Then('I proceed to the next step of the catch recording journey', async () => {

@@ -24,6 +24,16 @@ export class CatchAreaPage extends BasePage {
         );
     }
 
+    selectedAreaText(areaCode: string) {
+        return $(`//android.widget.TextView[@text="Selected area: ${areaCode}"]`);
+    }
+
+    get noAreaSelectedError() {
+        return $(
+            '//android.widget.TextView[@text="Select the statistical sub area where the majority of your catch was caught."]',
+        );
+    }
+
     // The selection state is announced in the map's content-desc, e.g. "... Selected area: 30F04 Drag to pan ...".
     private async getMapDescription(): Promise<string> {
         return (await this.map.getAttribute('content-desc')) ?? '';
@@ -97,6 +107,21 @@ export class CatchAreaPage extends BasePage {
         return (await item.getAttribute('checked')) === 'true';
     }
 
+    async isSelectedAreaTextDisplayed(areaCode: string): Promise<boolean> {
+        logStep(`Checking if "Selected area: ${areaCode}" is displayed`);
+        const text = this.selectedAreaText(areaCode);
+        await this.scrollPastMapTo(text);
+        return text.isDisplayed();
+    }
+
+    async isNoAreaSelectedErrorDisplayed(): Promise<boolean> {
+        logStep('Checking if the no area selected error is displayed');
+        await $(
+            'android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Select the statistical sub area where the majority of your catch was caught."))',
+        );
+        return this.noAreaSelectedError.isDisplayed();
+    }
+
     override async saveAndContinue() {
         await this.scrollPastMapTo(this.saveAndContinueButton);
         await super.saveAndContinue();
@@ -120,12 +145,32 @@ export class CatchAreaPage extends BasePage {
 
     async zoomMap(direction: 'in' | 'out') {
         logStep(`Zooming ${direction} on the map`);
-        const map = await this.map;
-        await driver.execute(
-            direction === 'in' ? 'mobile: pinchOpenGesture' : 'mobile: pinchCloseGesture',
-            { elementId: map.elementId, percent: 0.5 },
-        );
-        await browser.pause(500);
+        const { x, y } = await this.map.getLocation();
+        const { width, height } = await this.map.getSize();
+        const centreX = Math.floor(x + width / 2);
+        const centreY = Math.floor(y + height / 2);
+        const near = 20;
+        const far = Math.floor(Math.min(width, height) / 3);
+        // Zoom in spreads the fingers out from the centre; zoom out pinches them back to it.
+        const [start, end] = direction === 'in' ? [near, far] : [far, near];
+
+        const finger = (id: string, sign: 1 | -1) => ({
+            type: 'pointer' as const,
+            id,
+            parameters: { pointerType: 'touch' as const },
+            actions: [
+                { type: 'pointerMove', duration: 0, x: centreX + sign * start, y: centreY },
+                { type: 'pointerDown', button: 0 },
+                { type: 'pause', duration: 100 },
+                { type: 'pointerMove', duration: 600, x: centreX + sign * end, y: centreY },
+                { type: 'pointerUp', button: 0 },
+            ],
+        });
+
+        await browser.performActions([finger('finger1', -1), finger('finger2', 1)]);
+        await browser.releaseActions();
+        // Let the zoom animation settle before the next snapshot.
+        await browser.pause(1500);
     }
 
     async dragMap(direction: 'up' | 'down' | 'left' | 'right') {

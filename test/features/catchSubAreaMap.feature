@@ -21,15 +21,14 @@ Feature:(CRAR-120) Select statistical sub area using the map
         And I have selected a statistical sub area
         When I select Save and Continue
         Then I proceed to the next step of the catch recording journey
-        When I select species "Brown crab (TBC)" with retained 5, below minimum 1 and discarded 1 weights
+        When I select species "Atlantic salmon" with retained 5, below minimum 1 and discarded 1 weights
         And I select no delayed landing
         Then the selected statistical sub area is attached to the catch record
 
     Scenario: No area selected
         Given the catch area map is displayed
         When I select Save and Continue without selecting an area
-        Then a message containing "Select the statistical sub area where the majority of your catch was caught." is displayed
-        And the catch area map is displayed
+        Then the no area selected error is displayed
 
     Scenario: Zoom in and out of the map
         Given the catch area map is displayed
@@ -38,7 +37,6 @@ Feature:(CRAR-120) Select statistical sub area using the map
         When I zoom out on the map
         Then the map view changes
 
-    # Zooming in first leaves room to pan in every direction.
     Scenario Outline: Drag the map <direction>
         Given the catch area map is displayed
         And I zoom in on the map

@@ -18,6 +18,12 @@ export class CatchAreaPage extends BasePage {
         );
     }
 
+    subAreaListItem(areaCode: string) {
+        return $(
+            `//android.view.View[@checkable="true"][.//android.widget.TextView[@text="${areaCode}"]]`,
+        );
+    }
+
     // The selection state is announced in the map's content-desc, e.g. "... Selected area: 30F04 Drag to pan ...".
     private async getMapDescription(): Promise<string> {
         return (await this.map.getAttribute('content-desc')) ?? '';
@@ -83,6 +89,14 @@ export class CatchAreaPage extends BasePage {
         await this.otherButton.click();
     }
 
+    async isSubAreaListItemSelected(areaCode: string): Promise<boolean> {
+        logStep(`Checking if sub area list item ${areaCode} is selected`);
+        const item = this.subAreaListItem(areaCode);
+        await this.scrollPastMapTo(item);
+        await item.waitForDisplayed();
+        return (await item.getAttribute('checked')) === 'true';
+    }
+
     override async saveAndContinue() {
         await this.scrollPastMapTo(this.saveAndContinueButton);
         await super.saveAndContinue();
@@ -97,6 +111,43 @@ export class CatchAreaPage extends BasePage {
     async clickOtherAndContinue() {
         logStep('Clicking Other and continuing');
         await this.clickOther();
+    }
+
+    async getMapSnapshot(): Promise<string> {
+        const map = await this.map;
+        return browser.takeElementScreenshot(map.elementId);
+    }
+
+    async zoomMap(direction: 'in' | 'out') {
+        logStep(`Zooming ${direction} on the map`);
+        const map = await this.map;
+        await driver.execute(
+            direction === 'in' ? 'mobile: pinchOpenGesture' : 'mobile: pinchCloseGesture',
+            { elementId: map.elementId, percent: 0.5 },
+        );
+        await browser.pause(500);
+    }
+
+    async dragMap(direction: 'up' | 'down' | 'left' | 'right') {
+        logStep(`Dragging the map ${direction}`);
+        await driver.execute('mobile: dragGesture', await this.dragPoints(direction));
+        await browser.pause(500);
+    }
+
+    private async dragPoints(direction: 'up' | 'down' | 'left' | 'right') {
+        const { x, y } = await this.map.getLocation();
+        const { width, height } = await this.map.getSize();
+        const centreX = Math.floor(x + width / 2);
+        const centreY = Math.floor(y + height / 2);
+        const dx = Math.floor(width / 4);
+        const dy = Math.floor(height / 4);
+        const ends = {
+            up: { endX: centreX, endY: centreY - dy },
+            down: { endX: centreX, endY: centreY + dy },
+            left: { endX: centreX - dx, endY: centreY },
+            right: { endX: centreX + dx, endY: centreY },
+        };
+        return { startX: centreX, startY: centreY, ...ends[direction] };
     }
 }
 

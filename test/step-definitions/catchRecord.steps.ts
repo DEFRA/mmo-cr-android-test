@@ -1,4 +1,5 @@
 import { Then, When } from '@wdio/cucumber-framework';
+import type { DataTable } from '@wdio/cucumber-framework';
 import androidFlowNavigator from '../helpers/androidFlowNavigator';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import submissionSuccessPage from '../page-objects/submissionSuccessPage';
@@ -104,12 +105,26 @@ Then('the catch sub area screen is displayed', async () => {
     await expect(catchSubAreaPage.heading).toBeDisplayed();
 });
 
-When(
-    'I select species {string} with retained {float}, below minimum {float} and discarded {float} weights',
-    async (species: string, retained: number, belowMin: number, discarded: number) => {
-        await androidFlowNavigator.selectSpecies(species, retained, belowMin, discarded);
-    },
-);
+When('I select species with the following weights:', async (table: DataTable) => {
+    const rows = table.hashes();
+    if (rows.length !== 1) {
+        throw new Error(`Expected one species weights row, received ${rows.length}`);
+    }
+
+    const row = rows[0];
+    if (!row) {
+        throw new Error('Species weights table must include one data row');
+    }
+
+    const { species, retained, 'below minimum': belowMin, discarded } = row;
+    if (!species || !retained || !belowMin || !discarded) {
+        throw new Error(
+            'Species weights table must include species, retained, below minimum, and discarded',
+        );
+    }
+
+    await androidFlowNavigator.selectSpecies(species, retained, belowMin, discarded);
+});
 
 When(/^I select (a|no) delayed landing$/, async (choice: string) => {
     await androidFlowNavigator.selectDelayedLanding(choice === 'a');

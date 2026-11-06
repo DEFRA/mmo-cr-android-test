@@ -2,6 +2,10 @@
 @catchSubAreaMap
 Feature:(CRAR-120) Select statistical sub area using the map
 
+    As a fisher
+    I want to select the statistical sub area where the majority of my catch was caught using either an interactive map or a list of statistical sub areas
+    So that I can quickly and accurately record the location of my fishing activity in the way that best suits me.
+
     Background:
         Given I am signed in
         And I start a catch record

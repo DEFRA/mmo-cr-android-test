@@ -2,6 +2,10 @@
 @catchSubArea
 Feature:(CRAR-123) Manually enter statistical sub area 
 
+    As a fisher
+    I want to select "Other" when my statistical sub area is not listed in the predefined radio button options
+    So that I can manually enter the correct statistical sub area code where most of my catch was caught.
+
     Background:
         Given I am signed in
         And I start a catch record

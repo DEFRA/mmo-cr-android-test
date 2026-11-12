@@ -1,23 +1,19 @@
 import { logStep } from '../common/logger';
 
+// Uses the driver's built-in toggle, which does not need Appium's insecure adb_shell feature.
 export class NetworkHelper {
-    private static async setServiceEnabled(service: 'wifi' | 'data', enabled: boolean) {
-        await driver.execute('mobile: shell', {
-            command: 'svc',
-            args: [service, enabled ? 'enable' : 'disable'],
-        });
+    private static async setConnectivity(enabled: boolean) {
+        await driver.execute('mobile: setConnectivity', { wifi: enabled, data: enabled });
     }
 
     static async goOffline() {
         logStep('Going OFFLINE (Disabling Wi-Fi and mobile data)');
-        await this.setServiceEnabled('wifi', false);
-        await this.setServiceEnabled('data', false);
+        await this.setConnectivity(false);
     }
 
     static async goOnline() {
         logStep('Going ONLINE (Enabling Wi-Fi and mobile data)');
-        await this.setServiceEnabled('wifi', true);
-        await this.setServiceEnabled('data', true);
+        await this.setConnectivity(true);
     }
 }
 

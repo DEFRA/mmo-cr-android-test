@@ -11,7 +11,7 @@ async function submitCompletedCatchRecord() {
     await androidFlowNavigator.selectTripDates(true);
     await androidFlowNavigator.selectPorts('Hastings', 'Dover');
     await androidFlowNavigator.selectGear('Seine nets', 10, 10);
-    await androidFlowNavigator.selectAreas('Other', '38E95');
+    await androidFlowNavigator.selectAreas();
     await androidFlowNavigator.selectSpecies('Brown crab (TBC)', 5, 1, 1);
     await androidFlowNavigator.selectDelayedLanding(false);
     await expect(catchRecordSummaryPage.heading).toBeDisplayed();

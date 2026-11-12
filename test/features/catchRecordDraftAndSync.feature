@@ -48,20 +48,20 @@ Feature:Continue with catch a record after closing
         And I accept and submit the catch record
         Then the offline banner is displayed
         When I view my records
-        Then a record with status "Awaiting Sync" is displayed
+        Then a record with status "unsent" is displayed
 
     @offline
     Scenario: Connectivity is restored
-        Given I have a catch record awaiting sync
+        Given I have a catch record with status "unsent"
         When I go back online
         Then a record with status "Submitted" is displayed
 
     @offline
     Scenario: User views record statuses
         Given I have a submitted catch record
-        And I have a catch record awaiting sync
+        And I have a catch record with status "unsent"
         And I have a draft catch record
         When I open my records list
         Then a record with status "Draft" is displayed
-        And a record with status "Awaiting Sync" is displayed
+        And a record with status "unsent    " is displayed
         And a record with status "Submitted" is displayed

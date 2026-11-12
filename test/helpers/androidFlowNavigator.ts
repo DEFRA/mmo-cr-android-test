@@ -79,6 +79,7 @@ export class AndroidFlowNavigator {
 
     async selectSubAreas(subArea?: string) {
         logStep(`Selecting sub area${subArea ? `: ${subArea}` : ' (first available)'}`);
+        await catchSubAreaPage.scrollToTop();
         await catchSubAreaPage.heading.waitForDisplayed();
         if (subArea) {
             await catchSubAreaPage.selectSubAreaAndContinue(subArea);

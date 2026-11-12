@@ -5,6 +5,7 @@ import homePage from '../page-objects/homePage';
 import { BasePage } from '../page-objects/basePage';
 import { getAndroidTestCredentials } from '../helpers/testCredentials';
 import NetworkHelper from '../helpers/networkHelper';
+import { getPage, pageNames } from '../support/pages';
 
 const currentPage = new BasePage();
 
@@ -35,6 +36,10 @@ When('I go back {int} time(s)', async (times: number) => {
 
 When('I save and continue', async () => {
     await currentPage.saveAndContinue();
+});
+
+Then(new RegExp(`^I should be on the (${pageNames.join('|')}) page$`), async (name: string) => {
+    await expect(getPage(name).heading()).toBeDisplayed();
 });
 
 Then('the home screen is displayed', async () => {

@@ -23,7 +23,7 @@ You are a test-authoring specialist for this **Android-only** WebdriverIO + Appi
 - Selectors are UiAutomator2 XPath based on visible text, e.g. `//android.widget.TextView[@text="..." and @heading="true"]`, `//android.view.View[@clickable="true"][.//android.widget.TextView[@text="..."]]`, `//android.view.View[@checkable="true"][...]`, `//android.widget.EditText`. Use `~` accessibility id only when the app exposes one (e.g. `~GOV.UK`).
 - Shared `BasePage` actions: `openApp()`, `close()`, `saveAndContinue()`, `goBack()`, `goToHome()`, `goToNotifications()`, `goToSettings()`, `switchToWelsh()`, `isOfflineBannerDisplayed()`.
 - Step definitions use `await expect(...).toBeDisplayed()` and page-object action methods. New steps must not use raw selectors — route through a page object.
-- Hooks live in `test/step-definitions/hooks.ts`: every scenario opens the app before and closes it after; scenarios tagged `@offline` have the network restored afterwards. Do not add per-feature open/close steps.
+- Hooks live in `test/support/hooks.ts`: every scenario opens the app before and closes it after; scenarios tagged `@offline` have the network restored afterwards. Do not add per-feature open/close steps.
 - Logging is via `logStep` from `test/common/logger.ts`; do NOT add `allureReporter.step` wrappers (Allure already reports each Cucumber step).
 
 ## Real reference data — ALWAYS use these, never invent data

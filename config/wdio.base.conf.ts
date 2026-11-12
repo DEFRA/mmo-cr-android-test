@@ -20,7 +20,10 @@ export function cucumberOptions(timeout: number): WebdriverIO.CucumberOpts {
         .join(' and ');
 
     return {
-        require: [join(process.cwd(), 'test/step-definitions/**/*.ts')],
+        require: [
+            join(process.cwd(), 'test/support/**/*.ts'),
+            join(process.cwd(), 'test/step-definitions/**/*.ts'),
+        ],
         timeout,
         tags,
         failFast: false,

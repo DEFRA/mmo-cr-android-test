@@ -48,7 +48,8 @@ You can put environment variables in `.env`, or set `ENV_FILE` to load a differe
 ```
 config/                 WebdriverIO configs (base, local Android, BrowserStack)
 test/features/          Gherkin feature files (*.feature)
-test/step-definitions/  Cucumber step definitions (*.steps.ts) and hooks.ts
+test/step-definitions/  Cucumber step definitions (*.steps.ts)
+test/support/           hooks.ts and pages.ts (page-name registry used by "I should be on the ... page")
 test/page-objects/      Page objects, one per app screen
 test/helpers/           Journey navigator, network and credential helpers
 test/common/            Logger and date utilities
@@ -123,7 +124,7 @@ For step navigation and "undefined step" warnings in VS Code, point the Cucumber
 ```json
 {
     "cucumber.features": ["test/features/**/*.feature"],
-    "cucumber.glue": ["test/step-definitions/**/*.ts"]
+    "cucumber.glue": ["test/step-definitions/**/*.ts", "test/support/**/*.ts"]
 }
 ```
 
@@ -134,7 +135,7 @@ npm run typecheck
 npm run format:check
 
 # Verify every Gherkin step matches exactly one step definition (no device needed)
-NODE_OPTIONS="--import tsx" npx cucumber-js --dry-run --import 'test/step-definitions/**/*.ts' test/features
+NODE_OPTIONS="--import tsx" npx cucumber-js --dry-run --import 'test/support/**/*.ts' --import 'test/step-definitions/**/*.ts' test/features
 ```
 
 ### Reports

@@ -50,7 +50,11 @@ Then('the selected area is highlighted', async () => {
 });
 
 Then('the corresponding list item is selected', async () => {
-    expect(await catchAreaPage.isSelectedAreaTextDisplayed(selectedAreaCode!)).toBe(true);
+    const areaCode = selectedAreaCode;
+    if (areaCode === null) {
+        throw new Error('No statistical sub area has been selected');
+    }
+    expect(await catchAreaPage.isSelectedAreaTextDisplayed(areaCode)).toBe(true);
 });
 
 Then('I proceed to the next step of the catch recording journey', async () => {

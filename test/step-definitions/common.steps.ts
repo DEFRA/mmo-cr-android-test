@@ -15,8 +15,20 @@ function textContainingAnyOf(texts: string[]) {
 }
 
 Given('I am signed in', async () => {
-    const { email, password } = getAndroidTestCredentials();
-    await signInPage.signIn(email, password);
+    await browser.waitUntil(
+        async () =>
+            (await homePage.heading.isDisplayed()) || (await signInPage.heading.isDisplayed()),
+        {
+            timeout: 15000,
+            timeoutMsg: 'Neither the home screen nor the sign-in screen was displayed.',
+        },
+    );
+
+    if (!(await homePage.heading.isDisplayed())) {
+        const { email, password } = getAndroidTestCredentials();
+        await signInPage.signIn(email, password);
+    }
+
     await homePage.heading.waitForDisplayed({ timeout: 15000 });
 });
 

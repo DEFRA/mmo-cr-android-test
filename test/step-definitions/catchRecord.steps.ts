@@ -97,7 +97,7 @@ Then('the catch area map is displayed', async () => {
 });
 
 When('I choose the "Other" catch area', async () => {
-    await catchAreaPage.clickOtherAndContinue();
+    await catchAreaPage.clickOther();
 });
 
 Then('the catch sub area screen is displayed', async () => {

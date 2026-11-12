@@ -1,16 +1,10 @@
 import fs from 'node:fs';
 import { allureReporter, baseConfig, cucumberOptions, oneMinute } from './wdio.base.conf';
 
-/**
- * On the CDP Portal the proxy is enabled using NODE_USE_ENV_PROXY=1 (see `npm test`).
- * This is required for the test suite to be able to talk to BrowserStack.
- */
-
 const projectName = 'mmo-cr-android-test';
 const buildName = `${projectName}-${process.env.ENVIRONMENT ?? 'local'}`;
 const proxy = process.env.HTTP_PROXY ? new URL(process.env.HTTP_PROXY) : undefined;
 
-// Not read by WebdriverIO or the BrowserStack service, so it is merged into each device below.
 const commonCapabilities = {
     'bstack:options': {
         buildName,
@@ -33,8 +27,6 @@ export const config: WebdriverIO.Config & {
 } = {
     ...baseConfig,
 
-    // You will need to provide your own BrowserStack credentials.
-    // These should be added as secrets to the test suite.
     user: process.env.BROWSERSTACK_USERNAME,
     key: process.env.BROWSERSTACK_KEY,
 
@@ -53,7 +45,6 @@ export const config: WebdriverIO.Config & {
             'browserstack',
             {
                 buildIdentifier: '#${BUILD_NUMBER}',
-                // BrowserStack app URL (bs://...) returned when the APK is uploaded.
                 app: process.env.BROWSERSTACK_APP_ID,
                 browserstackLocal: true,
                 opts: {
@@ -84,7 +75,6 @@ export const config: WebdriverIO.Config & {
 
     reporters: [
         [
-            // Spec reporter provides rolling output to the logger so you can see it in-progress
             'spec',
             {
                 addConsoleLogs: true,
@@ -92,14 +82,12 @@ export const config: WebdriverIO.Config & {
                 color: false,
             },
         ],
-        // Allure is used to generate the final HTML report
         allureReporter,
     ],
 
     cucumberOpts: cucumberOptions(oneMinute),
 
     onComplete: function (exitCode, config, capabilities, results?: { failed?: number }) {
-        // !Do Not Remove! Required for test status to show correctly in portal.
         if (results?.failed && results.failed > 0) {
             fs.writeFileSync('FAILED', JSON.stringify(results));
         }

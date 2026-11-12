@@ -1,6 +1,6 @@
 import { Then, When } from '@wdio/cucumber-framework';
-import catchSubAreaPage from '../page-objects/catchSubAreaPage';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
+import catchSubAreaPage from '../page-objects/catchSubAreaPage';
 
 let capturedCoordinates = '';
 let previousCoordinates = '';
@@ -30,7 +30,6 @@ Then('the sub area field shows {string}', async (text: string) => {
     await expect(catchSubAreaPage.subAreaSearchField).toHaveText(text);
 });
 
-// The search matches anywhere in the code, e.g. "12" returns 27E12, 28E12, ...
 Then(
     'each sub area result shows a code containing {string} and coordinates',
     async (search: string) => {
@@ -56,7 +55,7 @@ Then('the coordinates for sub area {string} are displayed', async (areaCode: str
     capturedCoordinates = await catchSubAreaPage.getSuggestionCoordinates(areaCode);
 });
 
-Then('the sub area coordinates have changed', async () => {
+Then('the sub area coordinates have changed', () => {
     expect(capturedCoordinates).not.toEqual(previousCoordinates);
 });
 

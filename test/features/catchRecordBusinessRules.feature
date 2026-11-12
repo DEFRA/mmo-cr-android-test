@@ -39,7 +39,9 @@ Feature: Catch record business rules and offline handling
         And I select departure port "Hastings" and return port "Dover"
         And I select gear "Seine nets" with mesh size 10 and 10 shots
         And I select catch area "Other" with sub area "38E95"
-        And I select species "Brown crab (TBC)" with retained 5, below minimum 1 and discarded 1 weights
+        And I select species with the following weights:
+            | species         | retained | below minimum | discarded |
+            | Brown crab (TBC) | 5        | 1             | 1         |
         And I select no delayed landing
         Then the catch record summary is displayed
         When I accept and submit the catch record
@@ -55,7 +57,9 @@ Feature: Catch record business rules and offline handling
         And I select departure port "Hastings" and return port "Dover"
         And I select gear "Seine nets" with mesh size 10 and 10 shots
         And I select catch area "Other" with sub area "38E95"
-        And I select species "Brown crab (TBC)" with retained 5, below minimum 1 and discarded 1 weights
+        And I select species with the following weights:
+            | species         | retained | below minimum | discarded |
+            | Brown crab (TBC) | 5        | 1             | 1         |
         And I select no delayed landing
         And I accept and submit the catch record
         Then the offline banner is displayed

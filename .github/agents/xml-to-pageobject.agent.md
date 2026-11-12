@@ -1,7 +1,7 @@
 ---
 description: "Use when the user provides an Android Appium page source XML dump (the output of appium_get_page_source / driver.getPageSource, i.e. a hierarchy of android.widget.* / android.view.* nodes) and wants it turned into a WebdriverIO Page Object class that matches this repo's Page Object Model conventions. Trigger phrases: 'create a page object from this XML', 'generate a page object from this source', 'turn this page source into a page object', 'convert this XML to a page object', 'build a POM from this hierarchy'."
 name: 'XML → Page Object'
-tools: [read, search, edit, todo, mcp-appium/*, webdriverio/*]
+tools: [read, search, edit, todo, appium-mcp/*, wdio-mcp/*]
 argument-hint: "Paste the Android Appium page source XML (and, if known, the screen name, e.g. 'gear')"
 model:
     [
@@ -46,20 +46,20 @@ Study `test/page-objects/basePage.ts`, `departurePortPage.ts`, `gearPage.ts`, an
 1. Parse the XML. Identify meaningful interactable/asserted nodes: `heading="true"` TextViews, clickable/checkable Views, EditTexts, validation error text, list rows. Ignore layout containers with no text/id and no test value.
 2. Determine the screen name — from the user, or from the heading text, or ask if ambiguous. Class name is PascalCase + `Page` (e.g. `GearMeasurementPage`); file name is camelCase + `Page.ts` (e.g. `gearMeasurementPage.ts`).
 3. Before writing, use `search`/`read` to check whether a page object for this screen already exists in `test/page-objects/`. If it does, extend/update it rather than creating a duplicate, and match its existing structure.
-4. Build the class: a `heading` getter first, then element getters, then action methods. Actions `waitForDisplayed({ timeout: 10000 })` before interacting, then `click()` / `setValue()`. Provide `...AndContinue` combo methods that call `this.saveAndContinue()` (e.g. `selectYesAndContinue`, `searchSelectAndContinue`, `enterMeshSizeAndContinue`).
+4. Build the class: a `heading` getter first, then element getters, then action methods. Wait for the target to be displayed before interacting, following the existing page-object style (normally `waitForDisplayed()`), then use `click()` / `setValue()`. Provide `...AndContinue` combo methods that call `this.saveAndContinue()` (e.g. `selectYesAndContinue`, `searchSelectAndContinue`, `enterMeshSizeAndContinue`).
 5. Keep methods small and intention-revealing, mirroring `departurePortPage.ts` (`selectYes`, `selectPort`, `clickAddPort`, `enterPortName`, `selectPortAndContinue`).
 
 ## Grounding selectors against the live app (optional but preferred)
 
 Only start/attach a session when you need to confirm a selector actually resolves or the XML is ambiguous — do not spin one up otherwise.
 
-- **Appium MCP:** `select_device` (Android) then `appium_session_management` (action=create) to start a session (or attach to a user-supplied server URL); `appium_get_page_source` and `generate_locators` to re-derive real content-desc / resource-id / text; `appium_find_element` to confirm a candidate selector resolves; `appium_screenshot` to visually confirm the screen.
-- **WebdriverIO MCP:** `m_start_session`, `m_snapshot`, `m_get_screenshot`.
-- Always close/quit any session you created (`appium_session_management` action=quit / `m_close_session`) when finished.
+- **Appium MCP:** `appium-mcp-select_device` (Android) then `appium-mcp-appium_session_management` (action=create) to start a session (or attach to a user-supplied server URL); `appium-mcp-appium_get_page_source` and `appium-mcp-generate_locators` to re-derive real content-desc / resource-id / text; `appium-mcp-appium_find_element` to confirm a selector resolves; `appium-mcp-appium_screenshot` to visually confirm the screen.
+- **WebdriverIO MCP:** `wdio-mcp-start_session`, `wdio-mcp-snapshot`, `wdio-mcp-get_screenshot`.
+- Always close/quit any session you created (`appium-mcp-appium_session_management` action=quit / `wdio-mcp-close_session`) when finished.
 
 ## Output format
 
-- Create the page object with `create_file` (new) or edit tools (existing) at `test/page-objects/<name>Page.ts`.
+- Create the page object with the edit tools at `test/page-objects/<name>Page.ts`.
 - Match the import style, 4-space indentation, getter/method formatting, and naming of `departurePortPage.ts` / `gearPage.ts` exactly. End the file with `export default new <Name>Page();`.
 - If the page is part of the catch-record journey, mention whether `test/helpers/androidFlowNavigator.ts` would need a new step (do not edit it unless asked).
 - After writing, briefly list each element/selector you created and its source (content-desc / resource-id / text XPath / live-confirmed), and remind the user to run `npm run typecheck` and `npm run format`.

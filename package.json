@@ -17,6 +17,11 @@
         "format": "prettier --write '**/*.{ts,md,json}'",
         "format:check": "prettier --check '**/*.{ts,md,json}'",
         "typecheck": "tsc --noEmit",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "git:pre-commit-hook": "npm run format:check && npm run lint && npm run typecheck",
+        "postinstall": "npm run setup:husky",
+        "setup:husky": "node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module",
         "report": "allure generate allure-results --clean",
         "report:publish": "npm run report; ./bin/publish-tests.sh",
         "generate:report": "npm run report && allure open"
@@ -24,6 +29,8 @@
     "author": "Defra DDTS",
     "license": "OGL-UK-3.0",
     "devDependencies": {
+        "@cucumber/cucumber": "13.3.0",
+        "@eslint/js": "10.0.1",
         "@types/node": "26.6.5",
         "@wdio/allure-reporter": "10.1.0",
         "@wdio/appium-service": "10.1.0",
@@ -34,9 +41,18 @@
         "@wdio/local-runner": "10.1.0",
         "@wdio/spec-reporter": "10.1.0",
         "allure-commandline": "2.46.1",
+        "axios": "1.21.0",
+        "eslint": "10.9.1",
+        "eslint-config-prettier": "10.1.8",
+        "eslint-plugin-prettier": "5.5.6",
+        "eslint-plugin-wdio": "9.31.3",
+        "globals": "17.13.0",
+        "husky": "9.1.7",
+        "jiti": "2.7.0",
         "prettier": "3.9.10",
         "tsx": "4.23.15",
-        "typescript": "7.0.2"
+        "typescript": "6.0.3",
+        "typescript-eslint": "8.72.1"
     },
     "overrides": {
         "@wdio/browserstack-service": {

@@ -1,67 +1,68 @@
 import { Then, When } from '@wdio/cucumber-framework';
-import SignInPage from '../page-objects/signInPage';
+import signInPage from '../page-objects/signInPage';
+import type { CatchRecordWorld } from '../support/world';
 
-interface SignInWorld {
-    email?: string;
-    password?: string;
-}
-
-When('I enter email {string}', async function (this: SignInWorld, email: string) {
+When('I enter email {string}', async function (this: CatchRecordWorld, email: string) {
     this.email = email;
-    await SignInPage.enterEmail(email);
+    await signInPage.enterEmail(email);
 });
 
-When('I enter password {string}', async function (this: SignInWorld, password: string) {
+When('I enter password {string}', async function (this: CatchRecordWorld, password: string) {
     this.password = password;
-    await SignInPage.enterPassword(password);
+    await signInPage.enterPassword(password);
 });
 
 When(
     'I enter an email with a {int} character local part',
-    async function (this: SignInWorld, length: number) {
+    async function (this: CatchRecordWorld, length: number) {
         this.email = `${'a'.repeat(length)}@example.com`;
-        await SignInPage.enterEmail(this.email);
+        await signInPage.enterEmail(this.email);
     },
 );
 
-When('I enter a password of {int} characters', async function (this: SignInWorld, length: number) {
-    this.password = 'P'.repeat(length);
-    await SignInPage.enterPassword(this.password);
-});
+When(
+    'I enter a password of {int} characters',
+    async function (this: CatchRecordWorld, length: number) {
+        this.password = 'P'.repeat(length);
+        await signInPage.enterPassword(this.password);
+    },
+);
 
 When('I open the create an account link', async () => {
-    await SignInPage.openCreateAccount();
+    await signInPage.openCreateAccount();
 });
 
 Then('the sign-in controls are displayed', async () => {
-    await expect(SignInPage.heading).toBeDisplayed();
-    await expect(SignInPage.emailField).toBeDisplayed();
-    await expect(SignInPage.passwordField).toBeDisplayed();
-    await expect(SignInPage.signInButton).toBeDisplayed();
-    await expect(SignInPage.forgottenPasswordLink).toBeDisplayed();
-    await expect(SignInPage.createAccountLink).toBeDisplayed();
+    await expect(signInPage.heading).toBeDisplayed();
+    await expect(signInPage.emailField).toBeDisplayed();
+    await expect(signInPage.passwordField).toBeDisplayed();
+    await expect(signInPage.signInButton).toBeDisplayed();
+    await expect(signInPage.forgottenPasswordLink).toBeDisplayed();
+    await expect(signInPage.createAccountLink).toBeDisplayed();
 });
 
 Then('the create account instructions are displayed', async () => {
-    await expect(SignInPage.vesselOwnerLabel).toBeDisplayed();
-    await expect(SignInPage.vesselOwnerInstructions).toBeDisplayed();
-    await expect(SignInPage.skipperOrAgentLabel).toBeDisplayed();
-    await expect(SignInPage.skipperOrAgentInstructions).toBeDisplayed();
+    await expect(signInPage.vesselOwnerLabel).toBeDisplayed();
+    await expect(signInPage.vesselOwnerInstructions).toBeDisplayed();
+    await expect(signInPage.skipperOrAgentLabel).toBeDisplayed();
+    await expect(signInPage.skipperOrAgentInstructions).toBeDisplayed();
 });
 
-Then('the email field shows the entered email', async function (this: SignInWorld) {
-    expect(await SignInPage.emailField.getText()).toBe(this.email);
+Then('the email field shows the entered email', async function (this: CatchRecordWorld) {
+    expect(await signInPage.emailField.getText()).toBe(this.email);
 });
 
-Then('the password field contains the entered password length', async function (this: SignInWorld) {
-    // Android masks password text, so only the length is comparable.
-    expect((await SignInPage.passwordField.getText())?.length).toBe(this.password?.length);
-});
+Then(
+    'the password field contains the entered password length',
+    async function (this: CatchRecordWorld) {
+        expect((await signInPage.passwordField.getText()).length).toBe(this.password?.length);
+    },
+);
 
 Then('the password field is empty', async () => {
-    expect(await SignInPage.passwordField.getText()).toBe('');
+    expect(await signInPage.passwordField.getText()).toBe('');
 });
 
 Then('the sign-in button is displayed', async () => {
-    await expect(SignInPage.signInButton).toBeDisplayed();
+    await expect(signInPage.signInButton).toBeDisplayed();
 });

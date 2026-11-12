@@ -1,8 +1,17 @@
 import { logInfo } from '../common/logger';
+
+function requireEnv(name: string): string {
+    const value = process.env[name];
+    if (!value) {
+        throw new Error(`Missing required environment variable ${name}`);
+    }
+    return value;
+}
+
 export function getAndroidTestCredentials(): { email: string; password: string } {
     logInfo('Loading Android test credentials');
-    const email = process.env.ANDROID_TEST_EMAIL || 'test@example.com';
-    const password = process.env.ANDROID_TEST_PASSWORD || 'password123';
-
-    return { email, password };
+    return {
+        email: requireEnv('ANDROID_TEST_EMAIL'),
+        password: requireEnv('ANDROID_TEST_PASSWORD'),
+    };
 }

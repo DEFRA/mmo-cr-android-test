@@ -40,14 +40,12 @@ export class SelectedSpeciesPage extends BasePage {
         return $('//android.widget.Button[@text="Add weight legally discarded (kg)"]');
     }
 
-    get removeSpeciesButton() {
+    get removeSpeciesLink() {
         return $('//android.widget.Button[@text="Remove a species"]');
     }
 
-    get addSpeciesButton() {
-        return $(
-            '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="Add a species"]]',
-        );
+    get addSpeciesLink() {
+        return $('//android.widget.Button[@text="Add a species"]');
     }
 
     async selectSpeciesCheckbox(speciesName: string) {
@@ -93,14 +91,14 @@ export class SelectedSpeciesPage extends BasePage {
 
     async clickRemoveSpecies() {
         logStep('Clicking remove species');
-        await this.removeSpeciesButton.waitForDisplayed();
-        await this.removeSpeciesButton.click();
+        await this.removeSpeciesLink.waitForDisplayed();
+        await this.removeSpeciesLink.click();
     }
 
     async clickAddSpecies() {
         logStep('Clicking add species');
-        await this.addSpeciesButton.waitForDisplayed();
-        await this.addSpeciesButton.click();
+        await this.addSpeciesLink.waitForDisplayed();
+        await this.addSpeciesLink.click();
     }
 }
 

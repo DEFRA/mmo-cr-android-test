@@ -2,7 +2,6 @@ import { BasePage } from './basePage';
 import { logStep } from '../common/logger';
 
 export class ReturnPortPage extends BasePage {
-    // The screen shows either the port search heading or, when saved ports exist, the select-port heading.
     get heading() {
         return $(
             '//android.widget.TextView[@heading="true" and (@text="Enter the port or closest port you returned to" or @text="Select the port you returned to")]',
@@ -31,7 +30,6 @@ export class ReturnPortPage extends BasePage {
         );
     }
 
-    // "Add port" only appears once saved ports exist; on first use the search field is shown directly.
     async clickAddPort() {
         if (await this.portSearchField.isDisplayed()) {
             logStep('No saved ports, port search already displayed');
@@ -55,7 +53,6 @@ export class ReturnPortPage extends BasePage {
         logStep(`Searching for ${searchText} and selecting port ${portName}`);
         await this.enterPortName(searchText);
         const suggestion = this.portSuggestion(portName);
-        // The keyboard overlaps the lower results, so swipes and taps would land on it.
         if (await driver.isKeyboardShown()) {
             await driver.hideKeyboard();
         }

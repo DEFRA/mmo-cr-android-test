@@ -45,7 +45,9 @@ Feature:(CRAR-123) Manually enter statistical sub area
         Then the sub area field shows "31F15"
         And the centre of the selected sub area is displayed
         When I save and continue
-        And I select species "Atlantic salmon" with retained 5, below minimum 1 and discarded 1 weights
+        And I select species with the following weights:
+            | species         | retained | below minimum | discarded |
+            | Atlantic salmon | 5        | 1             | 1         |
         And I select no delayed landing
         Then the catch record summary is displayed
         And the summary shows sub area "31F15"

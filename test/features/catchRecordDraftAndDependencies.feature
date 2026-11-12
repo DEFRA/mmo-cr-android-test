@@ -70,7 +70,9 @@ Feature: Catch record drafts and dependencies
         And I select departure port "Hastings" and return port "Dover"
         And I select gear "Seine nets" with mesh size 10 and 10 shots
         And I select catch area "38E95"
-        And I select species "Brown crab (TBC)" with retained 5, below minimum 1 and discarded 1 weights
+        And I select species with the following weights:
+            | species         | retained | below minimum | discarded |
+            | Brown crab (TBC) | 5        | 1             | 1         |
         And I select a delayed landing
         And I enter a stored catch weight of "2"
         And I go back 3 times

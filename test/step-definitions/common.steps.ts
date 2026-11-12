@@ -1,10 +1,11 @@
 import { Given, Then, When } from '@wdio/cucumber-framework';
 import type { DataTable } from '@wdio/cucumber-framework';
-import signInPage from '../page-objects/signInPage';
 import homePage from '../page-objects/homePage';
+import signInPage from '../page-objects/signInPage';
 import { BasePage } from '../page-objects/basePage';
 import { getAndroidTestCredentials } from '../helpers/testCredentials';
 import NetworkHelper from '../helpers/networkHelper';
+import { getPage, type PageName } from '../support/pages';
 
 const currentPage = new BasePage();
 
@@ -13,7 +14,6 @@ function textContainingAnyOf(texts: string[]) {
     return $(`//android.widget.TextView[${conditions}]`);
 }
 
-// UiScrollable.scrollIntoView rewinds to the top before searching, so it finds messages above or below.
 async function scrollToTextContainingAnyOf(texts: string[]) {
     for (const text of texts) {
         const element = await $(
@@ -26,8 +26,20 @@ async function scrollToTextContainingAnyOf(texts: string[]) {
 }
 
 Given('I am signed in', async () => {
-    const { email, password } = getAndroidTestCredentials();
-    await signInPage.signIn(email, password);
+    await browser.waitUntil(
+        async () =>
+            (await homePage.heading.isDisplayed()) || (await signInPage.heading.isDisplayed()),
+        {
+            timeout: 15000,
+            timeoutMsg: 'Neither the home screen nor the sign-in screen was displayed.',
+        },
+    );
+
+    if (!(await homePage.heading.isDisplayed())) {
+        const { email, password } = getAndroidTestCredentials();
+        await signInPage.signIn(email, password);
+    }
+
     await homePage.heading.waitForDisplayed({ timeout: 15000 });
 });
 
@@ -47,6 +59,26 @@ When('I go back {int} time(s)', async (times: number) => {
 
 When('I save and continue', async () => {
     await currentPage.saveAndContinue();
+});
+
+async function assertOnPage(name: PageName) {
+    const { page, heading, scrollToHeading } = getPage(name);
+    if (scrollToHeading) {
+        await page.scrollUntilDisplayed(heading());
+    }
+    await expect(heading()).toBeDisplayed();
+}
+
+Given('I am on the {page} page', assertOnPage);
+
+Then('I should be on the {page} page', assertOnPage);
+
+Then('I should see a validation error on the {page} page', async (name: PageName) => {
+    const { validationError } = getPage(name);
+    if (!validationError) {
+        throw new Error(`No validation error is defined for the ${name} page`);
+    }
+    await expect(validationError()).toBeDisplayed();
 });
 
 Then('the home screen is displayed', async () => {

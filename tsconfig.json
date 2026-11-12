@@ -25,6 +25,6 @@
         "skipLibCheck": true,
         "noEmit": true
     },
-    "include": ["config/**/*.ts", "test/**/*.ts"],
+    "include": ["config/**/*.ts", "test/**/*.ts", "eslint.config.ts"],
     "exclude": ["node_modules", "allure-results", "allure-report"]
 }

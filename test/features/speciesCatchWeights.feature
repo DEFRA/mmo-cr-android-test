@@ -36,7 +36,7 @@ Feature: Record catch weights for selected species
         When I select the species "Atlantic salmon"
         And I clear the retained weight
         And I save and continue
-        Then a message containing "Enter the Weight above minimum" is displayed
+        Then a message containing "Enter the weight above minimum size retained" is displayed
 
     Scenario: Save a species without optional weights
         When I select the species "Atlantic salmon"
@@ -72,7 +72,7 @@ Feature: Record catch weights for selected species
         When I enter "<valid weight>" in the "<field>" weight field
         And I enter "10001" in the "<field>" weight field
         And I save and continue
-        Then a message containing "10,000 or less" is displayed
+        Then a message containing "must be 10,000kg or less" is displayed
 
         When I enter "<valid weight>" in the "<field>" weight field
         And I enter "10.55" in the "<field>" weight field

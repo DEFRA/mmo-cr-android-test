@@ -87,7 +87,7 @@ export const baseConfig: Omit<WebdriverIO.Config, 'capabilities'> = {
 
     reporters: ['spec', allureReporter],
 
-    cucumberOpts: cucumberOptions(5 * oneMinute),
+    cucumberOpts: cucumberOptions(1.5 * oneMinute),
 
     afterStep: screenshotOnFailedStep,
 };

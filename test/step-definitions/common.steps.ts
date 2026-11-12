@@ -13,6 +13,18 @@ function textContainingAnyOf(texts: string[]) {
     return $(`//android.widget.TextView[${conditions}]`);
 }
 
+// UiScrollable.scrollIntoView rewinds to the top before searching, so it finds messages above or below.
+async function scrollToTextContainingAnyOf(texts: string[]) {
+    for (const text of texts) {
+        const element = await $(
+            `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().textContains("${text.replace(/"/g, '\\"')}"))`,
+        );
+        if (await element.isExisting()) {
+            return;
+        }
+    }
+}
+
 Given('I am signed in', async () => {
     const { email, password } = getAndroidTestCredentials();
     await signInPage.signIn(email, password);
@@ -44,10 +56,14 @@ Then('the home screen is displayed', async () => {
 Then(
     /^a message containing "([^"]*)"(?: or "([^"]*)")? is displayed$/,
     async (first: string, second?: string) => {
-        await expect(textContainingAnyOf(second ? [first, second] : [first])).toBeDisplayed();
+        const texts = second ? [first, second] : [first];
+        await scrollToTextContainingAnyOf(texts);
+        await expect(textContainingAnyOf(texts)).toBeDisplayed();
     },
 );
 
 Then('a message containing any of these is displayed:', async (table: DataTable) => {
-    await expect(textContainingAnyOf(table.raw().flat())).toBeDisplayed();
+    const texts = table.raw().flat();
+    await scrollToTextContainingAnyOf(texts);
+    await expect(textContainingAnyOf(texts)).toBeDisplayed();
 });

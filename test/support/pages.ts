@@ -27,7 +27,6 @@ export interface PageDefinition {
     scrollToHeading?: boolean;
 }
 
-// Keys are the page names used in feature files, e.g. "Then I should be on the gear page".
 const pages = {
     'sign in': { page: signInPage, heading: () => signInPage.heading },
     home: { page: homePage, heading: () => homePage.heading },

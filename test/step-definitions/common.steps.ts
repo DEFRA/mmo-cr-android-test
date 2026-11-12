@@ -14,7 +14,6 @@ function textContainingAnyOf(texts: string[]) {
     return $(`//android.widget.TextView[${conditions}]`);
 }
 
-// UiScrollable.scrollIntoView rewinds to the top before searching, so it finds messages above or below.
 async function scrollToTextContainingAnyOf(texts: string[]) {
     for (const text of texts) {
         const element = await $(

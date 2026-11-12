@@ -30,7 +30,6 @@ Then('the sub area field shows {string}', async (text: string) => {
     await expect(catchSubAreaPage.subAreaSearchField).toHaveText(text);
 });
 
-// The search matches anywhere in the code, e.g. "12" returns 27E12, 28E12, ...
 Then(
     'each sub area result shows a code containing {string} and coordinates',
     async (search: string) => {

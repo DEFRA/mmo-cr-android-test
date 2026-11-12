@@ -80,7 +80,6 @@ When('I continue past the return port and selected gears screens', async () => {
 });
 
 Then('any catch area revalidation warning is displayed', async () => {
-    // The warning wording is not confirmed yet, so its absence is only logged.
     const warning = $(
         '//android.widget.TextView[contains(@text, "no longer valid") or contains(@text, "reselect")]',
     );

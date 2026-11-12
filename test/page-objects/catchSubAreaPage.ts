@@ -30,7 +30,6 @@ export class CatchSubAreaPage extends BasePage {
         return $('//android.widget.EditText');
     }
 
-    // Each result row holds the code and "ICES rectangle 27E1, centre 49.25°N, 8.83°W"; rows clipped off screen have no text.
     get suggestions() {
         return $$(
             '//android.view.View[@clickable="true" and not(@checkable="true")][.//android.widget.TextView[contains(@text, "°")]]',
@@ -43,7 +42,6 @@ export class CatchSubAreaPage extends BasePage {
         );
     }
 
-    // Shows "Centre of area: 51.25°N, 1.50°E" once a result is chosen.
     get selectedAreaCentre() {
         return $('//android.widget.TextView[starts-with(@text, "Centre of area")]');
     }
@@ -54,7 +52,6 @@ export class CatchSubAreaPage extends BasePage {
         }
     }
 
-    // The screen can open already scrolled down, leaving the heading off screen.
     async scrollToTop() {
         await $('android=new UiScrollable(new UiSelector().scrollable(true)).scrollToBeginning(5)');
     }
@@ -63,7 +60,6 @@ export class CatchSubAreaPage extends BasePage {
         logStep('Selecting Other sub area');
         await this.scrollUntilDisplayed(this.otherOption);
         await this.otherRadioButton.waitForDisplayed();
-        // Selecting Other navigates straight to the manual-entry screen, so the row is gone afterwards.
         await this.otherRadioButton.click();
         try {
             await this.subAreaSearchField.waitForDisplayed({ timeout: 3000 });
@@ -121,7 +117,6 @@ export class CatchSubAreaPage extends BasePage {
         await suggestion.click();
     }
 
-    // Returns the "49.25°N, 8.83°W" part of the result's ICES rectangle line.
     async getSuggestionCoordinates(areaCode: string): Promise<string> {
         logStep(`Getting coordinates for sub area ${areaCode}`);
         const texts = await this.getSuggestionText(areaCode);

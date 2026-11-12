@@ -33,7 +33,6 @@ export class BasePage {
         return this.offlineBanner.isDisplayed();
     }
 
-    // Swipes the page up until the element is displayed. Pass swipeX to swipe outside gesture-capturing content such as maps.
     async scrollUntilDisplayed(
         element: ChainablePromiseElement,
         { maxSwipes = 5, swipeX }: { maxSwipes?: number; swipeX?: number } = {},
@@ -65,7 +64,6 @@ export class BasePage {
         for (let attempt = 1; attempt <= maxAttempts; attempt++) {
             try {
                 await driver.activateApp(this.appId);
-                // 4 = running in foreground
                 await driver.waitUntil(async () => (await driver.queryAppState(this.appId)) === 4, {
                     timeout: 20000,
                     timeoutMsg: 'App did not reach the foreground.',

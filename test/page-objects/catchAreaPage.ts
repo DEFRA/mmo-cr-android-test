@@ -22,7 +22,6 @@ export class CatchAreaPage extends BasePage {
         return $(`//android.widget.TextView[@text="Selected area: ${areaCode}"]`);
     }
 
-    // The selection state is announced in the map's content-desc, e.g. "... Selected area: 30F04 Drag to pan ...".
     private async getMapDescription(): Promise<string> {
         return (await this.map.getAttribute('content-desc')) ?? '';
     }
@@ -51,7 +50,6 @@ export class CatchAreaPage extends BasePage {
         };
     }
 
-    // Waits until two consecutive map screenshots match, i.e. any pan/zoom animation has finished.
     private async waitForMapToSettle() {
         let previous = await this.getMapSnapshot();
         await browser.waitUntil(
@@ -70,7 +68,6 @@ export class CatchAreaPage extends BasePage {
         await this.map.waitForDisplayed();
 
         const { x: mapX, y: mapY, width, height } = await this.mapBounds();
-        // The departure port sits mid-map with land above it, so tap fixed points in the lower part where the sea sub-areas are.
         const tapPoints = [
             { fx: 0.5, fy: 0.8 },
             { fx: 0.3, fy: 0.75 },
@@ -115,7 +112,6 @@ export class CatchAreaPage extends BasePage {
         throw new Error('Could not select a catch area on the map.');
     }
 
-    // Swipes in the page margin beside the map, because swiping on the map pans it instead of scrolling the page.
     private async scrollPastMapTo(target: ChainablePromiseElement) {
         const { x: mapX } = await this.map.getLocation();
         await this.scrollUntilDisplayed(target, { swipeX: Math.max(1, Math.floor(mapX / 2)) });

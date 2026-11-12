@@ -10,7 +10,6 @@ After(async () => {
     await signInPage.close();
 });
 
-// After hooks run in reverse order, so this restores the network before the app is closed.
 After({ tags: '@offline' }, async () => {
     await NetworkHelper.goOnline();
 });

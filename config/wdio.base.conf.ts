@@ -65,7 +65,6 @@ export const allureReporter: NonNullable<WebdriverIO.Config['reporters']>[number
     {
         outputDir: 'allure-results',
         useCucumberStepReporter: true,
-        // Raw findElement/isElementDisplayed calls are noise; logStep messages are reported instead.
         disableWebdriverStepsReporting: true,
     },
 ];
@@ -82,8 +81,6 @@ export const baseConfig: Omit<WebdriverIO.Config, 'capabilities'> = {
     waitforInterval: 200,
     connectionRetryTimeout: 2 * oneMinute,
     connectionRetryCount: 3,
-    // WebdriverIO 10 defaults this to true; Compose screen transitions briefly keep both screens in the tree,
-    // so selectors can transiently match twice. Keep WebdriverIO 9 first-match behaviour.
     strictSelectors: false,
 
     framework: 'cucumber',

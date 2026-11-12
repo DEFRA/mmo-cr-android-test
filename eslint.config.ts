@@ -16,7 +16,6 @@ export default defineConfig([
 
     tseslint.configs.strictTypeChecked,
 
-    // Plugin types its rule severities as plain strings
     wdioConfig['flat/recommended'] as Linter.Config,
 
     {
@@ -38,7 +37,6 @@ export default defineConfig([
         rules: {
             'prettier/prettier': 'error',
             'no-console': 'error',
-            // Fixed waits are deliberate for gestures and app start-up on Android.
             'wdio/no-pause': 'off',
             '@typescript-eslint/restrict-template-expressions': [
                 'error',

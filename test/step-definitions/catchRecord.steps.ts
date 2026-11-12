@@ -169,7 +169,6 @@ Then('the record is submitted once the late submission warning is acknowledged',
 });
 
 Then('a record with status {string} is displayed', async (status: string) => {
-    // Sync after reconnecting can take a few seconds.
     await expect($(`//android.widget.TextView[@text="${status}"]`)).toBeDisplayed({
         wait: 15000,
     });

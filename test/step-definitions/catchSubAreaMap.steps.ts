@@ -44,7 +44,6 @@ When('I select Save and Continue without selecting an area', async () => {
     await catchAreaPage.saveAndContinue();
 });
 
-// The map exposes its highlighted area through its accessibility description.
 Then('the selected area is highlighted', async () => {
     expect(await catchAreaPage.getSelectedAreaCode()).toEqual(selectedAreaCode);
 });
@@ -63,7 +62,11 @@ Then('I proceed to the next step of the catch recording journey', async () => {
 
 Then('the selected statistical sub area is attached to the catch record', async () => {
     await expect(catchRecordSummaryPage.heading).toBeDisplayed();
-    const areaCode = $(`//android.widget.TextView[contains(@text, "${selectedAreaCode}")]`);
+    const areaCodeValue = selectedAreaCode;
+    if (areaCodeValue === null) {
+        throw new Error('No statistical sub area has been selected');
+    }
+    const areaCode = $(`//android.widget.TextView[contains(@text, "${areaCodeValue}")]`);
     await catchRecordSummaryPage.scrollUntilDisplayed(areaCode, { maxSwipes: 10 });
     await expect(areaCode).toBeDisplayed();
 });

@@ -55,7 +55,6 @@ Then('the email field shows the entered email', async function (this: CatchRecor
 Then(
     'the password field contains the entered password length',
     async function (this: CatchRecordWorld) {
-        // Android masks password text, so only the length is comparable.
         expect((await signInPage.passwordField.getText()).length).toBe(this.password?.length);
     },
 );

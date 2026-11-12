@@ -1,5 +1,4 @@
 import { Given, Then, When } from '@wdio/cucumber-framework';
-import type { DataTable } from '@wdio/cucumber-framework';
 import homePage from '../page-objects/homePage';
 import signInPage from '../page-objects/signInPage';
 import { BasePage } from '../page-objects/basePage';
@@ -51,12 +50,6 @@ When('I go back online', async () => {
     await NetworkHelper.goOnline();
 });
 
-When('I go back {int} time(s)', async (times: number) => {
-    for (let i = 0; i < times; i++) {
-        await driver.back();
-    }
-});
-
 When('I save and continue', async () => {
     await currentPage.saveAndContinue();
 });
@@ -72,6 +65,8 @@ async function assertOnPage(name: PageName) {
 Given('I am on the {page} page', assertOnPage);
 
 Then('I should be on the {page} page', assertOnPage);
+
+Then('the {page} page is displayed', assertOnPage);
 
 Then('I should see a validation error on the {page} page', async (name: PageName) => {
     const { validationError } = getPage(name);
@@ -93,9 +88,3 @@ Then(
         await expect(textContainingAnyOf(texts)).toBeDisplayed();
     },
 );
-
-Then('a message containing any of these is displayed:', async (table: DataTable) => {
-    const texts = table.raw().flat();
-    await scrollToTextContainingAnyOf(texts);
-    await expect(textContainingAnyOf(texts)).toBeDisplayed();
-});

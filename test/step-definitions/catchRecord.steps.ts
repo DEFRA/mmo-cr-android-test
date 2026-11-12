@@ -4,8 +4,7 @@ import androidFlowNavigator from '../helpers/androidFlowNavigator';
 import catchAreaPage from '../page-objects/catchAreaPage';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import catchSubAreaPage from '../page-objects/catchSubAreaPage';
-import gearMeasurementPage from '../page-objects/gearMeasurementPage';
-import gearPage from '../page-objects/gearPage';
+import homePage from '../page-objects/homePage';
 import submissionSuccessPage from '../page-objects/submissionSuccessPage';
 import tripEndDatePage from '../page-objects/tripEndDatePage';
 import tripStartDatePage from '../page-objects/tripStartDatePage';
@@ -71,25 +70,6 @@ When(
         await androidFlowNavigator.selectAreas(area, subArea);
     },
 );
-
-When('I search and select gear {string}', async (gear: string) => {
-    await gearPage.heading.waitForDisplayed();
-    await gearPage.searchSelectAndContinue(gear, gear);
-});
-
-When('I enter mesh size {string}', async (size: string) => {
-    await gearMeasurementPage.heading.waitForDisplayed();
-    await gearMeasurementPage.enterMeshSizeAndContinue(size);
-});
-
-When('I replace the mesh size with {string}', async (size: string) => {
-    const inputField = $('//android.widget.EditText');
-    await inputField.clearValue();
-    await inputField.setValue(size);
-    await $(
-        '//android.widget.Button[contains(@text, "Continue") or contains(@text, "Save")]',
-    ).click();
-});
 
 Then('the catch area map is displayed', async () => {
     await catchAreaPage.heading.waitForDisplayed();
@@ -160,16 +140,7 @@ Then('a record reference is shown', async () => {
     logInfo(`Catch record reference: ${referenceId}`);
 });
 
-Then('the record is submitted once the late submission warning is acknowledged', async () => {
-    const submitButton = $('//android.widget.Button[contains(@text, "Submit")]');
-    if (await submitButton.isDisplayed()) {
-        await submitButton.click();
-        await expect(submissionSuccessPage.heading).toBeDisplayed();
-    }
-});
-
 Then('a record with status {string} is displayed', async (status: string) => {
-    await expect($(`//android.widget.TextView[@text="${status}"]`)).toBeDisplayed({
-        wait: 15000,
-    });
+    // Sync after reconnecting can take a few seconds.
+    await expect(homePage.recordWithStatus(status)).toBeDisplayed({ wait: 15000 });
 });

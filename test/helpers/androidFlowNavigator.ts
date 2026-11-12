@@ -1,19 +1,19 @@
 import { logStep } from '../common/logger';
-import homePage from '../page-objects/homePage';
-import tripTodayPage from '../page-objects/tripTodayPage';
-import tripStartDatePage from '../page-objects/tripStartDatePage';
-import tripEndDatePage from '../page-objects/tripEndDatePage';
-import selectVesselPage from '../page-objects/selectVesselPage';
-import departurePortPage from '../page-objects/departurePortPage';
-import returnPortPage from '../page-objects/returnPortPage';
 import catchAreaPage from '../page-objects/catchAreaPage';
 import catchSubAreaPage from '../page-objects/catchSubAreaPage';
-import gearPage from '../page-objects/gearPage';
-import gearMeasurementPage from '../page-objects/gearMeasurementPage';
-import selectedGearsPage from '../page-objects/selectedGearsPage';
-import speciesPage from '../page-objects/speciesPage';
-import selectedSpeciesPage from '../page-objects/selectedSpeciesPage';
 import delayedLandingPage from '../page-objects/delayedLandingPage';
+import departurePortPage from '../page-objects/departurePortPage';
+import gearMeasurementPage from '../page-objects/gearMeasurementPage';
+import gearPage from '../page-objects/gearPage';
+import homePage from '../page-objects/homePage';
+import returnPortPage from '../page-objects/returnPortPage';
+import selectVesselPage from '../page-objects/selectVesselPage';
+import selectedGearsPage from '../page-objects/selectedGearsPage';
+import selectedSpeciesPage from '../page-objects/selectedSpeciesPage';
+import speciesPage from '../page-objects/speciesPage';
+import tripEndDatePage from '../page-objects/tripEndDatePage';
+import tripStartDatePage from '../page-objects/tripStartDatePage';
+import tripTodayPage from '../page-objects/tripTodayPage';
 
 export type DateData = { day: string; month: string; year: string };
 

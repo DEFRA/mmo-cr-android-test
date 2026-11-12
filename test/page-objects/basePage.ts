@@ -20,7 +20,7 @@ export class BasePage {
         logStep('Clicking Save and Continue');
         try {
             await this.saveAndContinueButton.waitForDisplayed({ timeout: 1000 });
-        } catch (error) {
+        } catch {
             logWarn('BasePage: Save and Continue button not visible, scrolling forward to find it');
             await $('android=new UiScrollable(new UiSelector().scrollable(true)).scrollForward()');
             await this.saveAndContinueButton.waitForDisplayed({ timeout: 1000 });
@@ -74,7 +74,9 @@ export class BasePage {
                 return;
             } catch (error) {
                 lastError = error;
-                logWarn(`BasePage: Failed to open app on attempt ${attempt}. Error: ${error}`);
+                logWarn(
+                    `BasePage: Failed to open app on attempt ${attempt}. Error: ${String(error)}`,
+                );
                 if (attempt < maxAttempts) {
                     await browser.pause(attempt * 2000);
                 }

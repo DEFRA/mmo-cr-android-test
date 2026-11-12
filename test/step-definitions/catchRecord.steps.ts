@@ -1,15 +1,15 @@
 import { Then, When } from '@wdio/cucumber-framework';
 import type { DataTable } from '@wdio/cucumber-framework';
 import androidFlowNavigator from '../helpers/androidFlowNavigator';
-import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
-import submissionSuccessPage from '../page-objects/submissionSuccessPage';
-import tripTodayPage from '../page-objects/tripTodayPage';
-import tripStartDatePage from '../page-objects/tripStartDatePage';
-import tripEndDatePage from '../page-objects/tripEndDatePage';
-import gearPage from '../page-objects/gearPage';
-import gearMeasurementPage from '../page-objects/gearMeasurementPage';
 import catchAreaPage from '../page-objects/catchAreaPage';
+import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import catchSubAreaPage from '../page-objects/catchSubAreaPage';
+import gearMeasurementPage from '../page-objects/gearMeasurementPage';
+import gearPage from '../page-objects/gearPage';
+import submissionSuccessPage from '../page-objects/submissionSuccessPage';
+import tripEndDatePage from '../page-objects/tripEndDatePage';
+import tripStartDatePage from '../page-objects/tripStartDatePage';
+import tripTodayPage from '../page-objects/tripTodayPage';
 import { logInfo } from '../common/logger';
 import { formatDate } from '../common/dateHelper';
 

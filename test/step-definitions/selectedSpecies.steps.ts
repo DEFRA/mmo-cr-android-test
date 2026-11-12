@@ -1,6 +1,6 @@
 import { Then, When } from '@wdio/cucumber-framework';
-import speciesPage from '../page-objects/speciesPage';
 import selectedSpeciesPage from '../page-objects/selectedSpeciesPage';
+import speciesPage from '../page-objects/speciesPage';
 
 When('I search {string} and add species {string}', async (searchText: string, species: string) => {
     await speciesPage.heading.waitForDisplayed();

@@ -18,10 +18,13 @@ import tripEndDatePage from '../page-objects/tripEndDatePage';
 import tripStartDatePage from '../page-objects/tripStartDatePage';
 import tripTodayPage from '../page-objects/tripTodayPage';
 
+type Element = ReturnType<typeof $>;
+
 export interface PageDefinition {
     page: BasePage;
-    heading: () => ChainablePromiseElement;
-    validationError?: () => ChainablePromiseElement;
+    heading: () => Element;
+    validationError?: () => Element;
+    scrollToHeading?: boolean;
 }
 
 // Keys are the page names used in feature files, e.g. "Then I should be on the gear page".
@@ -59,10 +62,6 @@ export type PageName = keyof typeof pages;
 
 export const pageNames = Object.keys(pages) as PageName[];
 
-export function getPage(name: string): PageDefinition {
-    const definition = (pages as Record<string, PageDefinition>)[name];
-    if (!definition) {
-        throw new Error(`Unknown page "${name}". Known pages: ${pageNames.join(', ')}`);
-    }
-    return definition;
+export function getPage(name: PageName): PageDefinition {
+    return pages[name];
 }

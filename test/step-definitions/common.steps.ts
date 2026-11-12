@@ -1,11 +1,11 @@
 import { Given, Then, When } from '@wdio/cucumber-framework';
 import type { DataTable } from '@wdio/cucumber-framework';
-import signInPage from '../page-objects/signInPage';
 import homePage from '../page-objects/homePage';
+import signInPage from '../page-objects/signInPage';
 import { BasePage } from '../page-objects/basePage';
 import { getAndroidTestCredentials } from '../helpers/testCredentials';
 import NetworkHelper from '../helpers/networkHelper';
-import { getPage, pageNames } from '../support/pages';
+import { getPage, type PageName } from '../support/pages';
 
 const currentPage = new BasePage();
 
@@ -38,8 +38,24 @@ When('I save and continue', async () => {
     await currentPage.saveAndContinue();
 });
 
-Then(new RegExp(`^I should be on the (${pageNames.join('|')}) page$`), async (name: string) => {
-    await expect(getPage(name).heading()).toBeDisplayed();
+async function assertOnPage(name: PageName) {
+    const { page, heading, scrollToHeading } = getPage(name);
+    if (scrollToHeading) {
+        await page.scrollUntilDisplayed(heading());
+    }
+    await expect(heading()).toBeDisplayed();
+}
+
+Given('I am on the {page} page', assertOnPage);
+
+Then('I should be on the {page} page', assertOnPage);
+
+Then('I should see a validation error on the {page} page', async (name: PageName) => {
+    const { validationError } = getPage(name);
+    if (!validationError) {
+        throw new Error(`No validation error is defined for the ${name} page`);
+    }
+    await expect(validationError()).toBeDisplayed();
 });
 
 Then('the home screen is displayed', async () => {

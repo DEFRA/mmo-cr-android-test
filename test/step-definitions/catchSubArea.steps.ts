@@ -1,6 +1,6 @@
 import { Then, When } from '@wdio/cucumber-framework';
-import catchSubAreaPage from '../page-objects/catchSubAreaPage';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
+import catchSubAreaPage from '../page-objects/catchSubAreaPage';
 
 let capturedCoordinates = '';
 let previousCoordinates = '';
@@ -56,7 +56,7 @@ Then('the coordinates for sub area {string} are displayed', async (areaCode: str
     capturedCoordinates = await catchSubAreaPage.getSuggestionCoordinates(areaCode);
 });
 
-Then('the sub area coordinates have changed', async () => {
+Then('the sub area coordinates have changed', () => {
     expect(capturedCoordinates).not.toEqual(previousCoordinates);
 });
 

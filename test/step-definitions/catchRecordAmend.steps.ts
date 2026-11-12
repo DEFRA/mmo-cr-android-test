@@ -1,7 +1,7 @@
 import { Then, When } from '@wdio/cucumber-framework';
-import selectVesselPage from '../page-objects/selectVesselPage';
 import departurePortPage from '../page-objects/departurePortPage';
 import returnPortPage from '../page-objects/returnPortPage';
+import selectVesselPage from '../page-objects/selectVesselPage';
 import selectedGearsPage from '../page-objects/selectedGearsPage';
 import speciesPage from '../page-objects/speciesPage';
 import { logInfo } from '../common/logger';

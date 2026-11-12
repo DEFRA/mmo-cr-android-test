@@ -18,6 +18,15 @@ export class CatchRecordSummaryPage extends BasePage {
         );
     }
 
+    textContaining(text: string) {
+        return $(`//android.widget.TextView[contains(@text, "${text}")]`);
+    }
+
+    async scrollToText(text: string) {
+        logStep(`Scrolling summary to "${text}"`);
+        await this.scrollUntilDisplayed(this.textContaining(text), { maxSwipes: 10 });
+    }
+
     async getFieldValue(label: string): Promise<string> {
         logStep(`Getting field value for ${label}`);
         const field = this.fieldValue(label);

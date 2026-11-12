@@ -66,7 +66,6 @@ Then('the centre of the selected sub area is displayed', async () => {
 });
 
 Then('the summary shows sub area {string}', async (areaCode: string) => {
-    const value = $(`//android.widget.TextView[contains(@text, "${areaCode}")]`);
-    await catchRecordSummaryPage.scrollUntilDisplayed(value, { maxSwipes: 10 });
-    await expect(value).toBeDisplayed();
+    await catchRecordSummaryPage.scrollToText(areaCode);
+    await expect(catchRecordSummaryPage.textContaining(areaCode)).toBeDisplayed();
 });

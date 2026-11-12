@@ -16,14 +16,14 @@ Feature: Catch record end-to-end journey
             | species         | retained | below minimum | discarded |
             | Brown crab (TBC) | 5        | 1             | 1         |
         And I select no delayed landing
-        Then the catch record summary is displayed
+        Then I should be on the catch record summary page
         And the summary shows "Vessel" as "ACHILLES"
         And the summary shows "Departure port" as "Hastings"
         When I accept and submit the catch record
-        Then the submission success screen is displayed
+        Then I should be on the submission success page
         And a record reference is shown
         When I view my records
-        Then the home screen is displayed
+        Then I should be on the home page
 
     @offline
     Scenario: Successfully complete a catch record (Offline Happy Path)
@@ -38,9 +38,9 @@ Feature: Catch record end-to-end journey
             | species         | retained | below minimum | discarded |
             | Brown crab (TBC) | 5        | 1             | 1         |
         And I select no delayed landing
-        Then the catch record summary is displayed
+        Then I should be on the catch record summary page
         When I accept and submit the catch record
         Then the offline banner is displayed
         And a record reference is shown
         When I view my records
-        Then the home screen is displayed
+        Then I should be on the home page

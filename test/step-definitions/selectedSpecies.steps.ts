@@ -24,18 +24,6 @@ When('I clear the retained weight', async () => {
     await selectedSpeciesPage.retainedWeightField.clearValue();
 });
 
-When('I enter a retained weight of {string}', async (weight: string) => {
-    await selectedSpeciesPage.enterRetainedWeight(weight);
-});
-
-When('I enter a below minimum size weight of {string}', async (weight: string) => {
-    await selectedSpeciesPage.enterBelowMinWeight(weight);
-});
-
-When('I enter a legally discarded weight of {string}', async (weight: string) => {
-    await selectedSpeciesPage.enterDiscardedWeight(weight);
-});
-
 When('I enter {string} in the {string} weight field', async (weight: string, field: string) => {
     switch (field) {
         case 'above minimum size retained':
@@ -70,12 +58,4 @@ Then('the below minimum size weight field is displayed', async () => {
 
 Then('the legally discarded weight field is displayed', async () => {
     await expect(selectedSpeciesPage.discardedWeightField).toBeDisplayed();
-});
-
-Then('the species search screen is displayed', async () => {
-    await expect(speciesPage.heading).toBeDisplayed();
-});
-
-Then('the selected species screen is displayed', async () => {
-    await expect(selectedSpeciesPage.heading).toBeDisplayed();
 });

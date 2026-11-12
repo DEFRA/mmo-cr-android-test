@@ -118,16 +118,8 @@ When('I view my records', async () => {
     await submissionSuccessPage.clickViewRecords();
 });
 
-Then('the catch record summary is displayed', async () => {
-    await expect(catchRecordSummaryPage.heading).toBeDisplayed();
-});
-
 Then('the summary shows {string} as {string}', async (field: string, value: string) => {
     expect(await catchRecordSummaryPage.getFieldValue(field)).toEqual(value);
-});
-
-Then('the submission success screen is displayed', async () => {
-    await expect(submissionSuccessPage.heading).toBeDisplayed();
 });
 
 Then('the offline banner is displayed', async () => {

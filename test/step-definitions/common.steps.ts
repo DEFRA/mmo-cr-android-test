@@ -66,18 +66,12 @@ Given('I am on the {page} page', assertOnPage);
 
 Then('I should be on the {page} page', assertOnPage);
 
-Then('the {page} page is displayed', assertOnPage);
-
 Then('I should see a validation error on the {page} page', async (name: PageName) => {
     const { validationError } = getPage(name);
     if (!validationError) {
         throw new Error(`No validation error is defined for the ${name} page`);
     }
     await expect(validationError()).toBeDisplayed();
-});
-
-Then('the home screen is displayed', async () => {
-    await expect(homePage.heading).toBeDisplayed();
 });
 
 Then(

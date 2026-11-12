@@ -27,6 +27,10 @@ When('I leave and reopen the application', async () => {
     await homePage.openApp();
 });
 
+When('I minimise the app for {int} seconds', async (seconds: number) => {
+    await driver.execute('mobile: backgroundApp', { seconds });
+});
+
 Given('I have a submitted catch record', async () => {
     await submitCompletedCatchRecord();
     await expect(submissionSuccessPage.heading).toBeDisplayed();

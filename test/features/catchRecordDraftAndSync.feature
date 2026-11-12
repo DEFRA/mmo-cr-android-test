@@ -1,6 +1,6 @@
 @catchRecord
 @draftAndSync
-Feature:(CRAR-152) Continue with catch a record after closing
+Feature:Continue with catch a record after closing
 
     As a fisher
     I want my catch record progress to be saved and sent when I have a connection
@@ -17,7 +17,19 @@ Feature:(CRAR-152) Continue with catch a record after closing
         And I am signed in
         Then a record with status "Draft" is displayed
         When I continue the draft catch record
-        Then the departure port page is displayed
+        Then I should be on the departure port page
+
+    Scenario: Catch area map resumes after the app is minimised
+        When I start a catch record
+        And I select vessel "ACHILLES"
+        And I select a trip for today
+        And I select departure port "Hastings" and return port "Dover"
+        And I select gear "Seine nets" with mesh size 10 and 10 shots
+        Then the catch area map is displayed
+        When I minimise the app for 10 seconds
+        Then the catch area map is displayed
+        When I select a statistical sub area on the map
+        Then the selected area is highlighted
 
     @offline
     Scenario: Submission fails while offline
@@ -27,7 +39,8 @@ Feature:(CRAR-152) Continue with catch a record after closing
         And I select a trip for today
         And I select departure port "Hastings" and return port "Dover"
         And I select gear "Seine nets" with mesh size 10 and 10 shots
-        And I select catch area "Other" with sub area "38E95"
+        And I select a statistical sub area on the map
+        And I select Save and Continue
         And I select species with the following weights:
             | species          | retained | below minimum | discarded |
             | Brown crab (TBC) | 5        | 1             | 1         |

@@ -107,7 +107,7 @@ Feature: Record catch weights for selected species
 
     Scenario: Open the add species screen
         When I choose to add another species
-        Then the species search screen is displayed
+        Then I should be on the species page
 
     Scenario: Open species removal options
         When I choose to remove a species

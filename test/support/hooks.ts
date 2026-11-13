@@ -10,6 +10,7 @@ After(async () => {
     await signInPage.close();
 });
 
-After({ tags: '@offline' }, async () => {
+// Always restore connectivity so an offline scenario cannot leave airplane mode on for the next one.
+After(async () => {
     await NetworkHelper.goOnline();
 });

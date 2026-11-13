@@ -133,6 +133,5 @@ Then('a record reference is shown', async () => {
 });
 
 Then('a record with status {string} is displayed', async (status: string) => {
-    // Sync after reconnecting can take a few seconds.
-    await expect(homePage.recordWithStatus(status)).toBeDisplayed({ wait: 15000 });
+    await homePage.waitForRecordWithStatus(status);
 });

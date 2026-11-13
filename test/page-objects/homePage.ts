@@ -12,9 +12,30 @@ export class HomePage extends BasePage {
         );
     }
 
-    // Each record row is one button announced as "<trip end date>, <vessel>, <status>, Trip ID <id>".
+    // Editable rows (e.g. Draft) are a button announced as "<date>, <vessel>, <status>, Trip ID <id>";
+    // read-only rows (e.g. Submitted) render the status as a separate text view inside the row.
     recordWithStatus(status: string) {
-        return $(`//android.widget.Button[contains(@content-desc, ", ${status}, ")]`);
+        return $(
+            `//android.widget.Button[contains(@content-desc, ", ${status}, ")]` +
+                ` | //android.widget.HorizontalScrollView//android.widget.TextView[@text="${status}"]`,
+        );
+    }
+
+    async waitForRecordWithStatus(status: string, timeout = 15000) {
+        logStep(`Waiting for a record with status: ${status}`);
+        const record = this.recordWithStatus(status);
+        // Keep scrolling while waiting, since the row may be below the fold or still syncing.
+        await browser.waitUntil(
+            async () => {
+                if (await record.isDisplayed()) {
+                    return true;
+                }
+                await this.scrollUntilDisplayed(record, { maxSwipes: 3, direction: 'up' });
+                await this.scrollUntilDisplayed(record, { maxSwipes: 3, direction: 'down' });
+                return record.isDisplayed();
+            },
+            { timeout, timeoutMsg: `No record with status "${status}" was displayed` },
+        );
     }
 
     get completeDraftOption() {
@@ -26,7 +47,7 @@ export class HomePage extends BasePage {
     async continueDraftRecord() {
         logStep('Continuing draft catch record');
         const draft = this.recordWithStatus('Draft');
-        await draft.waitForDisplayed();
+        await this.waitForRecordWithStatus('Draft');
         await draft.click();
         await this.completeDraftOption.waitForDisplayed();
         await this.completeDraftOption.click();

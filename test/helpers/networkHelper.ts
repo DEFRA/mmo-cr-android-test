@@ -2,18 +2,19 @@ import { logStep } from '../common/logger';
 
 // Uses the driver's built-in toggle, which does not need Appium's insecure adb_shell feature.
 export class NetworkHelper {
-    private static async setConnectivity(enabled: boolean) {
-        await driver.execute('mobile: setConnectivity', { wifi: enabled, data: enabled });
-    }
-
     static async goOffline() {
-        logStep('Going OFFLINE (Disabling Wi-Fi and mobile data)');
-        await this.setConnectivity(false);
+        logStep('Going OFFLINE (Enabling airplane mode)');
+        await driver.execute('mobile: setConnectivity', { airplaneMode: true });
     }
 
     static async goOnline() {
-        logStep('Going ONLINE (Enabling Wi-Fi and mobile data)');
-        await this.setConnectivity(true);
+        logStep('Going ONLINE (Disabling airplane mode)');
+        // Re-enable Wi-Fi and data too, in case the device left them off after airplane mode.
+        await driver.execute('mobile: setConnectivity', {
+            airplaneMode: false,
+            wifi: true,
+            data: true,
+        });
     }
 }
 

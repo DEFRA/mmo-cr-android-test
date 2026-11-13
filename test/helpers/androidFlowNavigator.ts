@@ -112,7 +112,7 @@ export class AndroidFlowNavigator {
             `Selecting species: ${speciesName} (weights: ${retainedWeight} / ${belowMinWeight} / ${discardedWeight})`,
         );
         await speciesPage.heading.waitForDisplayed();
-        const searchText = speciesName.length > 2 ? speciesName.substring(0, 3) : speciesName;
+        const searchText = speciesName.length > 2 ? speciesName.substring(0, 2) : speciesName;
         await speciesPage.searchSelectAndContinue(searchText, speciesName);
 
         await selectedSpeciesPage.heading.waitForDisplayed();

@@ -44,10 +44,18 @@ Given('I am signed in', async () => {
 
 Given('I am offline', async () => {
     await NetworkHelper.goOffline();
+    await expect(currentPage.offlineBannerLabel).toBeDisplayed({ wait: 10000 });
+    await expect(currentPage.offlineBanner).toBeDisplayed();
 });
 
 When('I go back online', async () => {
     await NetworkHelper.goOnline();
+    await currentPage.offlineBannerLabel.waitForDisplayed({
+        timeout: 30000,
+        reverse: true,
+        timeoutMsg: 'Offline banner was still displayed 30s after going back online',
+    });
+    await expect(currentPage.offlineBanner).not.toBeDisplayed();
 });
 
 When('I save and continue', async () => {

@@ -4,16 +4,22 @@ import NetworkHelper from '../helpers/networkHelper';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import homePage from '../page-objects/homePage';
 import submissionSuccessPage from '../page-objects/submissionSuccessPage';
+import { completedCatchRecordData, offlineCatchRecordData } from '../data/catchRecordSync.data';
 
-async function submitCompletedCatchRecord() {
+async function submitCompletedCatchRecord(data: typeof completedCatchRecordData) {
     await androidFlowNavigator.startCatchRecord();
-    await androidFlowNavigator.selectVessel('ACHILLES');
-    await androidFlowNavigator.selectTripDates(true);
-    await androidFlowNavigator.selectPorts('Hastings', 'Dover');
-    await androidFlowNavigator.selectGear('Seine nets', 10, 10);
+    await androidFlowNavigator.selectVessel(data.vessel);
+    await androidFlowNavigator.selectTripDates(data.tripToday);
+    await androidFlowNavigator.selectPorts(data.ports.departure, data.ports.return);
+    await androidFlowNavigator.selectGear(data.gear.name, data.gear.meshSize, data.gear.shots);
     await androidFlowNavigator.selectAreas();
-    await androidFlowNavigator.selectSpecies('Brown crab (TBC)', 5, 1, 1);
-    await androidFlowNavigator.selectDelayedLanding(false);
+    await androidFlowNavigator.selectSpecies(
+        data.species.name,
+        data.species.retainedWeight,
+        data.species.belowMinimumWeight,
+        data.species.discardedWeight,
+    );
+    await androidFlowNavigator.selectDelayedLanding(data.delayedLanding);
     await expect(catchRecordSummaryPage.heading).toBeDisplayed();
     await catchRecordSummaryPage.acceptAndSubmit();
 }
@@ -32,18 +38,18 @@ When('I minimise the app for {int} seconds', async (seconds: number) => {
 });
 
 Given('I have a submitted catch record', async () => {
-    await submitCompletedCatchRecord();
+    await submitCompletedCatchRecord(completedCatchRecordData);
     await expect(submissionSuccessPage.heading).toBeDisplayed();
     await submissionSuccessPage.clickViewRecords();
-    await expect(homePage.recordWithStatus('Submitted')).toBeDisplayed({ wait: 15000 });
+    await homePage.waitForRecordWithStatus('Submitted');
 });
 
 Given('I have a catch record awaiting sync', async () => {
     await NetworkHelper.goOffline();
-    await submitCompletedCatchRecord();
+    await submitCompletedCatchRecord(offlineCatchRecordData);
     await expect(submissionSuccessPage.offlineBanner).toBeDisplayed();
     await submissionSuccessPage.clickViewRecords();
-    await expect(homePage.recordWithStatus('Awaiting Sync')).toBeDisplayed();
+    await homePage.waitForRecordWithStatus('Unsent');
 });
 
 Given('I have a draft catch record', async () => {

@@ -31,7 +31,6 @@ Feature:Continue with catch a record after closing
         When I select a statistical sub area on the map
         Then the selected area is highlighted
 
-    @offline
     Scenario: Submission fails while offline
         Given I am offline
         When I start a catch record
@@ -42,26 +41,27 @@ Feature:Continue with catch a record after closing
         And I select a statistical sub area on the map
         And I select Save and Continue
         And I select species with the following weights:
-            | species          | retained | below minimum | discarded |
-            | Brown crab (TBC) | 5        | 1             | 1         |
+            | species        | retained | below minimum | discarded |
+            | Zebra seabream | 5        | 1             | 1         |
         And I select no delayed landing
         And I accept and submit the catch record
         Then the offline banner is displayed
         When I view my records
-        Then a record with status "unsent" is displayed
+        Then a record with status "Unsent" is displayed
 
-    @offline
     Scenario: Connectivity is restored
-        Given I have a catch record with status "unsent"
+        Given I am offline
+        And I have a catch record awaiting sync
+        Then a record with status "Unsent" is displayed
         When I go back online
         Then a record with status "Submitted" is displayed
 
-    @offline
     Scenario: User views record statuses
         Given I have a submitted catch record
-        And I have a catch record with status "unsent"
+        And I am offline
+        And I have a catch record awaiting sync
         And I have a draft catch record
         When I open my records list
         Then a record with status "Draft" is displayed
-        And a record with status "unsent    " is displayed
+        And a record with status "Unsent" is displayed
         And a record with status "Submitted" is displayed

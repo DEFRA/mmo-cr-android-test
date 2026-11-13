@@ -32,7 +32,6 @@ When(/^I enter a trip start date of (today|\d+ days? ago)$/, async (when: string
     const { day, month, year } = dateFromPhrase(when);
     await tripTodayPage.heading.waitForDisplayed();
     await tripTodayPage.selectNo();
-    await tripStartDatePage.heading.waitForDisplayed();
     await tripStartDatePage.enterDateAndContinue(day, month, year);
 });
 
@@ -123,7 +122,7 @@ Then('the summary shows {string} as {string}', async (field: string, value: stri
 });
 
 Then('the offline banner is displayed', async () => {
-    expect(await submissionSuccessPage.isOfflineBannerDisplayed()).toBe(true);
+    await expect(submissionSuccessPage.offlineBanner).toBeDisplayed();
 });
 
 Then('a record reference is shown', async () => {

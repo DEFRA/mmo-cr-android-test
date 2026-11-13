@@ -40,15 +40,11 @@ export class AndroidFlowNavigator {
                 throw new Error('Must provide startDate and endDate when tripToday is false');
             }
             await tripTodayPage.selectNo();
-
-            await tripStartDatePage.heading.waitForDisplayed();
             await tripStartDatePage.enterDateAndContinue(
                 startDate.day,
                 startDate.month,
                 startDate.year,
             );
-
-            await tripEndDatePage.heading.waitForDisplayed();
             await tripEndDatePage.enterDateAndContinue(endDate.day, endDate.month, endDate.year);
         }
     }

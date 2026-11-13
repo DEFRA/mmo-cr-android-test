@@ -54,7 +54,7 @@ Given('I have a catch record awaiting sync', async () => {
 
 Given('I have a draft catch record', async () => {
     await androidFlowNavigator.startCatchRecord();
-    await androidFlowNavigator.selectVessel('ACHILLES');
+    await androidFlowNavigator.selectVessel(completedCatchRecordData.vessel);
     await driver.back();
     await driver.back();
     await expect(homePage.heading).toBeDisplayed();

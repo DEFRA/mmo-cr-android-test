@@ -1,7 +1,7 @@
 import { Given, Then, When } from '@wdio/cucumber-framework';
 import homePage from '../page-objects/homePage';
 import signInPage from '../page-objects/signInPage';
-import { BasePage } from '../page-objects/basePage';
+import { BasePage } from '../page-objects/base/basePage';
 import { getAndroidTestCredentials } from '../helpers/testCredentials';
 import NetworkHelper from '../helpers/networkHelper';
 import { getPage, type PageName } from '../support/pages';

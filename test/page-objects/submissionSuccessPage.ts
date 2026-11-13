@@ -1,4 +1,4 @@
-import { BasePage } from './basePage';
+import { BasePage } from './base/basePage';
 import { logStep } from '../common/logger';
 
 export class SubmissionSuccessPage extends BasePage {

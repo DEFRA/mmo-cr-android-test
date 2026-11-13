@@ -1,4 +1,4 @@
-import { BasePage } from './basePage';
+import { BasePage } from './base/basePage';
 import { logStep, logWarn } from '../common/logger';
 
 export class CatchAreaPage extends BasePage {

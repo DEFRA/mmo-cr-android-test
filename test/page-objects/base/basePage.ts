@@ -1,4 +1,4 @@
-import { logError, logInfo, logStep, logWarn } from '../common/logger';
+import { logError, logInfo, logStep, logWarn } from '../../common/logger';
 
 export class BasePage {
     protected readonly appId = process.env.ANDROID_APP_ID ?? 'mmo.catchrecording.android';
@@ -32,9 +32,10 @@ export class BasePage {
         await this.saveAndContinueButton.click();
     }
 
-    async isOfflineBannerDisplayed(): Promise<boolean> {
-        logStep('Checking if offline banner is displayed');
-        return this.offlineBanner.isDisplayed();
+    async hideKeyboard() {
+        if (await driver.isKeyboardShown()) {
+            await driver.hideKeyboard();
+        }
     }
 
     async scrollUntilDisplayed(

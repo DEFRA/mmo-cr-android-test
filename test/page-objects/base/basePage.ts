@@ -1,8 +1,12 @@
-import { logError, logInfo, logStep, logWarn } from '../common/logger';
+import { logError, logInfo, logStep, logWarn } from '../../common/logger';
 
 export class BasePage {
     protected readonly appId = process.env.ANDROID_APP_ID ?? 'mmo.catchrecording.android';
     protected readonly appName = process.env.ANDROID_APP_NAME ?? 'Catch Records';
+
+    get offlineBannerLabel() {
+        return $('//android.widget.TextView[@text="Offline"]');
+    }
 
     get offlineBanner() {
         return $(
@@ -28,17 +32,27 @@ export class BasePage {
         await this.saveAndContinueButton.click();
     }
 
-    async isOfflineBannerDisplayed(): Promise<boolean> {
-        logStep('Checking if offline banner is displayed');
-        return this.offlineBanner.isDisplayed();
+    async hideKeyboard() {
+        if (await driver.isKeyboardShown()) {
+            await driver.hideKeyboard();
+        }
     }
 
     async scrollUntilDisplayed(
         element: ChainablePromiseElement,
-        { maxSwipes = 5, swipeX }: { maxSwipes?: number; swipeX?: number } = {},
+        {
+            maxSwipes = 5,
+            swipeX,
+            direction = 'down',
+        }: { maxSwipes?: number; swipeX?: number; direction?: 'up' | 'down' } = {},
     ) {
         const { width, height } = await driver.getWindowSize();
         const x = swipeX ?? Math.floor(width / 2);
+        // Swiping the finger upwards reveals content further down the page, and vice versa.
+        const [startY, endY] =
+            direction === 'down'
+                ? [Math.floor(height * 0.7), Math.floor(height * 0.4)]
+                : [Math.floor(height * 0.4), Math.floor(height * 0.7)];
         for (let attempt = 0; attempt < maxSwipes && !(await element.isDisplayed()); attempt++) {
             await browser.performActions([
                 {
@@ -46,9 +60,9 @@ export class BasePage {
                     id: 'page-scroll',
                     parameters: { pointerType: 'touch' },
                     actions: [
-                        { type: 'pointerMove', duration: 0, x, y: Math.floor(height * 0.7) },
+                        { type: 'pointerMove', duration: 0, x, y: startY },
                         { type: 'pointerDown', button: 0 },
-                        { type: 'pointerMove', duration: 400, x, y: Math.floor(height * 0.4) },
+                        { type: 'pointerMove', duration: 400, x, y: endY },
                         { type: 'pointerUp', button: 0 },
                     ],
                 },

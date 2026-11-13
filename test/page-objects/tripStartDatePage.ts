@@ -1,4 +1,4 @@
-import { BaseDatePage } from './baseDatePage';
+import { BaseDatePage } from './base/baseDatePage';
 import tripEndDatePage from './tripEndDatePage';
 
 export class TripStartDatePage extends BaseDatePage {

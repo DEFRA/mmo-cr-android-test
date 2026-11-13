@@ -40,15 +40,11 @@ export class AndroidFlowNavigator {
                 throw new Error('Must provide startDate and endDate when tripToday is false');
             }
             await tripTodayPage.selectNo();
-
-            await tripStartDatePage.heading.waitForDisplayed();
             await tripStartDatePage.enterDateAndContinue(
                 startDate.day,
                 startDate.month,
                 startDate.year,
             );
-
-            await tripEndDatePage.heading.waitForDisplayed();
             await tripEndDatePage.enterDateAndContinue(endDate.day, endDate.month, endDate.year);
         }
     }
@@ -79,6 +75,7 @@ export class AndroidFlowNavigator {
 
     async selectSubAreas(subArea?: string) {
         logStep(`Selecting sub area${subArea ? `: ${subArea}` : ' (first available)'}`);
+        await catchSubAreaPage.scrollToTop();
         await catchSubAreaPage.heading.waitForDisplayed();
         if (subArea) {
             await catchSubAreaPage.selectSubAreaAndContinue(subArea);
@@ -111,7 +108,7 @@ export class AndroidFlowNavigator {
             `Selecting species: ${speciesName} (weights: ${retainedWeight} / ${belowMinWeight} / ${discardedWeight})`,
         );
         await speciesPage.heading.waitForDisplayed();
-        const searchText = speciesName.length > 2 ? speciesName.substring(0, 3) : speciesName;
+        const searchText = speciesName.length > 2 ? speciesName.substring(0, 2) : speciesName;
         await speciesPage.searchSelectAndContinue(searchText, speciesName);
 
         await selectedSpeciesPage.heading.waitForDisplayed();

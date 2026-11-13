@@ -1,5 +1,5 @@
 import { BasePage } from './basePage';
-import { logStep } from '../common/logger';
+import { logStep } from '../../common/logger';
 
 export abstract class BaseDatePage extends BasePage {
     async enterDay(day: string) {

@@ -1,13 +1,9 @@
-import { BasePage } from './basePage';
+import { BaseSearchPage } from './base/baseSearchPage';
 import { logStep } from '../common/logger';
 
-export class GearPage extends BasePage {
+export class GearPage extends BaseSearchPage {
     get heading() {
         return $('//android.widget.TextView[@text="What gear did you use?" and @heading="true"]');
-    }
-
-    get gearSearchField() {
-        return $('//android.widget.EditText');
     }
 
     gearOption(gearName: string) {
@@ -16,24 +12,9 @@ export class GearPage extends BasePage {
         );
     }
 
-    get firstGearSuggestion() {
-        return $(
-            '(//android.widget.ScrollView//android.view.View[@clickable="true"][.//android.widget.Button])[1]',
-        );
-    }
-
-    async enterGearName(gearName: string) {
-        logStep(`Entering gear name ${gearName}`);
-        await this.gearSearchField.waitForDisplayed();
-        await this.gearSearchField.setValue(gearName);
-        if (gearName.trim().length >= 2) {
-            await this.firstGearSuggestion.waitForDisplayed();
-        }
-    }
-
     async searchAndSelectGear(searchText: string, gearName: string) {
         logStep(`Searching for ${searchText} and selecting gear ${gearName}`);
-        await this.enterGearName(searchText);
+        await this.enterSearchText(searchText);
         const option = this.gearOption(gearName);
         await option.waitForDisplayed();
         await option.click();

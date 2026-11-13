@@ -1,4 +1,4 @@
-import { BaseDatePage } from './baseDatePage';
+import { BaseDatePage } from './base/baseDatePage';
 import departurePortPage from './departurePortPage';
 
 export class TripEndDatePage extends BaseDatePage {

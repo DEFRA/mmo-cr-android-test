@@ -25,7 +25,9 @@ Feature:(CRAR-120) Select statistical sub area using the map
         And I have selected a statistical sub area
         When I select Save and Continue
         Then I proceed to the next step of the catch recording journey
-        When I select species "Atlantic salmon" with retained 5, below minimum 1 and discarded 1 weights
+        When I select species with the following weights:
+            | species         | retained | below minimum | discarded |
+            | Atlantic salmon | 5        | 1             | 1         |
         And I select no delayed landing
         Then the selected statistical sub area is attached to the catch record
 

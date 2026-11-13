@@ -90,17 +90,17 @@ Full reset uninstalls the app and clears its data between feature files, not bet
 Filter scenarios with a [Cucumber tag expression](https://cucumber.io/docs/cucumber/api/#tag-expressions) in `CUCUMBER_TAGS`:
 
 ```bash
-CUCUMBER_TAGS='@reviewAndAmend' npm run test:android
+CUCUMBER_TAGS='@draftAndSync' npm run test:android
 CUCUMBER_TAGS='@catchRecord and not @offline' npm run test:android
 ```
 
-| Tag                                                                | Meaning                                              |
-| ------------------------------------------------------------------ | ---------------------------------------------------- |
-| `@signIn`                                                          | Sign-in screen                                       |
-| `@catchRecord`                                                     | All catch record features                            |
-| `@businessRules`, `@drafts`, `@reviewAndAmend`, `@selectedSpecies` | Individual catch record features                     |
-| `@offline`                                                         | Runs offline; network is restored after the scenario |
-| `@skip`                                                            | Not implemented yet; never run                       |
+| Tag                                                                      | Meaning                                              |
+| ------------------------------------------------------------------------ | ---------------------------------------------------- |
+| `@signIn`                                                                | Sign-in screen                                       |
+| `@catchRecord`                                                           | All catch record features                            |
+| `@draftAndSync`, `@selectedSpecies`, `@catchSubArea`, `@catchSubAreaMap` | Individual catch record features                     |
+| `@offline`                                                               | Runs offline; network is restored after the scenario |
+| `@skip`                                                                  | Not implemented yet; never run                       |
 
 ### Environment variables
 

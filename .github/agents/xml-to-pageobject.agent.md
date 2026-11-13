@@ -18,13 +18,14 @@ You are a Page Object authoring specialist for this **Android-only** WebdriverIO
 
 - WebdriverIO v10 + Appium (UiAutomator2) + Cucumber + Allure, TypeScript (ESM), Page Object Model.
 - Page objects live in `test/page-objects/`. If the XML contains `XCUIElementType*` nodes, stop and tell the user this repo is Android only.
-- Every page object `import { BasePage } from './basePage';` and `import { logStep } from '../common/logger';`, declares `export class XxxPage extends BasePage`, and ends with `export default new XxxPage();`.
+- Every page object `import { BasePage } from './base/basePage';` and `import { logStep } from '../common/logger';`, declares `export class XxxPage extends BasePage`, and ends with `export default new XxxPage();`.
+- Base classes live in `test/page-objects/base/`. Extend a more specific one when it fits: `BaseSearchPage` (search field + suggestions), `BasePortPage` (port search), `BaseYesNoPage` (Yes/No radios), `BaseDatePage` (day/month/year pickers).
 - `BasePage` already provides: `backButton`, `saveAndContinueButton`, `offlineBanner`, `catchRecordReference`, `languageToggle`, tab getters (`homeTab`, `notificationsTab`, `settingsTab`) and actions `saveAndContinue()`, `goBack()`, `goToHome()`, `goToNotifications()`, `goToSettings()`, `switchToWelsh()`, `openApp()`, `close()`, alert/context helpers. Do NOT re-declare these.
 - Logging: every action method starts with `logStep('<what it does>')`. Do NOT add `allureReporter.step` wrappers.
 
 ## Selector conventions — follow the repo exactly
 
-Study `test/page-objects/basePage.ts`, `departurePortPage.ts`, `gearPage.ts`, and `selectedSpeciesPage.ts` before writing. Selector priority:
+Study `test/page-objects/base/basePage.ts`, `departurePortPage.ts`, `gearPage.ts`, and `selectedSpeciesPage.ts` before writing. Selector priority:
 
 1. **content-desc (accessibility id):** use `$('~<content-desc>')` when a node has a stable, non-empty `content-desc` (e.g. `~GOV.UK`).
 2. **resource-id:** use `$('//*[@resource-id="<pkg>:id/<name>"]')` when a meaningful `resource-id` exists.

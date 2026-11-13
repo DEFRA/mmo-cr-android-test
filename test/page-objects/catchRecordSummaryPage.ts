@@ -1,4 +1,4 @@
-import { BasePage } from './basePage';
+import { BasePage } from './base/basePage';
 import { logStep } from '../common/logger';
 
 export class CatchRecordSummaryPage extends BasePage {
@@ -16,6 +16,15 @@ export class CatchRecordSummaryPage extends BasePage {
         return $(
             '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="Accept and submit trip details"]]',
         );
+    }
+
+    textContaining(text: string) {
+        return $(`//android.widget.TextView[contains(@text, "${text}")]`);
+    }
+
+    async scrollToText(text: string) {
+        logStep(`Scrolling summary to "${text}"`);
+        await this.scrollUntilDisplayed(this.textContaining(text), { maxSwipes: 10 });
     }
 
     async getFieldValue(label: string): Promise<string> {

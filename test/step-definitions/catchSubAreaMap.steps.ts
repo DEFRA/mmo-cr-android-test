@@ -66,7 +66,6 @@ Then('the selected statistical sub area is attached to the catch record', async 
     if (areaCodeValue === null) {
         throw new Error('No statistical sub area has been selected');
     }
-    const areaCode = $(`//android.widget.TextView[contains(@text, "${areaCodeValue}")]`);
-    await catchRecordSummaryPage.scrollUntilDisplayed(areaCode, { maxSwipes: 10 });
-    await expect(areaCode).toBeDisplayed();
+    await catchRecordSummaryPage.scrollToText(areaCodeValue);
+    await expect(catchRecordSummaryPage.textContaining(areaCodeValue)).toBeDisplayed();
 });

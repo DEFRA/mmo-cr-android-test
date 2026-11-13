@@ -1,31 +1,11 @@
-import { BasePage } from './basePage';
+import { BaseYesNoPage } from './base/baseYesNoPage';
 import { logStep } from '../common/logger';
 
-export class DelayedLandingPage extends BasePage {
+export class DelayedLandingPage extends BaseYesNoPage {
     get heading() {
         return $(
             '//android.widget.TextView[@text="Is there any catch from this trip that you will not be landing straight away?" and @heading="true"]',
         );
-    }
-
-    get yesOption() {
-        return $('//android.view.View[@checkable="true"][.//android.widget.TextView[@text="Yes"]]');
-    }
-
-    get noOption() {
-        return $('//android.view.View[@checkable="true"][.//android.widget.TextView[@text="No"]]');
-    }
-
-    async selectYes() {
-        logStep('Selecting Yes');
-        await this.yesOption.waitForDisplayed();
-        await this.yesOption.click();
-    }
-
-    async selectNo() {
-        logStep('Selecting No');
-        await this.noOption.waitForDisplayed();
-        await this.noOption.click();
     }
 
     async selectYesAndContinue() {

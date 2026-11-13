@@ -4,8 +4,7 @@ import androidFlowNavigator from '../helpers/androidFlowNavigator';
 import catchAreaPage from '../page-objects/catchAreaPage';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import catchSubAreaPage from '../page-objects/catchSubAreaPage';
-import gearMeasurementPage from '../page-objects/gearMeasurementPage';
-import gearPage from '../page-objects/gearPage';
+import homePage from '../page-objects/homePage';
 import submissionSuccessPage from '../page-objects/submissionSuccessPage';
 import tripEndDatePage from '../page-objects/tripEndDatePage';
 import tripStartDatePage from '../page-objects/tripStartDatePage';
@@ -33,7 +32,6 @@ When(/^I enter a trip start date of (today|\d+ days? ago)$/, async (when: string
     const { day, month, year } = dateFromPhrase(when);
     await tripTodayPage.heading.waitForDisplayed();
     await tripTodayPage.selectNo();
-    await tripStartDatePage.heading.waitForDisplayed();
     await tripStartDatePage.enterDateAndContinue(day, month, year);
 });
 
@@ -71,25 +69,6 @@ When(
         await androidFlowNavigator.selectAreas(area, subArea);
     },
 );
-
-When('I search and select gear {string}', async (gear: string) => {
-    await gearPage.heading.waitForDisplayed();
-    await gearPage.searchSelectAndContinue(gear, gear);
-});
-
-When('I enter mesh size {string}', async (size: string) => {
-    await gearMeasurementPage.heading.waitForDisplayed();
-    await gearMeasurementPage.enterMeshSizeAndContinue(size);
-});
-
-When('I replace the mesh size with {string}', async (size: string) => {
-    const inputField = $('//android.widget.EditText');
-    await inputField.clearValue();
-    await inputField.setValue(size);
-    await $(
-        '//android.widget.Button[contains(@text, "Continue") or contains(@text, "Save")]',
-    ).click();
-});
 
 Then('the catch area map is displayed', async () => {
     await catchAreaPage.heading.waitForDisplayed();
@@ -138,20 +117,12 @@ When('I view my records', async () => {
     await submissionSuccessPage.clickViewRecords();
 });
 
-Then('the catch record summary is displayed', async () => {
-    await expect(catchRecordSummaryPage.heading).toBeDisplayed();
-});
-
 Then('the summary shows {string} as {string}', async (field: string, value: string) => {
     expect(await catchRecordSummaryPage.getFieldValue(field)).toEqual(value);
 });
 
-Then('the submission success screen is displayed', async () => {
-    await expect(submissionSuccessPage.heading).toBeDisplayed();
-});
-
 Then('the offline banner is displayed', async () => {
-    expect(await submissionSuccessPage.isOfflineBannerDisplayed()).toBe(true);
+    await expect(submissionSuccessPage.offlineBanner).toBeDisplayed();
 });
 
 Then('a record reference is shown', async () => {
@@ -160,16 +131,6 @@ Then('a record reference is shown', async () => {
     logInfo(`Catch record reference: ${referenceId}`);
 });
 
-Then('the record is submitted once the late submission warning is acknowledged', async () => {
-    const submitButton = $('//android.widget.Button[contains(@text, "Submit")]');
-    if (await submitButton.isDisplayed()) {
-        await submitButton.click();
-        await expect(submissionSuccessPage.heading).toBeDisplayed();
-    }
-});
-
 Then('a record with status {string} is displayed', async (status: string) => {
-    await expect($(`//android.widget.TextView[@text="${status}"]`)).toBeDisplayed({
-        wait: 15000,
-    });
+    await homePage.waitForRecordWithStatus(status);
 });

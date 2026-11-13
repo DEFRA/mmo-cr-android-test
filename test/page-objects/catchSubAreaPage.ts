@@ -1,4 +1,4 @@
-import { BasePage } from './basePage';
+import { BasePage } from './base/basePage';
 import { logStep } from '../common/logger';
 
 export class CatchSubAreaPage extends BasePage {
@@ -46,12 +46,6 @@ export class CatchSubAreaPage extends BasePage {
         return $('//android.widget.TextView[starts-with(@text, "Centre of area")]');
     }
 
-    private async hideKeyboard() {
-        if (await driver.isKeyboardShown()) {
-            await driver.hideKeyboard();
-        }
-    }
-
     async scrollToTop() {
         await $('android=new UiScrollable(new UiSelector().scrollable(true)).scrollToBeginning(5)');
     }
@@ -80,6 +74,22 @@ export class CatchSubAreaPage extends BasePage {
         await super.saveAndContinue();
     }
 
+    private async textsOf(element: WebdriverIO.Element): Promise<string[]> {
+        const texts: string[] = [];
+        for (const textView of await element.$$('android.widget.TextView')) {
+            texts.push(await textView.getText());
+        }
+        return texts;
+    }
+
+    private async revealSuggestion(areaCode: string) {
+        const suggestion = this.suggestion(areaCode);
+        await this.hideKeyboard();
+        await this.scrollUntilDisplayed(suggestion);
+        await suggestion.waitForDisplayed();
+        return suggestion;
+    }
+
     async getSuggestionTexts(): Promise<string[][]> {
         logStep('Getting sub area suggestions');
         await driver.waitUntil(async () => (await this.suggestions.length) > 0, {
@@ -87,34 +97,18 @@ export class CatchSubAreaPage extends BasePage {
         });
         const results: string[][] = [];
         for (const suggestion of await this.suggestions) {
-            const texts: string[] = [];
-            for (const textView of await suggestion.$$('android.widget.TextView')) {
-                texts.push(await textView.getText());
-            }
-            results.push(texts);
+            results.push(await this.textsOf(suggestion));
         }
         return results;
     }
 
     async getSuggestionText(areaCode: string): Promise<string[]> {
-        const suggestion = this.suggestion(areaCode);
-        await this.hideKeyboard();
-        await this.scrollUntilDisplayed(suggestion);
-        await suggestion.waitForDisplayed();
-        const texts: string[] = [];
-        for (const textView of await suggestion.$$('android.widget.TextView')) {
-            texts.push(await textView.getText());
-        }
-        return texts;
+        return this.textsOf(await this.revealSuggestion(areaCode));
     }
 
     async selectSuggestion(areaCode: string) {
         logStep(`Selecting sub area suggestion ${areaCode}`);
-        const suggestion = this.suggestion(areaCode);
-        await this.hideKeyboard();
-        await this.scrollUntilDisplayed(suggestion);
-        await suggestion.waitForDisplayed();
-        await suggestion.click();
+        await (await this.revealSuggestion(areaCode)).click();
     }
 
     async getSuggestionCoordinates(areaCode: string): Promise<string> {

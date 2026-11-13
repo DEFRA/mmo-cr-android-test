@@ -1,34 +1,21 @@
-import { BasePage } from './basePage';
-import { logStep } from '../common/logger';
+import { BaseYesNoPage } from './base/baseYesNoPage';
 import departurePortPage from './departurePortPage';
 import tripStartDatePage from './tripStartDatePage';
 
-export class TripTodayPage extends BasePage {
+export class TripTodayPage extends BaseYesNoPage {
     get heading() {
         return $(
             '//android.widget.TextView[@text="Did your trip start and finish today?" and @heading="true"]',
         );
     }
 
-    get yesOption() {
-        return $('//android.view.View[@checkable="true"][.//android.widget.TextView[@text="Yes"]]');
-    }
-
-    get noOption() {
-        return $('//android.view.View[@checkable="true"][.//android.widget.TextView[@text="No"]]');
-    }
-
-    async selectYes() {
-        logStep('Selecting Yes');
-        await this.yesOption.waitForDisplayed();
-        await this.yesOption.click();
+    override async selectYes() {
+        await super.selectYes();
         await departurePortPage.heading.waitForDisplayed();
     }
 
-    async selectNo() {
-        logStep('Selecting No');
-        await this.noOption.waitForDisplayed();
-        await this.noOption.click();
+    override async selectNo() {
+        await super.selectNo();
         await tripStartDatePage.heading.waitForDisplayed();
     }
 }

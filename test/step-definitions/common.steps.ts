@@ -1,8 +1,7 @@
 import { Given, Then, When } from '@wdio/cucumber-framework';
-import type { DataTable } from '@wdio/cucumber-framework';
 import homePage from '../page-objects/homePage';
 import signInPage from '../page-objects/signInPage';
-import { BasePage } from '../page-objects/basePage';
+import { BasePage } from '../page-objects/base/basePage';
 import { getAndroidTestCredentials } from '../helpers/testCredentials';
 import NetworkHelper from '../helpers/networkHelper';
 import { getPage, type PageName } from '../support/pages';
@@ -45,16 +44,18 @@ Given('I am signed in', async () => {
 
 Given('I am offline', async () => {
     await NetworkHelper.goOffline();
+    await expect(currentPage.offlineBannerLabel).toBeDisplayed({ wait: 10000 });
+    await expect(currentPage.offlineBanner).toBeDisplayed();
 });
 
 When('I go back online', async () => {
     await NetworkHelper.goOnline();
-});
-
-When('I go back {int} time(s)', async (times: number) => {
-    for (let i = 0; i < times; i++) {
-        await driver.back();
-    }
+    await currentPage.offlineBannerLabel.waitForDisplayed({
+        timeout: 30000,
+        reverse: true,
+        timeoutMsg: 'Offline banner was still displayed 30s after going back online',
+    });
+    await expect(currentPage.offlineBanner).not.toBeDisplayed();
 });
 
 When('I save and continue', async () => {
@@ -81,10 +82,6 @@ Then('I should see a validation error on the {page} page', async (name: PageName
     await expect(validationError()).toBeDisplayed();
 });
 
-Then('the home screen is displayed', async () => {
-    await expect(homePage.heading).toBeDisplayed();
-});
-
 Then(
     /^a message containing "([^"]*)"(?: or "([^"]*)")? is displayed$/,
     async (first: string, second?: string) => {
@@ -93,9 +90,3 @@ Then(
         await expect(textContainingAnyOf(texts)).toBeDisplayed();
     },
 );
-
-Then('a message containing any of these is displayed:', async (table: DataTable) => {
-    const texts = table.raw().flat();
-    await scrollToTextContainingAnyOf(texts);
-    await expect(textContainingAnyOf(texts)).toBeDisplayed();
-});

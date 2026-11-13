@@ -1,4 +1,4 @@
-import type { BasePage } from '../page-objects/basePage';
+import type { BasePage } from '../page-objects/base/basePage';
 import catchAreaPage from '../page-objects/catchAreaPage';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import catchSubAreaPage from '../page-objects/catchSubAreaPage';

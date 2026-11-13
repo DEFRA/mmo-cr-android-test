@@ -49,7 +49,7 @@ Feature:(CRAR-123) Manually enter statistical sub area
             | species         | retained | below minimum | discarded |
             | Atlantic salmon | 5        | 1             | 1         |
         And I select no delayed landing
-        Then the catch record summary is displayed
+        Then I should be on the catch record summary page
         And the summary shows sub area "31F15"
 
     Scenario: Invalid statistical sub area

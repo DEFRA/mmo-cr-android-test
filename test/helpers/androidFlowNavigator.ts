@@ -61,27 +61,27 @@ export class AndroidFlowNavigator {
         await returnPortPage.searchSelectAndContinue(returnPort, returnPort);
     }
 
-    async selectAreas(catchArea?: string, subArea?: string) {
-        logStep(`Selecting catch area${catchArea ? `: ${catchArea}` : ' (random)'}`);
+    async selectAreas(catchArea?: string) {
+        logStep(`Selecting catch area${catchArea ? `: ${catchArea}` : ' (tap on map)'}`);
         await catchAreaPage.heading.waitForDisplayed();
 
-        if (catchArea === 'Other') {
-            await catchAreaPage.clickOther();
-            await this.selectSubAreas(subArea);
-        } else {
+        if (!catchArea) {
             await catchAreaPage.selectLocationAndContinue();
+            return;
+        }
+        await catchAreaPage.clickOther();
+        if (catchArea === 'Other') {
+            await this.selectFirstSubArea();
+        } else {
+            await catchSubAreaPage.selectSubAreaByCodeAndContinue(catchArea);
         }
     }
 
-    async selectSubAreas(subArea?: string) {
-        logStep(`Selecting sub area${subArea ? `: ${subArea}` : ' (first available)'}`);
+    async selectFirstSubArea() {
+        logStep('Selecting first available sub area');
         await catchSubAreaPage.scrollToTop();
         await catchSubAreaPage.heading.waitForDisplayed();
-        if (subArea) {
-            await catchSubAreaPage.selectSubAreaAndContinue(subArea);
-        } else {
-            await catchSubAreaPage.selectFirstSubAreaAndContinue();
-        }
+        await catchSubAreaPage.selectFirstSubAreaAndContinue();
     }
 
     async selectGear(gearName: string, meshSize: string | number, shots: string | number) {

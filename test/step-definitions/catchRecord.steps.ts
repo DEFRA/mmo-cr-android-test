@@ -41,6 +41,15 @@ When(/^I enter a trip end date of (today|\d+ days? ago)$/, async (when: string) 
     await tripEndDatePage.enterDateAndContinue(day, month, year);
 });
 
+// Stays on the start date page, so the date can be rejected by validation.
+When(/^I try to enter a trip start date of (\d+ days? ago)$/, async (when: string) => {
+    const { day, month, year } = dateFromPhrase(when);
+    await tripTodayPage.heading.waitForDisplayed();
+    await tripTodayPage.selectNo();
+    await tripStartDatePage.enterDate(day, month, year);
+    await tripStartDatePage.saveAndContinue();
+});
+
 When('I select a trip for today', async () => {
     await androidFlowNavigator.selectTripDates(true);
 });
@@ -62,13 +71,6 @@ When(
 When('I select catch area {string}', async (area: string) => {
     await androidFlowNavigator.selectAreas(area);
 });
-
-When(
-    'I select catch area {string} with sub area {string}',
-    async (area: string, subArea: string) => {
-        await androidFlowNavigator.selectAreas(area, subArea);
-    },
-);
 
 Then('the catch area map is displayed', async () => {
     await catchAreaPage.heading.waitForDisplayed();

@@ -11,6 +11,7 @@ WebdriverIO + Appium + Cucumber test automation (TypeScript) for the Record Your
     - [Tags](#tags)
     - [Environment variables](#environment-variables)
     - [Writing tests](#writing-tests)
+    - [MCP servers](#mcp-servers)
     - [Checks](#checks)
     - [Reports](#reports)
 - [Production](#production)
@@ -55,7 +56,7 @@ test/helpers/           Journey navigator, network and credential helpers
 test/common/            Logger and date utilities
 ```
 
-Page names usable in steps such as `Then I should be on the gear page` (also `Given I am on the ... page` and `Then I should see a validation error on the ... page`) are registered in `test/support/pages.ts`. When adding a page, also add its name to the `{page}` regex in `test/support/parameterTypes.ts`.
+Page names usable in steps such as `Then I should be on the gear page` (also `Then I should see a validation error on the ... page`) are registered in `test/support/pages.ts`. When adding a page, also add its name to the `{page}` regex in `test/support/parameterTypes.ts`.
 
 `hooks.ts` opens the app before and closes it after every scenario, and restores the network after `@offline` scenarios.
 
@@ -100,6 +101,8 @@ CUCUMBER_TAGS='@catchRecord and not @offline' npm run test:android
 | `@catchRecord`                                                           | All catch record features                            |
 | `@draftAndSync`, `@selectedSpecies`, `@catchSubArea`, `@catchSubAreaMap` | Individual catch record features                     |
 | `@offline`                                                               | Runs offline; network is restored after the scenario |
+| `@CRAR-165`                                                              | Scenarios for a Jira ticket                          |
+| `@manual`                                                                | Must be checked by hand or with backend/API tests    |
 | `@skip`                                                                  | Not implemented yet; never run                       |
 
 ### Environment variables
@@ -119,7 +122,7 @@ CUCUMBER_TAGS='@catchRecord and not @offline' npm run test:android
 2. Reuse existing steps where possible (search `test/step-definitions/`); shared steps live in `common.steps.ts`.
 3. New steps must call page objects rather than use raw selectors.
 
-The **BDD → Test Case** Copilot agent (`.github/agents/`) can generate features and step definitions from plain-text scenarios.
+The **BDD → Test Case** Copilot agent (`.github/agents/`) generates features and step definitions from plain-text scenarios. `.github/instructions/agent-routing.instructions.md` tells Copilot to hand pasted Gherkin to this agent (and pasted Android page source XML to **XML → Page Object**, which updates the matching page object's locators or creates a new one), so you can paste a scenario into chat without selecting the agent first. The agent then runs `npm run steps:check`, `typecheck`, `lint` and `format`.
 
 For step navigation and "undefined step" warnings in VS Code, point the Cucumber extension at this project's folders in `.vscode/settings.json`:
 
@@ -130,6 +133,13 @@ For step navigation and "undefined step" warnings in VS Code, point the Cucumber
 }
 ```
 
+### MCP servers
+
+`.mcp.json` configures two MCP servers for AI agents (such as the agents in `.github/agents/`) to inspect the running app:
+
+- `appium-mcp` — Appium page source, locators and gestures. It uses `ANDROID_HOME`, falling back to `ANDROID_SDK_ROOT`, then the default SDK location (`~/Library/Android/sdk` on macOS, `~/Android/Sdk` on Linux). It starts through `sh`, so it does not work on Windows without a POSIX shell.
+- `wdio-mcp` — WebdriverIO sessions.
+
 ### Checks
 
 ```bash
@@ -137,8 +147,8 @@ npm run typecheck
 npm run format:check
 npm run lint
 
-# Verify every Gherkin step matches exactly one step definition (no device needed)
-NODE_OPTIONS="--import tsx" npx cucumber-js --dry-run --import 'test/support/**/*.ts' --import 'test/step-definitions/**/*.ts' test/features
+# Fail if any Gherkin step has no step definition (no device needed; @manual scenarios excluded)
+npm run steps:check
 ```
 
 ### Reports

@@ -1,0 +1,19 @@
+{
+    "mcpServers": {
+        "appium-mcp": {
+            "type": "stdio",
+            "command": "sh",
+            "args": [
+                "-c",
+                "for d in \"$ANDROID_HOME\" \"$ANDROID_SDK_ROOT\" \"$HOME/Library/Android/sdk\" \"$HOME/Android/Sdk\"; do if [ -n \"$d\" ] && [ -d \"$d\" ]; then export ANDROID_HOME=\"$d\"; break; fi; done; exec npx appium-mcp@latest"
+            ],
+            "tools": ["*"]
+        },
+        "wdio-mcp": {
+            "type": "stdio",
+            "command": "npx",
+            "args": ["-y", "@wdio/mcp"],
+            "tools": ["*"]
+        }
+    }
+}

@@ -21,7 +21,7 @@ export class SignInPage extends BasePage {
     }
 
     get forgottenPasswordLink() {
-        return $('//android.widget.TextView[@text="Forgotten your password?"]');
+        return $('//android.widget.Button[@text="Forgotten your password?"]');
     }
 
     get createAccountLink() {

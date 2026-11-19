@@ -1,10 +1,11 @@
-import { Given, When } from '@wdio/cucumber-framework';
+import { Given, Then, When } from '@wdio/cucumber-framework';
 import androidFlowNavigator from '../helpers/androidFlowNavigator';
 import NetworkHelper from '../helpers/networkHelper';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import homePage from '../page-objects/homePage';
 import submissionSuccessPage from '../page-objects/submissionSuccessPage';
 import { completedCatchRecordData, offlineCatchRecordData } from '../data/catchRecordSync.data';
+import type { CatchRecordWorld } from '../support/world';
 
 async function submitCompletedCatchRecord(data: typeof completedCatchRecordData) {
     await androidFlowNavigator.startCatchRecord();
@@ -49,6 +50,18 @@ export async function createDraftCatchRecord() {
 
 When('I continue the draft catch record', async () => {
     await homePage.continueDraftRecord();
+});
+
+When('I delete the draft catch record', async function (this: CatchRecordWorld) {
+    await homePage.goToHome();
+    this.deletedDraftTripId = await homePage.deleteDraftRecord();
+});
+
+Then('the deleted draft catch record is not displayed', async function (this: CatchRecordWorld) {
+    if (!this.deletedDraftTripId) {
+        throw new Error('No draft catch record has been deleted in this scenario');
+    }
+    await expect(homePage.recordWithTripId(this.deletedDraftTripId)).not.toBeExisting();
 });
 
 When('I leave and reopen the application', async () => {

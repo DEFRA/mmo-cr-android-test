@@ -27,8 +27,6 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
             | Same-day trip  | TODO(CRAR-165) same-day trip validation  |
             | Retained catch | TODO(CRAR-165) retained catch validation |
 
-    # TODO(CRAR-165): remove @skip once TripStartDatePage.validationError is confirmed.
-    @skip
     Scenario: Trip start date over 365 days ago is rejected
         When I start a catch record
         And I select vessel "ACHILLES"
@@ -67,8 +65,6 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         When I save and continue
         Then I should be on the species page
 
-    # TODO(CRAR-165): remove @skip once LateSubmissionWarningPage locators are confirmed.
-    @skip
     Scenario: Late submission warning can be acknowledged
         When I start a catch record
         And I select vessel "ACHILLES"
@@ -119,13 +115,19 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
 
         Examples:
             | status    |
-            | Draft     |
             | Submitted |
 
         @offline
         Examples:
             | status |
             | Unsent |
+
+    Scenario: Record shows status Draft
+        Given I have a catch record with status "Draft"
+        When I open my records list
+        Then a record with status "Draft" is displayed
+        When I delete the draft catch record
+        Then the deleted draft catch record is not displayed
 
     @offline
     Scenario: Unsent record is submitted when back online
@@ -144,6 +146,8 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         Then a record with status "Draft" is displayed
         When I continue the draft catch record
         Then I should be on the departure port page
+        When I delete the draft catch record
+        Then the deleted draft catch record is not displayed
 
     @offline
     Scenario: Draft is kept when connectivity is lost
@@ -156,6 +160,8 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         Then a record with status "Draft" is displayed
         When I continue the draft catch record
         Then I should be on the departure port page
+        When I delete the draft catch record
+        Then the deleted draft catch record is not displayed
 
     # AC16-AC19 cover backend sync behaviour that is not observable through the Android UI.
     # Verify them manually or with backend/API tests; no step definitions are implemented.

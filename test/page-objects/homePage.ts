@@ -38,9 +38,27 @@ export class HomePage extends BasePage {
         );
     }
 
+    get homeTab() {
+        return $(
+            '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="Home"]]',
+        );
+    }
+
     get completeDraftOption() {
         return $(
             '//android.view.View[@checkable="true"][.//android.widget.TextView[@text="Complete catch record"]]',
+        );
+    }
+
+    get deleteDraftOption() {
+        return $(
+            '//android.view.View[@checkable="true"][.//android.widget.TextView[@text="Delete catch record"]]',
+        );
+    }
+
+    get confirmDeleteDraftButton() {
+        return $(
+            '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="Delete draft"]]',
         );
     }
 
@@ -57,6 +75,38 @@ export class HomePage extends BasePage {
         await this.openDraftRecord();
         await this.completeDraftOption.click();
         await this.saveAndContinue();
+    }
+
+    recordWithTripId(tripId: string) {
+        return $(`//android.widget.Button[contains(@content-desc, ", Trip ID ${tripId}")]`);
+    }
+
+    async goToHome() {
+        if (await this.heading.isDisplayed()) {
+            return;
+        }
+        logStep('Navigating to home page');
+        await this.homeTab.waitForDisplayed();
+        await this.homeTab.click();
+        await this.heading.waitForDisplayed();
+    }
+
+    // Returns the Trip ID of the deleted draft so callers can confirm it has gone.
+    async deleteDraftRecord(): Promise<string> {
+        logStep('Deleting draft catch record');
+        await this.waitForRecordWithStatus('Draft');
+        const description = await this.recordWithStatus('Draft').getAttribute('content-desc');
+        const tripId = /Trip ID (\S+)/.exec(description ?? '')?.[1];
+        if (!tripId) {
+            throw new Error(`Could not read the Trip ID from draft record "${description}"`);
+        }
+        await this.openDraftRecord();
+        await this.deleteDraftOption.click();
+        await this.saveAndContinue();
+        await this.confirmDeleteDraftButton.waitForDisplayed();
+        await this.confirmDeleteDraftButton.click();
+        await this.heading.waitForDisplayed();
+        return tripId;
     }
 
     async clickCreateRecordButton() {

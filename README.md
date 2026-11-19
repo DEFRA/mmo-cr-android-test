@@ -122,7 +122,7 @@ CUCUMBER_TAGS='@catchRecord and not @offline' npm run test:android
 2. Reuse existing steps where possible (search `test/step-definitions/`); shared steps live in `common.steps.ts`.
 3. New steps must call page objects rather than use raw selectors.
 
-The **BDD → Test Case** Copilot agent (`.github/agents/`) can generate features and step definitions from plain-text scenarios.
+The **BDD → Test Case** Copilot agent (`.github/agents/`) generates features and step definitions from plain-text scenarios. `.github/instructions/agent-routing.instructions.md` tells Copilot to hand pasted Gherkin to this agent (and pasted Android page source XML to **XML → Page Object**, which updates the matching page object's locators or creates a new one), so you can paste a scenario into chat without selecting the agent first. The agent then runs `npm run steps:check`, `typecheck`, `lint` and `format`.
 
 For step navigation and "undefined step" warnings in VS Code, point the Cucumber extension at this project's folders in `.vscode/settings.json`:
 
@@ -147,8 +147,8 @@ npm run typecheck
 npm run format:check
 npm run lint
 
-# Verify every Gherkin step matches exactly one step definition (no device needed)
-NODE_OPTIONS="--import tsx" npx cucumber-js --dry-run --import 'test/support/**/*.ts' --import 'test/step-definitions/**/*.ts' test/features
+# Fail if any Gherkin step has no step definition (no device needed; @manual scenarios excluded)
+npm run steps:check
 ```
 
 ### Reports

@@ -24,7 +24,8 @@
         "setup:husky": "node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module",
         "report": "allure generate allure-results --clean",
         "report:publish": "npm run report; ./bin/publish-tests.sh",
-        "generate:report": "npm run report && allure open"
+        "generate:report": "npm run report && allure open",
+        "steps:check": "NODE_OPTIONS='--import tsx' cucumber-js test/features --dry-run --tags 'not @manual' --import 'test/support/*.ts' --import 'test/step-definitions/*.ts' --format summary 2>&1 | tee /dev/stderr | (! grep -q undefined)"
     },
     "author": "Defra DDTS",
     "license": "OGL-UK-3.0",

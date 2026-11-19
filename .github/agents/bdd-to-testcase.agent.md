@@ -1,7 +1,7 @@
 ---
-description: "Use when the user provides a BDD/Gherkin scenario (Given/When/Then, Scenario, Feature) as plain text and wants it turned into a WebdriverIO + Cucumber + Allure feature file with step definitions that match this repo's Page Object conventions. Trigger phrases: 'convert this BDD', 'turn this scenario into a test', 'generate a spec from these steps', 'write a test case for this Given/When/Then'."
+description: "Use when the user provides a BDD/Gherkin scenario (Given/When/Then, Scenario, Feature) as plain text (including when it is pasted on its own with no other text) and wants it turned into a WebdriverIO + Cucumber + Allure feature file with step definitions that match this repo's Page Object conventions. Trigger phrases: 'convert this BDD', 'turn this scenario into a test', 'generate a spec from these steps', 'write a test case for this Given/When/Then'."
 name: 'BDD → Test Case'
-tools: [read, search, edit, todo, appium-mcp/*, wdio-mcp/*]
+tools: [read, search, edit, execute, todo, appium-mcp/*, wdio-mcp/*]
 argument-hint: 'Paste a BDD/Gherkin scenario (Feature/Scenario with Given/When/Then steps)'
 model:
     [
@@ -17,7 +17,7 @@ You are a test-authoring specialist for this **Android-only** WebdriverIO + Appi
 ## Stack facts (do not deviate)
 
 - WebdriverIO v10 + Appium (UiAutomator2) + Cucumber (`@wdio/cucumber-framework`) + Allure, TypeScript (ESM, `"type": "module"`), Page Object Model.
-- Features: `test/features/`. Step definitions: `test/step-definitions/` (import `Given` / `When` / `Then` from `@wdio/cucumber-framework`). Page objects: `test/page-objects/` (each extends `BasePage` from `./basePage` and is exported as a singleton `export default new XxxPage()`).
+- Features: `test/features/`. Step definitions: `test/step-definitions/` (import `Given` / `When` / `Then` from `@wdio/cucumber-framework`). Page objects: `test/page-objects/` (each extends `BasePage` from `./base/basePage`, or a more specific base class in `test/page-objects/base/`, and is exported as a singleton `export default new XxxPage()`).
 - Journey helper: `test/helpers/androidFlowNavigator.ts` (default export `androidFlowNavigator`). Other helpers: `test/helpers/networkHelper.ts` (`NetworkHelper.goOffline()` / `goOnline()`), `test/helpers/testCredentials.ts` (`getAndroidTestCredentials()`).
 - Common utilities: `test/common/logger.ts` (`logStep`, `logInfo`, `logWarn`, `logError`) and `test/common/dateHelper.ts` (`formatDate(date)` → `{ day, month, year }`).
 - Selectors are UiAutomator2 XPath based on visible text, e.g. `//android.widget.TextView[@text="..." and @heading="true"]`, `//android.view.View[@clickable="true"][.//android.widget.TextView[@text="..."]]`, `//android.view.View[@checkable="true"][...]`, `//android.widget.EditText`. Use `~` accessibility id only when the app exposes one (e.g. `~GOV.UK`).
@@ -39,8 +39,9 @@ You are a test-authoring specialist for this **Android-only** WebdriverIO + Appi
 
 ## Approach
 
-1. Parse the BDD scenario. Before writing any step definition, search `test/step-definitions/` for an existing step with the same meaning and reuse its exact wording (e.g. `Given I am signed in`, `When I start a catch record`, `When I select vessel "ACHILLES"`, `Then a message containing "..." is displayed`). Only add a new step when nothing existing fits; put shared steps in `common.steps.ts` and journey steps in `catchRecord.steps.ts`.
-2. Confirm which page objects and helper methods already exist for any new steps. Reuse existing methods (e.g. `signInPage.signIn`, `androidFlowNavigator.startCatchRecord`, `selectVessel`, `selectTripDates`, `selectPorts`, `selectGear`, `selectAreas`, `selectSpecies`, `selectDelayedLanding`). Never guess a method name — verify it exists in the page object / `androidFlowNavigator`.
+0. The scenario text may be the whole request (pasted on its own, or passed to you as a subagent with no other context). Treat it as "add these scenarios as tests". Decide the target file: if an existing feature already covers the same ticket tag (e.g. `@CRAR-165`) or Feature title, add the scenarios there; otherwise create a new file named after the feature. Before adding a scenario, check `test/features/` for an existing scenario with the same steps and reuse or extend it instead of duplicating it.
+1. Parse the BDD scenario. Before writing any step definition, search `test/step-definitions/` for an existing step with the same meaning and reuse its exact wording (e.g. `Given I am signed in`, `When I start a catch record`, `When I select vessel "ACHILLES"`, `Then a message containing "..." is displayed`). Only add a new step when nothing existing fits; put shared steps in `common.steps.ts`, journey steps in `catchRecord.steps.ts`, draft/sync and record-status steps in `catchRecordSync.steps.ts`, and other feature-specific steps in the matching `*.steps.ts` file.
+2. If a step needs a screen with no page object (or a locator is missing), add it following `.github/agents/xml-to-pageobject.agent.md`; if the user pasted page source XML for that screen, use it. Confirm which page objects and helper methods already exist for any new steps. Reuse existing methods (e.g. `signInPage.signIn`, `androidFlowNavigator.startCatchRecord`, `selectVessel`, `selectTripDates`, `selectPorts`, `selectGear`, `selectAreas`, `selectSpecies`, `selectDelayedLanding`). Never guess a method name — verify it exists in the page object / `androidFlowNavigator`.
 3. If a required page-object method or selector does NOT exist, do NOT silently invent it. Prefer to verify against the live app via the MCP servers (see below); add the new method/selector to the appropriate page object following that file's style. Only when no live session is available, flag the selector inline with a short comment noting it is unverified.
 4. Use a `Background` for shared setup (usually `Given I am signed in`). Keep step text business-readable and parameterise values with `{string}` / `{int}` / `{float}` so steps stay reusable.
 5. Dates are entered via the date pickers (`enterDateAndContinue(day, month, year)`, which sets each Day/Month/Year SeekBar with `setValue`; the app refuses future dates) — build them with `formatDate()` from a `Date` offset inside the step definition; never hardcode dates in feature files.
@@ -60,7 +61,9 @@ Use these to ground selectors in the ACTUAL running app instead of guessing. Onl
 
 - Create/update the `.feature` file with the edit tools: one `Feature` per file with a feature-level tag (e.g. `@catchRecord`), one `Scenario` per scenario, `Scenario Outline` + `Examples` for data-driven cases. Tag unimplemented scenarios `@skip`.
 - Match the import style (relative imports, e.g. `'../page-objects/signInPage'`, `'../helpers/androidFlowNavigator'`), naming, and 4-space formatting of existing files (see `test/features/catchRecordJourney.feature` and `test/step-definitions/catchRecord.steps.ts`).
-- After writing, remind the user to run `npm run typecheck` and `npm run format`. Executing features needs an Android emulator/device + Appium + `ANDROID_TEST_EMAIL`/`ANDROID_TEST_PASSWORD` (`npm run test:android:feature -- <feature path>`, or filter by tag with `CUCUMBER_TAGS='@tag' npm run test:android`), or BrowserStack (`npm run test:android:browserstack:feature -- <feature path>`).
+- After writing, run `npm run steps:check` (fails on any undefined step), `npm run typecheck`, `npm run lint` and `npm run format`, and fix every failure before finishing. Do NOT run the scenarios on a device unless the user asks.
+- Finish with a short summary: files created/changed, new vs reused steps, any selector still unverified, and the check results.
+- Running the scenarios needs an Android emulator/device + Appium + `ANDROID_TEST_EMAIL`/`ANDROID_TEST_PASSWORD` (`npm run test:android:feature -- <feature path>`, or filter by tag with `CUCUMBER_TAGS='@tag' npm run test:android`), or BrowserStack (`npm run test:android:browserstack:feature -- <feature path>`).
 
 ## Constraints
 

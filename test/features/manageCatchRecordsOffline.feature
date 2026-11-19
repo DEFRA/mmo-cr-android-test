@@ -1,0 +1,188 @@
+@catchRecord
+@CRAR-165
+Feature:(CRAR-165) Create, save, submit and manage catch records offline
+
+    As a vessel owner, skipper or authorised user
+    I want to create catch records and keep working offline
+    So that my catch records are submitted when connectivity is available
+
+    Background:
+        Given I am signed in
+
+    Scenario Outline: <question> question must be answered
+        Given I have reached the "<question>" question
+        When I continue without answering the "<question>" question
+        Then a message containing "<message>" is displayed
+
+        Examples:
+            | question         | message                                                                      |
+            | Statistical area | Select the statistical sub area where the majority of your catch was caught. |
+
+        # TODO(CRAR-165): confirm these validation messages (and the retained catch page locators), then remove @skip.
+        @skip
+        Examples:
+            | question       | message                                  |
+            | Draft action   | TODO(CRAR-165) draft action validation   |
+            | Vessel         | TODO(CRAR-165) vessel validation         |
+            | Same-day trip  | TODO(CRAR-165) same-day trip validation  |
+            | Retained catch | TODO(CRAR-165) retained catch validation |
+
+    # TODO(CRAR-165): remove @skip once TripStartDatePage.validationError is confirmed.
+    @skip
+    Scenario: Trip start date over 365 days ago is rejected
+        When I start a catch record
+        And I select vessel "ACHILLES"
+        And I try to enter a trip start date of 366 days ago
+        Then I should be on the trip start date page
+        And I should see a validation error on the trip start date page
+
+    Scenario: Suggested sub areas are shown for the departure port
+        When I start a catch record
+        And I select vessel "ACHILLES"
+        And I select a trip for today
+        And I select departure port "Hastings" and return port "Dover"
+        And I select gear "Seine nets" with mesh size 10 and 10 shots
+        And the catch area map is displayed
+        And I choose the "Other" catch area
+        Then the catch sub area screen is displayed
+        And the sub area "38E95" is in the suggested list
+        When I select the suggested sub area "38E95"
+        And I save and continue
+        Then I should be on the species page
+
+    Scenario: Search for a different sub area using Other
+        When I start a catch record
+        And I select vessel "ACHILLES"
+        And I select a trip for today
+        And I select departure port "Hastings" and return port "Dover"
+        And I select gear "Seine nets" with mesh size 10 and 10 shots
+        And the catch area map is displayed
+        And I choose the "Other" catch area
+        And the catch sub area screen is displayed
+        And the sub area "31F15" is not in the suggested list
+        When I select the "Other" sub area
+        And I enter sub area code "31F"
+        And I select the sub area result "31F15"
+        Then the sub area field shows "31F15"
+        When I save and continue
+        Then I should be on the species page
+
+    # TODO(CRAR-165): remove @skip once LateSubmissionWarningPage locators are confirmed.
+    @skip
+    Scenario: Late submission warning can be acknowledged
+        When I start a catch record
+        And I select vessel "ACHILLES"
+        And I enter a trip start date of 3 days ago
+        And I enter a trip end date of 2 days ago
+        And I select departure port "Hastings" and return port "Dover"
+        And I select gear "Seine nets" with mesh size 10 and 10 shots
+        And I select catch area "38E95"
+        And I select species with the following weights:
+            | species          | retained | below minimum | discarded |
+            | Brown crab (TBC) | 5        | 1             | 1         |
+        And I select no delayed landing
+        And I accept and submit the catch record
+        Then I should be on the late submission warning page
+        When I acknowledge the late submission warning
+        Then I should be on the submission success page
+
+    @offline
+    Scenario: Completed record is kept locally when offline
+        Given I am offline
+        And I have a catch record awaiting sync
+        When I leave and reopen the application
+        And I am signed in
+        Then a record with status "Unsent" is displayed
+
+    @offline
+    Scenario: User is told an offline record is not yet submitted
+        Given I am offline
+        When I start a catch record
+        And I select vessel "ACHILLES"
+        And I select a trip for today
+        And I select departure port "Hastings" and return port "Dover"
+        And I select gear "Seine nets" with mesh size 10 and 10 shots
+        And I select catch area "38E95"
+        And I select species with the following weights:
+            | species          | retained | below minimum | discarded |
+            | Brown crab (TBC) | 5        | 1             | 1         |
+        And I select no delayed landing
+        And I accept and submit the catch record
+        Then I should be on the submission success page
+        And a message containing "saved and sent when you're back online" is displayed
+
+    # "Unsent" is the app's label for a Complete Not Submitted record.
+    Scenario Outline: Record shows status <status>
+        Given I have a catch record with status "<status>"
+        When I open my records list
+        Then a record with status "<status>" is displayed
+
+        Examples:
+            | status    |
+            | Draft     |
+            | Submitted |
+
+        @offline
+        Examples:
+            | status |
+            | Unsent |
+
+    @offline
+    Scenario: Unsent record is submitted when back online
+        Given I am offline
+        And I have a catch record awaiting sync
+        When I go back online
+        Then a record with status "Submitted" is displayed
+
+    Scenario: Draft is auto-saved within 10 seconds
+        When I start a catch record
+        And I select vessel "ACHILLES"
+        And I select a trip for today
+        And I wait 10 seconds
+        And I leave and reopen the application
+        And I am signed in
+        Then a record with status "Draft" is displayed
+        When I continue the draft catch record
+        Then I should be on the departure port page
+
+    @offline
+    Scenario: Draft is kept when connectivity is lost
+        When I start a catch record
+        And I select vessel "ACHILLES"
+        And I select a trip for today
+        And I am offline
+        And I leave and reopen the application
+        And I am signed in
+        Then a record with status "Draft" is displayed
+        When I continue the draft catch record
+        Then I should be on the departure port page
+
+    # AC16-AC19 cover backend sync behaviour that is not observable through the Android UI.
+    # Verify them manually or with backend/API tests; no step definitions are implemented.
+    @manual @skip
+    Scenario: Duplicate submission is not recorded twice
+        Given a catch record submission has already been received
+        When the same submission is received again
+        Then the duplicate submission is detected
+        And no duplicate catch record is created
+
+    @manual @skip
+    Scenario: Pending records are synced in order
+        Given several catch records are awaiting sync
+        When connectivity is restored
+        Then the records are submitted in the defined order
+        And the outcome of each submission is recorded
+
+    @manual @skip
+    Scenario: Sync conflict is resolved
+        Given a catch record awaiting sync conflicts with the server copy
+        When the record is synced
+        Then the conflict is resolved using the agreed rules
+        And the outcome is recorded for audit
+
+    @manual @skip
+    Scenario: Failed submissions retry with backoff
+        Given a catch record submission keeps failing
+        When the submission is retried
+        Then the retries follow the configured backoff
+        And no duplicate catch record is created

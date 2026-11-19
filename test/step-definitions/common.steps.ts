@@ -5,6 +5,7 @@ import { BasePage } from '../page-objects/base/basePage';
 import { getAndroidTestCredentials } from '../helpers/testCredentials';
 import NetworkHelper from '../helpers/networkHelper';
 import { getPage, type PageName } from '../support/pages';
+import { logStep } from '../common/logger';
 
 const currentPage = new BasePage();
 
@@ -60,6 +61,11 @@ When('I go back online', async () => {
 
 When('I save and continue', async () => {
     await currentPage.saveAndContinue();
+});
+
+When('I wait {int} seconds', async (seconds: number) => {
+    logStep(`Waiting ${seconds} seconds`);
+    await browser.pause(seconds * 1000);
 });
 
 async function assertOnPage(name: PageName) {

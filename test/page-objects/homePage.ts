@@ -44,12 +44,17 @@ export class HomePage extends BasePage {
         );
     }
 
-    async continueDraftRecord() {
-        logStep('Continuing draft catch record');
+    async openDraftRecord() {
+        logStep('Opening draft catch record');
         const draft = this.recordWithStatus('Draft');
         await this.waitForRecordWithStatus('Draft');
         await draft.click();
         await this.completeDraftOption.waitForDisplayed();
+    }
+
+    async continueDraftRecord() {
+        logStep('Continuing draft catch record');
+        await this.openDraftRecord();
         await this.completeDraftOption.click();
         await this.saveAndContinue();
     }

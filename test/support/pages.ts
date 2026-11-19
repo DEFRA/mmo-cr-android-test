@@ -7,6 +7,7 @@ import departurePortPage from '../page-objects/departurePortPage';
 import gearMeasurementPage from '../page-objects/gearMeasurementPage';
 import gearPage from '../page-objects/gearPage';
 import homePage from '../page-objects/homePage';
+import lateSubmissionWarningPage from '../page-objects/lateSubmissionWarningPage';
 import returnPortPage from '../page-objects/returnPortPage';
 import selectVesselPage from '../page-objects/selectVesselPage';
 import selectedGearsPage from '../page-objects/selectedGearsPage';
@@ -32,7 +33,11 @@ const pages = {
     home: { page: homePage, heading: () => homePage.heading },
     'select vessel': { page: selectVesselPage, heading: () => selectVesselPage.heading },
     'trip today': { page: tripTodayPage, heading: () => tripTodayPage.heading },
-    'trip start date': { page: tripStartDatePage, heading: () => tripStartDatePage.heading },
+    'trip start date': {
+        page: tripStartDatePage,
+        heading: () => tripStartDatePage.heading,
+        validationError: () => tripStartDatePage.validationError,
+    },
     'trip end date': { page: tripEndDatePage, heading: () => tripEndDatePage.heading },
     'departure port': { page: departurePortPage, heading: () => departurePortPage.heading },
     'return port': { page: returnPortPage, heading: () => returnPortPage.heading },
@@ -54,6 +59,10 @@ const pages = {
     'submission success': {
         page: submissionSuccessPage,
         heading: () => submissionSuccessPage.heading,
+    },
+    'late submission warning': {
+        page: lateSubmissionWarningPage,
+        heading: () => lateSubmissionWarningPage.heading,
     },
 } satisfies Record<string, PageDefinition>;
 

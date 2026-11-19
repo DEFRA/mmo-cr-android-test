@@ -41,6 +41,15 @@ When(/^I enter a trip end date of (today|\d+ days? ago)$/, async (when: string) 
     await tripEndDatePage.enterDateAndContinue(day, month, year);
 });
 
+// Stays on the start date page, so the date can be rejected by validation.
+When(/^I try to enter a trip start date of (\d+ days? ago)$/, async (when: string) => {
+    const { day, month, year } = dateFromPhrase(when);
+    await tripTodayPage.heading.waitForDisplayed();
+    await tripTodayPage.selectNo();
+    await tripStartDatePage.enterDate(day, month, year);
+    await tripStartDatePage.saveAndContinue();
+});
+
 When('I select a trip for today', async () => {
     await androidFlowNavigator.selectTripDates(true);
 });

@@ -9,6 +9,14 @@ Then('the sub area {string} is not in the suggested list', async (areaCode: stri
     expect(await catchSubAreaPage.getAvailableSubAreas()).not.toContain(areaCode);
 });
 
+Then('the sub area {string} is in the suggested list', async (areaCode: string) => {
+    expect(await catchSubAreaPage.getAvailableSubAreas()).toContain(areaCode);
+});
+
+When('I select the suggested sub area {string}', async (areaCode: string) => {
+    await catchSubAreaPage.selectSubArea(areaCode);
+});
+
 When('I select the "Other" sub area', async () => {
     await catchSubAreaPage.selectOther();
 });

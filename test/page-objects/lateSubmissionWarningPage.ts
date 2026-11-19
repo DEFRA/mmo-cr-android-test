@@ -11,12 +11,6 @@ export class LateSubmissionWarningPage extends BasePage {
         );
     }
 
-    get message() {
-        return $(
-            '//android.widget.TextView[starts-with(@text, "Catch records must be submitted within 24 hours of a trip ending.")]',
-        );
-    }
-
     async acknowledge() {
         logStep('Acknowledging late submission warning');
         await this.heading.waitForDisplayed();

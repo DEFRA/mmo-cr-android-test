@@ -4,9 +4,6 @@ import type { BasePage } from '../page-objects/base/basePage';
 import catchAreaPage from '../page-objects/catchAreaPage';
 import homePage from '../page-objects/homePage';
 import lateSubmissionWarningPage from '../page-objects/lateSubmissionWarningPage';
-import retainedCatchPage from '../page-objects/retainedCatchPage';
-import selectVesselPage from '../page-objects/selectVesselPage';
-import tripTodayPage from '../page-objects/tripTodayPage';
 import { completedCatchRecordData } from '../data/catchRecordSync.data';
 import { createDraftCatchRecord } from './catchRecordSync.steps';
 
@@ -27,6 +24,7 @@ async function reachCatchArea() {
 
 const mandatoryQuestions: Record<string, MandatoryQuestion> = {
     // The draft action options ("Complete catch record", ...) are shown from the home page.
+    // Vessel and same-day trip are not listed: choosing an option moves on, so there is no Save and continue.
     'Draft action': {
         page: homePage,
         reach: async () => {
@@ -34,32 +32,9 @@ const mandatoryQuestions: Record<string, MandatoryQuestion> = {
             await homePage.openDraftRecord();
         },
     },
-    Vessel: {
-        page: selectVesselPage,
-        reach: async () => {
-            await androidFlowNavigator.startCatchRecord();
-            await selectVesselPage.heading.waitForDisplayed();
-        },
-    },
-    'Same-day trip': {
-        page: tripTodayPage,
-        reach: async () => {
-            await androidFlowNavigator.startCatchRecord();
-            await androidFlowNavigator.selectVessel(completedCatchRecordData.vessel);
-        },
-    },
     'Statistical area': {
         page: catchAreaPage,
         reach: reachCatchArea,
-    },
-    'Retained catch': {
-        page: retainedCatchPage,
-        reach: async () => {
-            await reachCatchArea();
-            await androidFlowNavigator.selectAreas();
-            // TODO(CRAR-165): confirm where the retained catch question sits in the journey.
-            await retainedCatchPage.heading.waitForDisplayed();
-        },
     },
 };
 

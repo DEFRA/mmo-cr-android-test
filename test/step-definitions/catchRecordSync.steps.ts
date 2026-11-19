@@ -73,16 +73,8 @@ When('I minimise the app for {int} seconds', async (seconds: number) => {
     await driver.execute('mobile: backgroundApp', { seconds });
 });
 
-Given('I have a submitted catch record', async () => {
-    await createSubmittedCatchRecord();
-});
-
 Given('I have a catch record awaiting sync', async () => {
     await createUnsentCatchRecord();
-});
-
-Given('I have a draft catch record', async () => {
-    await createDraftCatchRecord();
 });
 
 Given('I have a catch record with status {string}', async (status: string) => {

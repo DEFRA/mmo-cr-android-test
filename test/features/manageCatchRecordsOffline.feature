@@ -14,20 +14,14 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         When I continue without answering the "<question>" question
         Then a message containing "<message>" is displayed
 
+        # Vessel and same-day trip move on as soon as an option is chosen, so they cannot be left unanswered.
         Examples:
             | question         | message                                                                      |
+            | Draft action     | Select what you want to do with your draft record                            |
             | Statistical area | Select the statistical sub area where the majority of your catch was caught. |
 
-        # TODO(CRAR-165): confirm these validation messages (and the retained catch page locators), then remove @skip.
-        @skip
-        Examples:
-            | question       | message                                  |
-            | Draft action   | TODO(CRAR-165) draft action validation   |
-            | Vessel         | TODO(CRAR-165) vessel validation         |
-            | Same-day trip  | TODO(CRAR-165) same-day trip validation  |
-            | Retained catch | TODO(CRAR-165) retained catch validation |
-
-    #Scenarios related to trip start date validation not yet added
+    # The app does not yet reject start dates over 365 days ago (a 366-day-old date moves on to the
+    # trip end date page), so this stays skipped until that validation is added.
     @skip
     Scenario: Trip start date over 365 days ago is rejected
         When I start a catch record
@@ -111,6 +105,8 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         And I accept and submit the catch record
         Then I should be on the submission success page
         And a message containing "saved and sent when you're back online" is displayed
+        When I view my records
+        Then a record with status "Unsent" is displayed
 
     Scenario Outline: Record shows status <status>
         Given I have a catch record with status "<status>"

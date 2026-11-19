@@ -72,13 +72,6 @@ When('I select catch area {string}', async (area: string) => {
     await androidFlowNavigator.selectAreas(area);
 });
 
-When(
-    'I select catch area {string} with sub area {string}',
-    async (area: string, subArea: string) => {
-        await androidFlowNavigator.selectAreas(area, subArea);
-    },
-);
-
 Then('the catch area map is displayed', async () => {
     await catchAreaPage.heading.waitForDisplayed();
     await expect(catchAreaPage.map).toBeDisplayed();

@@ -152,9 +152,18 @@ export class CatchSubAreaPage extends BasePage {
         await this.selectSubArea(firstCode);
     }
 
-    async selectSubAreaAndContinue(areaCode: string) {
-        logStep(`Selecting sub area and continuing: ${areaCode}`);
-        await this.selectSubArea(areaCode);
+    // Picks the code from the suggested list when offered, otherwise searches for it via "Other".
+    async selectSubAreaByCodeAndContinue(areaCode: string) {
+        logStep(`Selecting sub area ${areaCode} and continuing`);
+        await this.scrollToTop();
+        await this.heading.waitForDisplayed();
+        if ((await this.getAvailableSubAreas()).includes(areaCode)) {
+            await this.selectSubArea(areaCode);
+        } else {
+            await this.selectOther();
+            await this.enterSubAreaCode(areaCode);
+            await this.selectSuggestion(areaCode);
+        }
         await this.saveAndContinue();
     }
 

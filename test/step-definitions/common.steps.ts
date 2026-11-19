@@ -76,8 +76,6 @@ async function assertOnPage(name: PageName) {
     await expect(heading()).toBeDisplayed();
 }
 
-Given('I am on the {page} page', assertOnPage);
-
 Then('I should be on the {page} page', assertOnPage);
 
 Then('I should see a validation error on the {page} page', async (name: PageName) => {

@@ -77,9 +77,12 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
             | species | retained | below minimum | discarded |
             | Brill   | 5        | 1             | 1         |
         And I select no delayed landing
-        And I accept and submit the catch record
         Then I should be on the late submission warning page
+        And a message containing "being submitted 2 days after the trip end date" is displayed
+        And a message containing "Catch records must be submitted within 24 hours of a trip ending" is displayed
         When I acknowledge the late submission warning
+        Then I should be on the catch record summary page
+        When I accept and submit the catch record
         Then I should be on the submission success page
 
     @offline

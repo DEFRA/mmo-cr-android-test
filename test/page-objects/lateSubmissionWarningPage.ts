@@ -1,25 +1,27 @@
 import { BasePage } from './base/basePage';
+import catchRecordSummaryPage from './catchRecordSummaryPage';
 import { logStep } from '../common/logger';
 
-// TODO(CRAR-165): stub page for the late submission warning (AC09).
-// Confirm the heading and acknowledge button against the app.
+// Shown after the delayed landing question when the trip ended more than 24 hours ago.
 export class LateSubmissionWarningPage extends BasePage {
+    // The heading includes the number of days late, e.g. "...being submitted 2 days after the trip end date".
     get heading() {
         return $(
-            '//android.widget.TextView[@text="TODO(CRAR-165): late submission warning heading" and @heading="true"]',
+            '//android.widget.TextView[starts-with(@text, "This catch record is being submitted") and contains(@text, "after the trip end date") and @heading="true"]',
         );
     }
 
-    get acknowledgeButton() {
+    get message() {
         return $(
-            '//android.view.View[@clickable="true"][.//android.widget.TextView[@text="TODO(CRAR-165): acknowledge late submission"]]',
+            '//android.widget.TextView[starts-with(@text, "Catch records must be submitted within 24 hours of a trip ending.")]',
         );
     }
 
     async acknowledge() {
         logStep('Acknowledging late submission warning');
-        await this.acknowledgeButton.waitForDisplayed();
-        await this.acknowledgeButton.click();
+        await this.heading.waitForDisplayed();
+        await this.saveAndContinue();
+        await catchRecordSummaryPage.heading.waitForDisplayed();
     }
 }
 

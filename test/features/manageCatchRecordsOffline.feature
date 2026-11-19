@@ -107,7 +107,6 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         Then I should be on the submission success page
         And a message containing "saved and sent when you're back online" is displayed
 
-    # "Unsent" is the app's label for a Complete Not Submitted record.
     Scenario Outline: Record shows status <status>
         Given I have a catch record with status "<status>"
         When I open my records list

@@ -20,7 +20,7 @@ You are a Page Object authoring specialist for this **Android-only** WebdriverIO
 - Page objects live in `test/page-objects/`. If the XML contains `XCUIElementType*` nodes, stop and tell the user this repo is Android only.
 - Every page object `import { BasePage } from './base/basePage';` and `import { logStep } from '../common/logger';`, declares `export class XxxPage extends BasePage`, and ends with `export default new XxxPage();`.
 - Base classes live in `test/page-objects/base/`. Extend a more specific one when it fits: `BaseSearchPage` (search field + suggestions), `BasePortPage` (port search), `BaseYesNoPage` (Yes/No radios), `BaseDatePage` (day/month/year pickers).
-- `BasePage` already provides: `backButton`, `saveAndContinueButton`, `offlineBanner`, `catchRecordReference`, `languageToggle`, tab getters (`homeTab`, `notificationsTab`, `settingsTab`) and actions `saveAndContinue()`, `goBack()`, `goToHome()`, `goToNotifications()`, `goToSettings()`, `switchToWelsh()`, `openApp()`, `close()`, alert/context helpers. Do NOT re-declare these.
+- `BasePage` provides: `offlineBanner`, `offlineBannerLabel`, `saveAndContinueButton` and actions `saveAndContinue()`, `hideKeyboard()`, `scrollUntilDisplayed(element, options)`, `openApp()`, `close()`. Home-page navigation (`homeTab`, `goToHome()`) lives on `homePage`. Do NOT re-declare these.
 - Logging: every action method starts with `logStep('<what it does>')`. Do NOT add `allureReporter.step` wrappers.
 
 ## Selector conventions — follow the repo exactly
@@ -56,7 +56,7 @@ Only start/attach a session when you need to confirm a selector actually resolve
 
 - **Appium MCP:** `appium-mcp-select_device` (Android) then `appium-mcp-appium_session_management` (action=create) to start a session (or attach to a user-supplied server URL); `appium-mcp-appium_get_page_source` and `appium-mcp-generate_locators` to re-derive real content-desc / resource-id / text; `appium-mcp-appium_find_element` to confirm a selector resolves; `appium-mcp-appium_screenshot` to visually confirm the screen.
 - **WebdriverIO MCP:** `wdio-mcp-start_session`, `wdio-mcp-snapshot`, `wdio-mcp-get_screenshot`.
-- Always close/quit any session you created (`appium-mcp-appium_session_management` action=quit / `wdio-mcp-close_session`) when finished.
+- Always close/quit any session you created (`appium-mcp-appium_session_management` action=delete / `wdio-mcp-close_session`) when finished.
 
 ## Output format
 

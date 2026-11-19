@@ -21,7 +21,7 @@ You are a test-authoring specialist for this **Android-only** WebdriverIO + Appi
 - Journey helper: `test/helpers/androidFlowNavigator.ts` (default export `androidFlowNavigator`). Other helpers: `test/helpers/networkHelper.ts` (`NetworkHelper.goOffline()` / `goOnline()`), `test/helpers/testCredentials.ts` (`getAndroidTestCredentials()`).
 - Common utilities: `test/common/logger.ts` (`logStep`, `logInfo`, `logWarn`, `logError`) and `test/common/dateHelper.ts` (`formatDate(date)` → `{ day, month, year }`).
 - Selectors are UiAutomator2 XPath based on visible text, e.g. `//android.widget.TextView[@text="..." and @heading="true"]`, `//android.view.View[@clickable="true"][.//android.widget.TextView[@text="..."]]`, `//android.view.View[@checkable="true"][...]`, `//android.widget.EditText`. Use `~` accessibility id only when the app exposes one (e.g. `~GOV.UK`).
-- Shared `BasePage` actions: `openApp()`, `close()`, `saveAndContinue()`, `goBack()`, `goToHome()`, `goToNotifications()`, `goToSettings()`, `switchToWelsh()`, `isOfflineBannerDisplayed()`.
+- Shared `BasePage` members: `offlineBanner`, `offlineBannerLabel`, `saveAndContinueButton`, `saveAndContinue()`, `hideKeyboard()`, `scrollUntilDisplayed()`, `openApp()`, `close()`. `homePage` adds `goToHome()`, `openDraftRecord()`, `continueDraftRecord()` and `deleteDraftRecord()`.
 - Step definitions use `await expect(...).toBeDisplayed()` and page-object action methods. New steps must not use raw selectors — route through a page object.
 - Hooks live in `test/support/hooks.ts`: every scenario opens the app before and closes it after; scenarios tagged `@offline` have the network restored afterwards. Do not add per-feature open/close steps.
 - Logging is via `logStep` from `test/common/logger.ts`; do NOT add `allureReporter.step` wrappers (Allure already reports each Cucumber step).
@@ -32,10 +32,10 @@ You are a test-authoring specialist for this **Android-only** WebdriverIO + Appi
 - Vessel: `ACHILLES`
 - Ports: departure `Hastings`, return `Dover` (search-based add flow)
 - Gear: `Seine nets` (mesh size `10`, shots `10`)
-- Catch area: `38E95` (or `'Other'` + sub area `38E95`)
+- Catch area: `38E95` — `selectAreas('38E95')` picks that sub area (from the suggested list, or by searching via Other). `selectAreas('Other')` picks the first suggested sub area; `selectAreas()` taps the map.
 - Species: `Brown crab (TBC)` (retained `5`, below-min `1`, discarded `1`)
 - Trip dates: build with `formatDate(new Date())` / a `Date` offset — never hardcode dates.
-- Journey order (`androidFlowNavigator`): `startCatchRecord()` → `selectVessel()` → `selectTripDates(tripToday, start?, end?)` → `selectPorts(dep, ret, isClosestPort?)` → `selectGear(name, mesh, shots)` → `selectAreas(area?, subArea?)` → `selectSpecies(name, retained, belowMin, discarded)` → `selectDelayedLanding(bool)` → `catchRecordSummaryPage` (`getFieldValue()`, `acceptAndSubmit()`) → `submissionSuccessPage` (`getRecordReference()`, `clickViewRecords()`).
+- Journey order (`androidFlowNavigator`): `startCatchRecord()` → `selectVessel()` → `selectTripDates(tripToday, start?, end?)` → `selectPorts(dep, ret)` → `selectGear(name, mesh, shots)` → `selectAreas(area?)` → `selectSpecies(name, retained, belowMin, discarded)` → `selectDelayedLanding(bool)` → (`lateSubmissionWarningPage.acknowledge()` when the trip ended more than 24 hours ago) → `catchRecordSummaryPage` (`getFieldValue()`, `acceptAndSubmit()`) → `submissionSuccessPage` (`getRecordReference()`, `clickViewRecords()`).
 
 ## Approach
 
@@ -43,7 +43,7 @@ You are a test-authoring specialist for this **Android-only** WebdriverIO + Appi
 2. Confirm which page objects and helper methods already exist for any new steps. Reuse existing methods (e.g. `signInPage.signIn`, `androidFlowNavigator.startCatchRecord`, `selectVessel`, `selectTripDates`, `selectPorts`, `selectGear`, `selectAreas`, `selectSpecies`, `selectDelayedLanding`). Never guess a method name — verify it exists in the page object / `androidFlowNavigator`.
 3. If a required page-object method or selector does NOT exist, do NOT silently invent it. Prefer to verify against the live app via the MCP servers (see below); add the new method/selector to the appropriate page object following that file's style. Only when no live session is available, flag the selector inline with a short comment noting it is unverified.
 4. Use a `Background` for shared setup (usually `Given I am signed in`). Keep step text business-readable and parameterise values with `{string}` / `{int}` / `{float}` so steps stay reusable.
-5. Dates are entered via the date pickers (`enterDateAndContinue(day, month, year)`) — build them with `formatDate()` from a `Date` offset inside the step definition; never hardcode dates in feature files.
+5. Dates are entered via the date pickers (`enterDateAndContinue(day, month, year)`, which sets each Day/Month/Year SeekBar with `setValue`; the app refuses future dates) — build them with `formatDate()` from a `Date` offset inside the step definition; never hardcode dates in feature files.
 6. For offline scenarios tag the scenario `@offline` and use `Given I am offline`; the hook restores the network.
 7. Follow the validate-before-continue pattern already used everywhere: it is safe to assert a page "stays displayed" after continuing without required fields.
 
@@ -54,7 +54,7 @@ Use these to ground selectors in the ACTUAL running app instead of guessing. Onl
 - **Appium MCP** — for UiAutomator2 inspection: `appium-mcp-select_device` (Android) then `appium-mcp-appium_session_management` (action=create) to start a session (or attach to a user-supplied server URL); `appium-mcp-appium_get_page_source` and `appium-mcp-generate_locators` to discover the real element hierarchy; `appium-mcp-appium_find_element` to confirm a candidate selector resolves; `appium-mcp-appium_screenshot` to visually confirm the screen. Prefer accessibility id when exposed, otherwise follow the repo's text-based XPath style shown above.
 - **WebdriverIO MCP** — for a WDIO-style session: `wdio-mcp-start_session`, `wdio-mcp-snapshot` to enumerate real elements, `wdio-mcp-get_screenshot` to confirm state.
 - When you resolve a real selector this way, add it to the page object as a verified selector (no "unverified" comment) and note in your summary that it was confirmed against a live session.
-- Always close sessions you created (`appium-mcp-appium_session_management` action=quit / `wdio-mcp-close_session`) when finished.
+- Always close sessions you created (`appium-mcp-appium_session_management` action=delete / `wdio-mcp-close_session`) when finished.
 
 ## Output format
 

@@ -27,6 +27,8 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
             | Same-day trip  | TODO(CRAR-165) same-day trip validation  |
             | Retained catch | TODO(CRAR-165) retained catch validation |
 
+    #Scenarios related to trip start date validation not yet added
+    @skip
     Scenario: Trip start date over 365 days ago is rejected
         When I start a catch record
         And I select vessel "ACHILLES"

@@ -45,8 +45,8 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         And the catch area map is displayed
         And I choose the "Other" catch area
         Then the catch sub area screen is displayed
-        And the sub area "38E95" is in the suggested list
-        When I select the suggested sub area "38E95"
+        And the sub area "30F04" is in the suggested list
+        When I select the suggested sub area "30F04"
         And I save and continue
         Then I should be on the species page
 
@@ -78,8 +78,8 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         And I select gear "Seine nets" with mesh size 10 and 10 shots
         And I select catch area "38E95"
         And I select species with the following weights:
-            | species          | retained | below minimum | discarded |
-            | Brown crab (TBC) | 5        | 1             | 1         |
+            | species | retained | below minimum | discarded |
+            | Brill   | 5        | 1             | 1         |
         And I select no delayed landing
         And I accept and submit the catch record
         Then I should be on the late submission warning page
@@ -104,8 +104,8 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         And I select gear "Seine nets" with mesh size 10 and 10 shots
         And I select catch area "38E95"
         And I select species with the following weights:
-            | species          | retained | below minimum | discarded |
-            | Brown crab (TBC) | 5        | 1             | 1         |
+            | species        | retained | below minimum | discarded |
+            | Zebra seabream | 5        | 1             | 1         |
         And I select no delayed landing
         And I accept and submit the catch record
         Then I should be on the submission success page

@@ -42,12 +42,20 @@ When(/^I enter a trip end date of (today|\d+ days? ago)$/, async (when: string) 
 });
 
 // Stays on the start date page, so the date can be rejected by validation.
-When(/^I try to enter a trip start date of (\d+ days? ago)$/, async (when: string) => {
+When(/^I try to enter a trip start date of (today|\d+ days? ago)$/, async (when: string) => {
     const { day, month, year } = dateFromPhrase(when);
     await tripTodayPage.heading.waitForDisplayed();
     await tripTodayPage.selectNo();
     await tripStartDatePage.enterDate(day, month, year);
     await tripStartDatePage.saveAndContinue();
+});
+
+// Stays on the end date page, so the date can be rejected by validation.
+When(/^I try to enter a trip end date of (today|\d+ days? ago)$/, async (when: string) => {
+    const { day, month, year } = dateFromPhrase(when);
+    await tripEndDatePage.heading.waitForDisplayed();
+    await tripEndDatePage.enterDate(day, month, year);
+    await tripEndDatePage.saveAndContinue();
 });
 
 When('I select a trip for today', async () => {

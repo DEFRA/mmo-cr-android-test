@@ -1,51 +1,24 @@
 import { Given, Then, When } from '@wdio/cucumber-framework';
 import androidFlowNavigator from '../helpers/androidFlowNavigator';
 import NetworkHelper from '../helpers/networkHelper';
-import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import homePage from '../page-objects/homePage';
 import submissionSuccessPage from '../page-objects/submissionSuccessPage';
 import { completedCatchRecordData, offlineCatchRecordData } from '../data/catchRecordSync.data';
 import type { CatchRecordWorld } from '../support/world';
 
-async function submitCompletedCatchRecord(data: typeof completedCatchRecordData) {
-    await androidFlowNavigator.startCatchRecord();
-    await androidFlowNavigator.selectVessel(data.vessel);
-    await androidFlowNavigator.selectTripDates(data.tripToday);
-    await androidFlowNavigator.selectPorts(data.ports.departure, data.ports.return);
-    await androidFlowNavigator.selectGear(data.gear.name, data.gear.meshSize, data.gear.shots);
-    await androidFlowNavigator.selectAreas();
-    await androidFlowNavigator.selectSpecies(
-        data.species.name,
-        data.species.retainedWeight,
-        data.species.belowMinimumWeight,
-        data.species.discardedWeight,
-    );
-    await androidFlowNavigator.selectDelayedLanding(data.delayedLanding);
-    await expect(catchRecordSummaryPage.heading).toBeDisplayed();
-    await catchRecordSummaryPage.acceptAndSubmit();
-}
-
 async function createSubmittedCatchRecord() {
-    await submitCompletedCatchRecord(completedCatchRecordData);
+    await androidFlowNavigator.submitCatchRecord(completedCatchRecordData);
     await expect(submissionSuccessPage.heading).toBeDisplayed();
     await submissionSuccessPage.clickViewRecords();
     await homePage.waitForRecordWithStatus('Submitted');
 }
 
-async function createUnsentCatchRecord() {
+async function createUnsentCatchRecord(status = 'Unsent') {
     await NetworkHelper.goOffline();
-    await submitCompletedCatchRecord(offlineCatchRecordData);
+    await androidFlowNavigator.submitCatchRecord(offlineCatchRecordData);
     await expect(submissionSuccessPage.offlineBanner).toBeDisplayed();
     await submissionSuccessPage.clickViewRecords();
-    await homePage.waitForRecordWithStatus('Unsent');
-}
-
-export async function createDraftCatchRecord() {
-    await androidFlowNavigator.startCatchRecord();
-    await androidFlowNavigator.selectVessel(completedCatchRecordData.vessel);
-    await driver.back();
-    await driver.back();
-    await expect(homePage.heading).toBeDisplayed();
+    await homePage.waitForRecordWithStatus(status);
 }
 
 When('I continue the draft catch record', async () => {
@@ -70,7 +43,7 @@ When('I leave and reopen the application', async () => {
 });
 
 When('I minimise the app for {int} seconds', async (seconds: number) => {
-    await driver.execute('mobile: backgroundApp', { seconds });
+    await homePage.moveToBackground(seconds);
 });
 
 Given('I have a catch record awaiting sync', async () => {
@@ -80,10 +53,11 @@ Given('I have a catch record awaiting sync', async () => {
 Given('I have a catch record with status {string}', async (status: string) => {
     switch (status) {
         case 'Draft':
-            await createDraftCatchRecord();
+            await androidFlowNavigator.createDraftCatchRecord(completedCatchRecordData.vessel);
             break;
         case 'Unsent':
-            await createUnsentCatchRecord();
+        case 'Complete/Pending':
+            await createUnsentCatchRecord(status);
             break;
         case 'Submitted':
             await createSubmittedCatchRecord();

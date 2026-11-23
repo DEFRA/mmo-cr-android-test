@@ -20,6 +20,22 @@ export class BasePage {
         );
     }
 
+    textContainingAnyOf(texts: string[]) {
+        const conditions = texts.map((text) => `contains(@text, "${text}")`).join(' or ');
+        return $(`//android.widget.TextView[${conditions}]`);
+    }
+
+    async scrollToTextContainingAnyOf(texts: string[]) {
+        for (const text of texts) {
+            const element = await $(
+                `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().textContains("${text.replace(/"/g, '\\"')}"))`,
+            );
+            if (await element.isExisting()) {
+                return;
+            }
+        }
+    }
+
     async saveAndContinue() {
         logStep('Clicking Save and Continue');
         try {
@@ -69,6 +85,22 @@ export class BasePage {
             ]);
             await browser.pause(300);
         }
+    }
+
+    async scrollToTop() {
+        await $('android=new UiScrollable(new UiSelector().scrollable(true)).scrollToBeginning(5)');
+    }
+
+    async goBack(times = 1) {
+        logStep(`Going back ${times} time(s)`);
+        for (let i = 0; i < times; i++) {
+            await driver.back();
+        }
+    }
+
+    async moveToBackground(seconds: number) {
+        logStep(`Moving app to the background for ${seconds} seconds`);
+        await driver.execute('mobile: backgroundApp', { seconds });
     }
 
     async openApp(maxAttempts = 3) {

@@ -5,36 +5,23 @@ import catchAreaPage from '../page-objects/catchAreaPage';
 import homePage from '../page-objects/homePage';
 import lateSubmissionWarningPage from '../page-objects/lateSubmissionWarningPage';
 import { completedCatchRecordData } from '../data/catchRecordSync.data';
-import { createDraftCatchRecord } from './catchRecordSync.steps';
 
 interface MandatoryQuestion {
     page: BasePage;
     reach: () => Promise<void>;
 }
 
-async function reachCatchArea() {
-    const { vessel, ports, gear } = completedCatchRecordData;
-    await androidFlowNavigator.startCatchRecord();
-    await androidFlowNavigator.selectVessel(vessel);
-    await androidFlowNavigator.selectTripDates(true);
-    await androidFlowNavigator.selectPorts(ports.departure, ports.return);
-    await androidFlowNavigator.selectGear(gear.name, gear.meshSize, gear.shots);
-    await catchAreaPage.heading.waitForDisplayed();
-}
-
 const mandatoryQuestions: Record<string, MandatoryQuestion> = {
-    // The draft action options ("Complete catch record", ...) are shown from the home page.
-    // Vessel and same-day trip are not listed: choosing an option moves on, so there is no Save and continue.
     'Draft action': {
         page: homePage,
         reach: async () => {
-            await createDraftCatchRecord();
+            await androidFlowNavigator.createDraftCatchRecord(completedCatchRecordData.vessel);
             await homePage.openDraftRecord();
         },
     },
     'Statistical area': {
         page: catchAreaPage,
-        reach: reachCatchArea,
+        reach: () => androidFlowNavigator.reachCatchArea(completedCatchRecordData),
     },
 };
 

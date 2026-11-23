@@ -43,15 +43,14 @@ Feature:(CRAR-120) Select statistical sub area using the map
         When I zoom out on the map
         Then the map view changes
 
-    Scenario Outline: Drag the map <direction>
+    Scenario: Drag the map in each direction
         Given the catch area map is displayed
         And I zoom in on the map
-        When I drag the map <direction>
+        When I drag the map up
         Then the map view changes
-
-        Examples:
-            | direction |
-            | up        |
-            | down      |
-            | left      |
-            | right     |
+        When I drag the map down
+        Then the map view changes
+        When I drag the map left
+        Then the map view changes
+        When I drag the map right
+        Then the map view changes

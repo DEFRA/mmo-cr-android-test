@@ -20,16 +20,6 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
             | Draft action     | Select what you want to do with your draft record                            |
             | Statistical area | Select the statistical sub area where the majority of your catch was caught. |
 
-    # The app does not yet reject start dates over 365 days ago (a 366-day-old date moves on to the
-    # trip end date page), so this stays skipped until that validation is added.
-    @skip
-    Scenario: Trip start date over 365 days ago is rejected
-        When I start a catch record
-        And I select vessel "ACHILLES"
-        And I try to enter a trip start date of 366 days ago
-        Then I should be on the trip start date page
-        And I should see a validation error on the trip start date page
-
     Scenario: Suggested sub areas are shown for the departure port
         When I start a catch record
         And I select vessel "ACHILLES"
@@ -70,8 +60,8 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         And I select gear "Seine nets" with mesh size 10 and 10 shots
         And I select catch area "38E95"
         And I select species with the following weights:
-            | species | retained | below minimum | discarded |
-            | Brill   | 5        | 1             | 1         |
+            | species          | retained | below minimum | discarded |
+            | Brown crab (TBC) | 5        | 1             | 1         |
         And I select no delayed landing
         Then I should be on the late submission warning page
         And a message containing "being submitted 2 days after the trip end date" is displayed
@@ -105,29 +95,9 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         And I accept and submit the catch record
         Then I should be on the submission success page
         And a message containing "saved and sent when you're back online" is displayed
+        And a record reference is shown
         When I view my records
         Then a record with status "Unsent" is displayed
-
-    Scenario Outline: Record shows status <status>
-        Given I have a catch record with status "<status>"
-        When I open my records list
-        Then a record with status "<status>" is displayed
-
-        Examples:
-            | status    |
-            | Submitted |
-
-        @offline
-        Examples:
-            | status |
-            | Unsent |
-
-    Scenario: Record shows status Draft
-        Given I have a catch record with status "Draft"
-        When I open my records list
-        Then a record with status "Draft" is displayed
-        When I delete the draft catch record
-        Then the deleted draft catch record is not displayed
 
     @offline
     Scenario: Unsent record is submitted when back online

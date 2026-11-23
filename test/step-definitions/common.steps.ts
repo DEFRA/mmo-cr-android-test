@@ -4,26 +4,10 @@ import signInPage from '../page-objects/signInPage';
 import { BasePage } from '../page-objects/base/basePage';
 import { getAndroidTestCredentials } from '../helpers/testCredentials';
 import NetworkHelper from '../helpers/networkHelper';
-import { getPage, type PageName } from '../support/pages';
+import { pageHeading, type PageName } from '../support/pages';
 import { logStep } from '../common/logger';
 
 const currentPage = new BasePage();
-
-function textContainingAnyOf(texts: string[]) {
-    const conditions = texts.map((text) => `contains(@text, "${text}")`).join(' or ');
-    return $(`//android.widget.TextView[${conditions}]`);
-}
-
-async function scrollToTextContainingAnyOf(texts: string[]) {
-    for (const text of texts) {
-        const element = await $(
-            `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().textContains("${text.replace(/"/g, '\\"')}"))`,
-        );
-        if (await element.isExisting()) {
-            return;
-        }
-    }
-}
 
 Given('I am signed in', async () => {
     await browser.waitUntil(
@@ -68,29 +52,15 @@ When('I wait {int} seconds', async (seconds: number) => {
     await browser.pause(seconds * 1000);
 });
 
-async function assertOnPage(name: PageName) {
-    const { page, heading, scrollToHeading } = getPage(name);
-    if (scrollToHeading) {
-        await page.scrollUntilDisplayed(heading());
-    }
-    await expect(heading()).toBeDisplayed();
-}
-
-Then('I should be on the {page} page', assertOnPage);
-
-Then('I should see a validation error on the {page} page', async (name: PageName) => {
-    const { validationError } = getPage(name);
-    if (!validationError) {
-        throw new Error(`No validation error is defined for the ${name} page`);
-    }
-    await expect(validationError()).toBeDisplayed();
+Then('I should be on the {page} page', async (name: PageName) => {
+    await expect(pageHeading(name)).toBeDisplayed();
 });
 
 Then(
     /^a message containing "([^"]*)"(?: or "([^"]*)")? is displayed$/,
     async (first: string, second?: string) => {
         const texts = second ? [first, second] : [first];
-        await scrollToTextContainingAnyOf(texts);
-        await expect(textContainingAnyOf(texts)).toBeDisplayed();
+        await currentPage.scrollToTextContainingAnyOf(texts);
+        await expect(currentPage.textContainingAnyOf(texts)).toBeDisplayed();
     },
 );

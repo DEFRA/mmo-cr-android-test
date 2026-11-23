@@ -1,9 +1,7 @@
 import { Then, When } from '@wdio/cucumber-framework';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import catchSubAreaPage from '../page-objects/catchSubAreaPage';
-
-let capturedCoordinates = '';
-let previousCoordinates = '';
+import type { CatchRecordWorld } from '../support/world';
 
 Then('the sub area {string} is not in the suggested list', async (areaCode: string) => {
     expect(await catchSubAreaPage.getAvailableSubAreas()).not.toContain(areaCode);
@@ -25,10 +23,13 @@ When('I enter sub area code {string}', async (text: string) => {
     await catchSubAreaPage.enterSubAreaCode(text);
 });
 
-When('I select the sub area result {string}', async (areaCode: string) => {
-    capturedCoordinates = await catchSubAreaPage.getSuggestionCoordinates(areaCode);
-    await catchSubAreaPage.selectSuggestion(areaCode);
-});
+When(
+    'I select the sub area result {string}',
+    async function (this: CatchRecordWorld, areaCode: string) {
+        this.subAreaCoordinates = await catchSubAreaPage.getSuggestionCoordinates(areaCode);
+        await catchSubAreaPage.selectSuggestion(areaCode);
+    },
+);
 
 Then('the sub area type-ahead field is displayed', async () => {
     await expect(catchSubAreaPage.subAreaSearchField).toBeDisplayed();
@@ -58,18 +59,24 @@ Then(
     },
 );
 
-Then('the coordinates for sub area {string} are displayed', async (areaCode: string) => {
-    previousCoordinates = capturedCoordinates;
-    capturedCoordinates = await catchSubAreaPage.getSuggestionCoordinates(areaCode);
+Then(
+    'the coordinates for sub area {string} are displayed',
+    async function (this: CatchRecordWorld, areaCode: string) {
+        this.previousSubAreaCoordinates = this.subAreaCoordinates;
+        this.subAreaCoordinates = await catchSubAreaPage.getSuggestionCoordinates(areaCode);
+    },
+);
+
+Then('the sub area coordinates have changed', function (this: CatchRecordWorld) {
+    expect(this.subAreaCoordinates).not.toEqual(this.previousSubAreaCoordinates);
 });
 
-Then('the sub area coordinates have changed', () => {
-    expect(capturedCoordinates).not.toEqual(previousCoordinates);
-});
-
-Then('the centre of the selected sub area is displayed', async () => {
+Then('the centre of the selected sub area is displayed', async function (this: CatchRecordWorld) {
+    if (!this.subAreaCoordinates) {
+        throw new Error('No sub area result has been selected');
+    }
     await expect(catchSubAreaPage.selectedAreaCentre).toHaveText(
-        expect.stringContaining(capturedCoordinates),
+        expect.stringContaining(this.subAreaCoordinates),
     );
 });
 

@@ -1,5 +1,7 @@
 import { logStep } from '../common/logger';
+import type { CatchRecordData } from '../data/catchRecordSync.data';
 import catchAreaPage from '../page-objects/catchAreaPage';
+import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import catchSubAreaPage from '../page-objects/catchSubAreaPage';
 import delayedLandingPage from '../page-objects/delayedLandingPage';
 import departurePortPage from '../page-objects/departurePortPage';
@@ -111,7 +113,7 @@ export class AndroidFlowNavigator {
         const searchText = speciesName.length > 2 ? speciesName.substring(0, 2) : speciesName;
         await speciesPage.searchSelectAndContinue(searchText, speciesName);
 
-        await selectedSpeciesPage.heading.waitForDisplayed();
+        await selectedSpeciesPage.waitForLoaded();
         await selectedSpeciesPage.selectSpeciesCheckbox(speciesName);
         await selectedSpeciesPage.enterRetainedWeight(retainedWeight);
 
@@ -132,6 +134,38 @@ export class AndroidFlowNavigator {
         } else {
             await delayedLandingPage.selectNoAndContinue();
         }
+    }
+
+    async reachCatchArea({ vessel, tripToday, ports, gear }: CatchRecordData) {
+        await this.startCatchRecord();
+        await this.selectVessel(vessel);
+        await this.selectTripDates(tripToday);
+        await this.selectPorts(ports.departure, ports.return);
+        await this.selectGear(gear.name, gear.meshSize, gear.shots);
+        await catchAreaPage.heading.waitForDisplayed();
+    }
+
+    async submitCatchRecord(data: CatchRecordData) {
+        logStep('Completing and submitting a catch record');
+        await this.reachCatchArea(data);
+        await this.selectAreas();
+        await this.selectSpecies(
+            data.species.name,
+            data.species.retainedWeight,
+            data.species.belowMinimumWeight,
+            data.species.discardedWeight,
+        );
+        await this.selectDelayedLanding(data.delayedLanding);
+        await catchRecordSummaryPage.heading.waitForDisplayed();
+        await catchRecordSummaryPage.acceptAndSubmit();
+    }
+
+    async createDraftCatchRecord(vessel: string) {
+        logStep('Creating a draft catch record');
+        await this.startCatchRecord();
+        await this.selectVessel(vessel);
+        await homePage.goBack(2);
+        await homePage.heading.waitForDisplayed();
     }
 }
 

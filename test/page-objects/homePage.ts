@@ -24,15 +24,18 @@ export class HomePage extends BasePage {
     async waitForRecordWithStatus(status: string, timeout = 15000) {
         logStep(`Waiting for a record with status: ${status}`);
         const record = this.recordWithStatus(status);
-        // Keep scrolling while waiting, since the row may be below the fold or still syncing.
+        // Keep checking while waiting, since the row may be below the fold or still syncing.
         await browser.waitUntil(
             async () => {
                 if (await record.isDisplayed()) {
                     return true;
                 }
-                await this.scrollUntilDisplayed(record, { maxSwipes: 3, direction: 'up' });
-                await this.scrollUntilDisplayed(record, { maxSwipes: 3, direction: 'down' });
-                return record.isDisplayed();
+                await this.scrollUntilDisplayed(record, { maxSwipes: 3 });
+                if (await record.isDisplayed()) {
+                    return true;
+                }
+                await this.scrollToTop();
+                return false;
             },
             { timeout, timeoutMsg: `No record with status "${status}" was displayed` },
         );

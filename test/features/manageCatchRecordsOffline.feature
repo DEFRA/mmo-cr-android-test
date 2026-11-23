@@ -20,6 +20,14 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
             | Draft action     | Select what you want to do with your draft record                            |
             | Statistical area | Select the statistical sub area where the majority of your catch was caught. |
 
+
+    Scenario: Trip start date over 365 days ago is rejected
+        When I start a catch record
+        And I select vessel "ACHILLES"
+        And I try to enter a trip start date of 366 days ago
+        Then I should be on the trip start date page
+        And I should see a validation error on the trip start date page
+
     Scenario: Suggested sub areas are shown for the departure port
         When I start a catch record
         And I select vessel "ACHILLES"
@@ -60,8 +68,8 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         And I select gear "Seine nets" with mesh size 10 and 10 shots
         And I select catch area "38E95"
         And I select species with the following weights:
-            | species          | retained | below minimum | discarded |
-            | Brown crab (TBC) | 5        | 1             | 1         |
+            | species | retained | below minimum | discarded |
+            | Brill   | 5        | 1             | 1         |
         And I select no delayed landing
         Then I should be on the late submission warning page
         And a message containing "being submitted 2 days after the trip end date" is displayed

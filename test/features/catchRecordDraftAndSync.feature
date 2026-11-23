@@ -9,8 +9,6 @@ Feature:Continue with catch a record after closing
     Background:
         Given I am signed in
 
-    # Draft auto-save, offline submission, sync and record status scenarios are covered by
-    # manageCatchRecordsOffline.feature (CRAR-165).
     Scenario: Catch area map resumes after the app is minimised
         When I start a catch record
         And I select vessel "ACHILLES"

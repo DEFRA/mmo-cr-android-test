@@ -41,7 +41,6 @@ When(/^I enter a trip end date of (today|\d+ days? ago)$/, async (when: string) 
     await tripEndDatePage.enterDateAndContinue(day, month, year);
 });
 
-// Stays on the start date page, so the date can be rejected by validation.
 When(/^I try to enter a trip start date of (today|\d+ days? ago)$/, async (when: string) => {
     const { day, month, year } = dateFromPhrase(when);
     await tripTodayPage.heading.waitForDisplayed();
@@ -50,7 +49,6 @@ When(/^I try to enter a trip start date of (today|\d+ days? ago)$/, async (when:
     await tripStartDatePage.saveAndContinue();
 });
 
-// Stays on the end date page, so the date can be rejected by validation.
 When(/^I try to enter a trip end date of (today|\d+ days? ago)$/, async (when: string) => {
     const { day, month, year } = dateFromPhrase(when);
     await tripEndDatePage.heading.waitForDisplayed();
@@ -129,10 +127,6 @@ When('I view my records', async () => {
 
 Then('the summary shows {string} as {string}', async (field: string, value: string) => {
     expect(await catchRecordSummaryPage.getFieldValue(field)).toEqual(value);
-});
-
-Then('the offline banner is displayed', async () => {
-    await expect(submissionSuccessPage.offlineBanner).toBeDisplayed();
 });
 
 Then('a record reference is shown', async () => {

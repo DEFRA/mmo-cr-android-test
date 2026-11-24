@@ -5,7 +5,7 @@ import speciesPage from '../page-objects/speciesPage';
 When('I search {string} and add species {string}', async (searchText: string, species: string) => {
     await speciesPage.heading.waitForDisplayed();
     await speciesPage.searchSelectAndContinue(searchText, species);
-    await selectedSpeciesPage.heading.waitForDisplayed();
+    await selectedSpeciesPage.waitForLoaded();
 });
 
 When('I select the species {string}', async (species: string) => {

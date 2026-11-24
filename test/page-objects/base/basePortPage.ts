@@ -2,6 +2,8 @@ import { BaseSearchPage } from './baseSearchPage';
 import { logStep } from '../../common/logger';
 
 export abstract class BasePortPage extends BaseSearchPage {
+    protected override readonly scrollToResult = true;
+
     abstract get heading(): ChainablePromiseElement;
 
     get addPortButton() {
@@ -10,35 +12,23 @@ export abstract class BasePortPage extends BaseSearchPage {
         );
     }
 
-    portSuggestion(portName: string) {
+    searchResult(portName: string) {
         return $(
             `//android.view.View[@clickable="true"][.//android.widget.TextView[@text="${portName}"]]`,
         );
     }
 
     async clickAddPort() {
-        if (await this.searchField.isDisplayed()) {
+        // The previous port screen's search field can linger during the transition, so look for
+        // Add port first rather than treating any visible search field as this screen's.
+        try {
+            await this.addPortButton.waitForDisplayed({ timeout: 3000 });
+        } catch {
             logStep('No saved ports, port search already displayed');
+            await this.searchField.waitForDisplayed();
             return;
         }
         logStep('Clicking Add port');
-        await this.addPortButton.waitForDisplayed();
         await this.addPortButton.click();
-    }
-
-    async searchAndSelectPort(searchText: string, portName: string) {
-        logStep(`Searching for ${searchText} and selecting port ${portName}`);
-        await this.enterSearchText(searchText);
-        const suggestion = this.portSuggestion(portName);
-        await this.hideKeyboard();
-        await this.scrollUntilDisplayed(suggestion);
-        await suggestion.waitForDisplayed();
-        await suggestion.click();
-    }
-
-    async searchSelectAndContinue(searchText: string, portName: string) {
-        logStep(`Searching, selecting and continuing: ${portName}`);
-        await this.searchAndSelectPort(searchText, portName);
-        await this.saveAndContinue();
     }
 }

@@ -1,4 +1,3 @@
-import type { BasePage } from '../page-objects/base/basePage';
 import catchAreaPage from '../page-objects/catchAreaPage';
 import catchRecordSummaryPage from '../page-objects/catchRecordSummaryPage';
 import catchSubAreaPage from '../page-objects/catchSubAreaPage';
@@ -21,55 +20,32 @@ import tripTodayPage from '../page-objects/tripTodayPage';
 
 type Element = ReturnType<typeof $>;
 
-export interface PageDefinition {
-    page: BasePage;
-    heading: () => Element;
-    validationError?: () => Element;
-    scrollToHeading?: boolean;
-}
-
 const pages = {
-    'sign in': { page: signInPage, heading: () => signInPage.heading },
-    home: { page: homePage, heading: () => homePage.heading },
-    'select vessel': { page: selectVesselPage, heading: () => selectVesselPage.heading },
-    'trip today': { page: tripTodayPage, heading: () => tripTodayPage.heading },
-    'trip start date': {
-        page: tripStartDatePage,
-        heading: () => tripStartDatePage.heading,
-        validationError: () => tripStartDatePage.validationError,
-    },
-    'trip end date': { page: tripEndDatePage, heading: () => tripEndDatePage.heading },
-    'departure port': { page: departurePortPage, heading: () => departurePortPage.heading },
-    'return port': { page: returnPortPage, heading: () => returnPortPage.heading },
-    gear: { page: gearPage, heading: () => gearPage.heading },
-    'gear measurement': {
-        page: gearMeasurementPage,
-        heading: () => gearMeasurementPage.heading,
-    },
-    'selected gears': { page: selectedGearsPage, heading: () => selectedGearsPage.heading },
-    'catch area': { page: catchAreaPage, heading: () => catchAreaPage.heading },
-    'catch sub area': { page: catchSubAreaPage, heading: () => catchSubAreaPage.heading },
-    species: { page: speciesPage, heading: () => speciesPage.heading },
-    'selected species': { page: selectedSpeciesPage, heading: () => selectedSpeciesPage.heading },
-    'delayed landing': { page: delayedLandingPage, heading: () => delayedLandingPage.heading },
-    'catch record summary': {
-        page: catchRecordSummaryPage,
-        heading: () => catchRecordSummaryPage.heading,
-    },
-    'submission success': {
-        page: submissionSuccessPage,
-        heading: () => submissionSuccessPage.heading,
-    },
-    'late submission warning': {
-        page: lateSubmissionWarningPage,
-        heading: () => lateSubmissionWarningPage.heading,
-    },
-} satisfies Record<string, PageDefinition>;
+    'sign in': () => signInPage.heading,
+    home: () => homePage.heading,
+    'select vessel': () => selectVesselPage.heading,
+    'trip today': () => tripTodayPage.heading,
+    'trip start date': () => tripStartDatePage.heading,
+    'trip end date': () => tripEndDatePage.heading,
+    'departure port': () => departurePortPage.heading,
+    'return port': () => returnPortPage.heading,
+    gear: () => gearPage.heading,
+    'gear measurement': () => gearMeasurementPage.heading,
+    'selected gears': () => selectedGearsPage.heading,
+    'catch area': () => catchAreaPage.heading,
+    'catch sub area': () => catchSubAreaPage.heading,
+    species: () => speciesPage.heading,
+    'selected species': () => selectedSpeciesPage.heading,
+    'delayed landing': () => delayedLandingPage.heading,
+    'catch record summary': () => catchRecordSummaryPage.heading,
+    'submission success': () => submissionSuccessPage.heading,
+    'late submission warning': () => lateSubmissionWarningPage.heading,
+} satisfies Record<string, () => Element>;
 
 export type PageName = keyof typeof pages;
 
 export const pageNames = Object.keys(pages) as PageName[];
 
-export function getPage(name: PageName): PageDefinition {
-    return pages[name];
+export function pageHeading(name: PageName): Element {
+    return pages[name]();
 }

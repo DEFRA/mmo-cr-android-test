@@ -56,7 +56,7 @@ test/helpers/           Journey navigator, network and credential helpers
 test/common/            Logger and date utilities
 ```
 
-Page names usable in steps such as `Then I should be on the gear page` (also `Then I should see a validation error on the ... page`) are registered in `test/support/pages.ts`. When adding a page, also add its name to the `{page}` regex in `test/support/parameterTypes.ts`.
+Page names usable in steps such as `Then I should be on the gear page` are registered in `test/support/pages.ts`. When adding a page, also add its name to the `{page}` regex in `test/support/parameterTypes.ts`.
 
 `hooks.ts` opens the app before and closes it after every scenario, and restores the network after `@offline` scenarios.
 

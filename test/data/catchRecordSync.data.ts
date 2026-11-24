@@ -11,7 +11,7 @@ export const completedCatchRecordData = {
         shots: 10,
     },
     species: {
-        name: 'Brill',
+        name: 'Brown crab (TBC)',
         retainedWeight: 5,
         belowMinimumWeight: 1,
         discardedWeight: 1,
@@ -19,8 +19,7 @@ export const completedCatchRecordData = {
     delayedLanding: false,
 };
 
-// Uses a different species so the offline record can be told apart from the online one.
-export const offlineCatchRecordData = {
-    ...completedCatchRecordData,
-    species: { ...completedCatchRecordData.species, name: 'Zebra seabream' },
-};
+export type CatchRecordData = typeof completedCatchRecordData;
+
+// Same journey as the online record; records are told apart by their status.
+export const offlineCatchRecordData: CatchRecordData = { ...completedCatchRecordData };

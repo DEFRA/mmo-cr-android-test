@@ -20,6 +20,45 @@ export class BasePage {
         );
     }
 
+    textContainingAnyOf(texts: string[]) {
+        const conditions = texts.map((text) => `contains(@text, "${text}")`).join(' or ');
+        return $(`//android.widget.TextView[${conditions}]`);
+    }
+
+    async scrollToTextContainingAnyOf(texts: string[]) {
+        for (const text of texts) {
+            const element = await $(
+                `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().textContains("${text.replace(/"/g, '\\"')}"))`,
+            );
+            if (await element.isExisting()) {
+                return;
+            }
+        }
+    }
+
+    // Compose screens can recompose just after they appear, which drops typed text or makes the
+    // field stale, so retry until the field holds the value.
+    async setFieldValue(getField: () => ChainablePromiseElement, value: string, attempts = 3) {
+        for (let attempt = 1; attempt <= attempts; attempt++) {
+            try {
+                const field = getField();
+                await field.waitForDisplayed();
+                await field.setValue(value);
+                await driver.pause(300);
+                if ((await getField().getText()) === value) {
+                    return;
+                }
+                logWarn(`Field text is not "${value}" (attempt ${attempt}), retrying`);
+            } catch (error) {
+                if (attempt === attempts) {
+                    throw error;
+                }
+                logWarn(`Setting field value "${value}" failed (attempt ${attempt}), retrying`);
+            }
+        }
+        throw new Error(`Field text is not "${value}" after ${attempts} attempts`);
+    }
+
     async saveAndContinue() {
         logStep('Clicking Save and Continue');
         try {
@@ -69,6 +108,22 @@ export class BasePage {
             ]);
             await browser.pause(300);
         }
+    }
+
+    async scrollToTop() {
+        await $('android=new UiScrollable(new UiSelector().scrollable(true)).scrollToBeginning(5)');
+    }
+
+    async goBack(times = 1) {
+        logStep(`Going back ${times} time(s)`);
+        for (let i = 0; i < times; i++) {
+            await driver.back();
+        }
+    }
+
+    async moveToBackground(seconds: number) {
+        logStep(`Moving app to the background for ${seconds} seconds`);
+        await driver.execute('mobile: backgroundApp', { seconds });
     }
 
     async openApp(maxAttempts = 3) {

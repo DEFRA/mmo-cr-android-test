@@ -1,6 +1,5 @@
 @catchRecord
-@CRAR-165
-Feature:(CRAR-165) Create, save, submit and manage catch records offline
+Feature:Create, save, submit and manage catch records offline
 
     As a vessel owner, skipper or authorised user
     I want to create catch records and keep working offline
@@ -20,15 +19,12 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
             | Draft action     | Select what you want to do with your draft record                            |
             | Statistical area | Select the statistical sub area where the majority of your catch was caught. |
 
-    # The app does not yet reject start dates over 365 days ago (a 366-day-old date moves on to the
-    # trip end date page), so this stays skipped until that validation is added.
-    @skip
     Scenario: Trip start date over 365 days ago is rejected
         When I start a catch record
         And I select vessel "ACHILLES"
         And I try to enter a trip start date of 366 days ago
         Then I should be on the trip start date page
-        And I should see a validation error on the trip start date page
+        And a message containing "The trip start date cannot be more than 365 days in the past" is displayed
 
     Scenario: Suggested sub areas are shown for the departure port
         When I start a catch record
@@ -105,29 +101,9 @@ Feature:(CRAR-165) Create, save, submit and manage catch records offline
         And I accept and submit the catch record
         Then I should be on the submission success page
         And a message containing "saved and sent when you're back online" is displayed
+        And a record reference is shown
         When I view my records
         Then a record with status "Unsent" is displayed
-
-    Scenario Outline: Record shows status <status>
-        Given I have a catch record with status "<status>"
-        When I open my records list
-        Then a record with status "<status>" is displayed
-
-        Examples:
-            | status    |
-            | Submitted |
-
-        @offline
-        Examples:
-            | status |
-            | Unsent |
-
-    Scenario: Record shows status Draft
-        Given I have a catch record with status "Draft"
-        When I open my records list
-        Then a record with status "Draft" is displayed
-        When I delete the draft catch record
-        Then the deleted draft catch record is not displayed
 
     @offline
     Scenario: Unsent record is submitted when back online

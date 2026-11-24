@@ -5,8 +5,6 @@ Feature:Validate catch-record trip dates and duration
     I want the service to validate the trip start date and trip duration
     So that trips outside the permitted reporting period or exceeding the maximum permitted duration cannot be recorded
 
-    # Trip length is the number of days between the start and end dates (start 30 days ago, end today = 30 days).
-
     Background:
         Given I am signed in
         When I start a catch record

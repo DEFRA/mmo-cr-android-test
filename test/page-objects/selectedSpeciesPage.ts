@@ -48,6 +48,10 @@ export class SelectedSpeciesPage extends BasePage {
         return $('//android.widget.Button[@text="Add a species"]');
     }
 
+    async waitForLoaded() {
+        await this.addSpeciesLink.waitForDisplayed();
+    }
+
     async selectSpeciesCheckbox(speciesName: string) {
         logStep(`Selecting species checkbox ${speciesName}`);
         const row = this.speciesItemRow(speciesName);
@@ -55,38 +59,41 @@ export class SelectedSpeciesPage extends BasePage {
         await row.click();
     }
 
+    private async fill(field: ChainablePromiseElement, weight: string | number) {
+        await this.scrollUntilDisplayed(field);
+        await field.waitForDisplayed();
+        await field.setValue(weight.toString());
+    }
+
+    private async tap(button: ChainablePromiseElement) {
+        await this.scrollUntilDisplayed(button);
+        await button.waitForDisplayed();
+        await button.click();
+    }
+
     async enterRetainedWeight(weight: string | number) {
         logStep(`Entering retained weight ${weight}`);
-        await this.retainedWeightField.waitForDisplayed();
-        await this.retainedWeightField.setValue(weight.toString());
+        await this.fill(this.retainedWeightField, weight);
     }
 
     async enterBelowMinWeight(weight: string | number) {
         logStep(`Entering below minimum weight ${weight}`);
-        await this.scrollUntilDisplayed(this.belowMinWeightField);
-        await this.belowMinWeightField.waitForDisplayed();
-        await this.belowMinWeightField.setValue(weight.toString());
+        await this.fill(this.belowMinWeightField, weight);
     }
 
     async enterDiscardedWeight(weight: string | number) {
         logStep(`Entering discarded weight ${weight}`);
-        await this.scrollUntilDisplayed(this.discardedWeightField);
-        await this.discardedWeightField.waitForDisplayed();
-        await this.discardedWeightField.setValue(weight.toString());
+        await this.fill(this.discardedWeightField, weight);
     }
 
     async clickAddBelowMinWeight() {
         logStep('Clicking add below minimum weight');
-        await this.scrollUntilDisplayed(this.addBelowMinWeightButton);
-        await this.addBelowMinWeightButton.waitForDisplayed();
-        await this.addBelowMinWeightButton.click();
+        await this.tap(this.addBelowMinWeightButton);
     }
 
     async clickAddDiscardedWeight() {
         logStep('Clicking add discarded weight');
-        await this.scrollUntilDisplayed(this.addDiscardedWeightButton);
-        await this.addDiscardedWeightButton.waitForDisplayed();
-        await this.addDiscardedWeightButton.click();
+        await this.tap(this.addDiscardedWeightButton);
     }
 
     async clickRemoveSpecies() {

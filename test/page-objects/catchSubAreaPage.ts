@@ -46,10 +46,6 @@ export class CatchSubAreaPage extends BasePage {
         return $('//android.widget.TextView[starts-with(@text, "Centre of area")]');
     }
 
-    async scrollToTop() {
-        await $('android=new UiScrollable(new UiSelector().scrollable(true)).scrollToBeginning(5)');
-    }
-
     async selectOther() {
         logStep('Selecting Other sub area');
         await this.scrollUntilDisplayed(this.otherOption);

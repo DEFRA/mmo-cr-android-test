@@ -19,13 +19,12 @@ Feature:Create, save, submit and manage catch records offline
             | Draft action     | Select what you want to do with your draft record                            |
             | Statistical area | Select the statistical sub area where the majority of your catch was caught. |
 
-
     Scenario: Trip start date over 365 days ago is rejected
         When I start a catch record
         And I select vessel "ACHILLES"
         And I try to enter a trip start date of 366 days ago
         Then I should be on the trip start date page
-        And I should see a validation error on the trip start date page
+        And a message containing "The trip start date cannot be more than 365 days in the past" is displayed
 
     Scenario: Suggested sub areas are shown for the departure port
         When I start a catch record

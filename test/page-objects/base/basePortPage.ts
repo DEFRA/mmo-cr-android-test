@@ -19,12 +19,16 @@ export abstract class BasePortPage extends BaseSearchPage {
     }
 
     async clickAddPort() {
-        if (await this.searchField.isDisplayed()) {
+        // The previous port screen's search field can linger during the transition, so look for
+        // Add port first rather than treating any visible search field as this screen's.
+        try {
+            await this.addPortButton.waitForDisplayed({ timeout: 3000 });
+        } catch {
             logStep('No saved ports, port search already displayed');
+            await this.searchField.waitForDisplayed();
             return;
         }
         logStep('Clicking Add port');
-        await this.addPortButton.waitForDisplayed();
         await this.addPortButton.click();
     }
 }

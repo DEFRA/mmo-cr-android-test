@@ -14,8 +14,7 @@ export class GearMeasurementPage extends BasePage {
 
     async enterMeshSize(size: string | number) {
         logStep(`Entering mesh size ${size}`);
-        await this.meshSizeField.waitForDisplayed();
-        await this.meshSizeField.setValue(size.toString());
+        await this.setFieldValue(() => this.meshSizeField, size.toString());
     }
 
     async enterMeshSizeAndContinue(size: string | number) {

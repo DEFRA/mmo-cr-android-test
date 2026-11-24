@@ -19,8 +19,7 @@ export abstract class BaseSearchPage extends BasePage {
 
     async enterSearchText(text: string) {
         logStep(`Entering search text ${text}`);
-        await this.searchField.waitForDisplayed();
-        await this.searchField.setValue(text);
+        await this.setFieldValue(() => this.searchField, text);
         // Suggestions only appear once at least two characters have been typed.
         if (this.waitForSuggestions && text.trim().length >= 2) {
             await this.firstSuggestion.waitForDisplayed();

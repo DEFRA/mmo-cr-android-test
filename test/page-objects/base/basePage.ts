@@ -36,6 +36,29 @@ export class BasePage {
         }
     }
 
+    // Compose screens can recompose just after they appear, which drops typed text or makes the
+    // field stale, so retry until the field holds the value.
+    async setFieldValue(getField: () => ChainablePromiseElement, value: string, attempts = 3) {
+        for (let attempt = 1; attempt <= attempts; attempt++) {
+            try {
+                const field = getField();
+                await field.waitForDisplayed();
+                await field.setValue(value);
+                await driver.pause(300);
+                if ((await getField().getText()) === value) {
+                    return;
+                }
+                logWarn(`Field text is not "${value}" (attempt ${attempt}), retrying`);
+            } catch (error) {
+                if (attempt === attempts) {
+                    throw error;
+                }
+                logWarn(`Setting field value "${value}" failed (attempt ${attempt}), retrying`);
+            }
+        }
+        throw new Error(`Field text is not "${value}" after ${attempts} attempts`);
+    }
+
     async saveAndContinue() {
         logStep('Clicking Save and Continue');
         try {

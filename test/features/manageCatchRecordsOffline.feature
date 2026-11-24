@@ -1,6 +1,5 @@
 @catchRecord
-@CRAR-165
-Feature:(CRAR-165) Create, save, submit and manage catch records offline
+Feature:Create, save, submit and manage catch records offline
 
     As a vessel owner, skipper or authorised user
     I want to create catch records and keep working offline

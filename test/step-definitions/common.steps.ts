@@ -10,21 +10,27 @@ import { logStep } from '../common/logger';
 const currentPage = new BasePage();
 
 Given('I am signed in', async () => {
-    await browser.waitUntil(
-        async () =>
-            (await homePage.heading.isDisplayed()) || (await signInPage.heading.isDisplayed()),
+    const screen = await browser.waitUntil(
+        async () => {
+            if (await homePage.heading.isDisplayed()) {
+                return 'home' as const;
+            }
+            if (await signInPage.heading.isDisplayed()) {
+                return 'signIn' as const;
+            }
+            return false as const;
+        },
         {
             timeout: 15000,
             timeoutMsg: 'Neither the home screen nor the sign-in screen was displayed.',
         },
     );
 
-    if (!(await homePage.heading.isDisplayed())) {
+    if (screen === 'signIn') {
         const { email, password } = getAndroidTestCredentials();
         await signInPage.signIn(email, password);
+        await homePage.heading.waitForDisplayed({ timeout: 15000 });
     }
-
-    await homePage.heading.waitForDisplayed({ timeout: 15000 });
 });
 
 Given('I am offline', async () => {

@@ -2,9 +2,17 @@ node_modules
 Dockerfile
 .git
 .github
+.env
+.DS_Store
+.vscode
+.husky
+.mcp.json
 FAILED
 allure-results
 allure-report
+log
 logs
+run-journey-tests
+README.md
 app/**/*.apk
 app/**/*.aab

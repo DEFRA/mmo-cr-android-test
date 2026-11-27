@@ -14,29 +14,6 @@ export const oneMinute = 60 * 1000;
 
 export const appiumPort = Number(process.env.APPIUM_PORT ?? 4723);
 
-const actionCommands = new Set([
-    'activateApp',
-    'addValue',
-    'back',
-    'clearValue',
-    'click',
-    'doubleClick',
-    'dragAndDrop',
-    'execute',
-    'hideKeyboard',
-    'keys',
-    'moveTo',
-    'performActions',
-    'pressKey',
-    'scrollIntoView',
-    'selectByAttribute',
-    'selectByIndex',
-    'selectByVisibleText',
-    'setValue',
-    'terminateApp',
-    'touchAction',
-]);
-
 export function cucumberOptions(timeout: number): WebdriverIO.CucumberOpts {
     const tags = ['not @skip', process.env.CUCUMBER_TAGS && `(${process.env.CUCUMBER_TAGS})`]
         .filter(Boolean)
@@ -112,10 +89,8 @@ export const baseConfig: Omit<WebdriverIO.Config, 'capabilities'> = {
 
     cucumberOpts: cucumberOptions(1.5 * oneMinute),
 
-    beforeCommand: async (commandName) => {
-        if (actionCommands.has(commandName)) {
-            await browser.pause(200);
-        }
+    onPrepare: () => {
+        cleanReports();
     },
 
     afterStep: screenshotOnFailedStep,

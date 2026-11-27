@@ -9,12 +9,6 @@ export class RemoveSpeciesPage extends BasePage {
         );
     }
 
-    get instructions() {
-        return $(
-            '//android.widget.TextView[@text="Select the species you want to remove, then delete them."]',
-        );
-    }
-
     speciesItemRow(speciesName: string) {
         return $(
             `//android.view.View[@checkable="true" and .//android.widget.TextView[@text="${speciesName}"]]`,

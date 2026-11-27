@@ -5,19 +5,23 @@ ENV TZ="Europe/London"
 USER root
 
 RUN apt-get update -qq \
-    && apt-get install -qqy \
+    && apt-get install -qqy --no-install-recommends \
     curl \
-    zip \
-    openjdk-17-jre-headless
+    unzip \
+    openjdk-17-jre-headless \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-    && unzip awscliv2.zip \
-    && ./aws/install
+RUN curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip -q awscliv2.zip \
+    && ./aws/install \
+    && rm -rf awscliv2.zip aws
 
 WORKDIR /app
 
+COPY package.json package-lock.json ./
+RUN npm ci --ignore-scripts
+
 COPY . .
-RUN npm install
 
 ENTRYPOINT [ "./entrypoint.sh" ]
 

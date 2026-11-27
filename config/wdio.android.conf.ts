@@ -41,6 +41,7 @@ export const config: WebdriverIO.Config = {
             'appium:orientation': 'PORTRAIT',
             'appium:autoGrantPermissions': true,
             'appium:ignoreHiddenApiPolicyError': true,
+            'appium:disableWindowAnimation': true,
             'appium:noReset': noReset,
             'appium:fullReset': fullReset,
             'appium:newCommandTimeout': 240,

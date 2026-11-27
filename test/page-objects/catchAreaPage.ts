@@ -26,10 +26,13 @@ export class CatchAreaPage extends BasePage {
         return (await this.map.getAttribute('content-desc')) ?? '';
     }
 
+    private extractAreaCode(description: string): string | null {
+        return description.match(/Selected area:\s*(\S+)/)?.[1] ?? null;
+    }
+
     async getSelectedAreaCode(): Promise<string | null> {
         logStep('Getting selected area code');
-        const match = (await this.getMapDescription()).match(/Selected area:\s*(\S+)/);
-        return match?.[1] ?? null;
+        return this.extractAreaCode(await this.getMapDescription());
     }
 
     async isAreaSelected(): Promise<boolean> {
@@ -93,9 +96,13 @@ export class CatchAreaPage extends BasePage {
                 },
             ]);
 
+            let selectedCode: string | null = null;
             const selected = await browser
                 .waitUntil(
-                    async () => (await this.getMapDescription()).includes('Selected area:'),
+                    async () => {
+                        selectedCode = this.extractAreaCode(await this.getMapDescription());
+                        return selectedCode !== null;
+                    },
                     {
                         timeout: 1500,
                         interval: 200,
@@ -103,7 +110,7 @@ export class CatchAreaPage extends BasePage {
                 )
                 .catch(() => false);
             if (selected) {
-                logStep(`Selected area: ${await this.getSelectedAreaCode()}`);
+                logStep(`Selected area: ${selectedCode}`);
                 return;
             }
             logWarn(`CatchAreaPage: retry selectLocation (attempt ${attempt + 1})`);

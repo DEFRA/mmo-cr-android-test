@@ -4,17 +4,20 @@ import { allureReporter, baseConfig, cucumberOptions, oneMinute } from './wdio.b
 const projectName = 'mmo-cr-android-test';
 const buildName = `${projectName}-${process.env.ENVIRONMENT ?? 'local'}`;
 const proxy = process.env.HTTP_PROXY ? new URL(process.env.HTTP_PROXY) : undefined;
+const maxInstances = Number(process.env.WDIO_MAX_INSTANCES ?? 1);
+const localIdentifier =
+    process.env.BROWSERSTACK_LOCAL_IDENTIFIER ??
+    process.env.RUN_ID ??
+    `mmo-cr-${process.pid}-${Date.now()}`;
 
-const commonCapabilities = {
-    'bstack:options': {
-        buildName,
-        projectName,
-        consoleLogs: 'info',
-        debug: true,
-        idleTimeout: 100,
-        seleniumLogs: true,
-    },
-} satisfies WebdriverIO.Capabilities;
+const commonBstackOptions = {
+    buildName,
+    projectName,
+    consoleLogs: 'info',
+    debug: true,
+    idleTimeout: 100,
+    seleniumLogs: true,
+} satisfies WebdriverIO.Capabilities['bstack:options'];
 
 const androidDevices = [
     { deviceName: 'Samsung Galaxy S23 Ultra', platformVersion: '13.0' },
@@ -22,19 +25,16 @@ const androidDevices = [
     { deviceName: 'OnePlus 9', platformVersion: '11.0' },
 ];
 
-export const config: WebdriverIO.Config & {
-    commonCapabilities: WebdriverIO.Capabilities;
-} = {
+export const config: WebdriverIO.Config = {
     ...baseConfig,
 
+    maxInstances,
     user: process.env.BROWSERSTACK_USERNAME,
     key: process.env.BROWSERSTACK_KEY,
 
-    commonCapabilities,
-
     capabilities: androidDevices.map((device) => ({
         'bstack:options': {
-            ...commonCapabilities['bstack:options'],
+            ...commonBstackOptions,
             ...device,
             platformName: 'android',
         },
@@ -49,7 +49,7 @@ export const config: WebdriverIO.Config & {
                 browserstackLocal: true,
                 opts: {
                     forceLocal: true,
-                    localIdentifier: 'test',
+                    localIdentifier,
                     ...(proxy ? { proxyHost: proxy.hostname, proxyPort: proxy.port } : {}),
                 },
                 sessionNameFormat: (_config, _capabilities, suiteTitle) => suiteTitle,

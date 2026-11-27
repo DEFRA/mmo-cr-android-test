@@ -18,38 +18,32 @@ export class SelectedSpeciesPage extends BasePage {
         );
     }
 
+    private weightField(contentDesc: string) {
+        return $(`//android.widget.EditText[.//android.view.View[@content-desc="${contentDesc}"]]`);
+    }
+
+    private addWeightButton(label: string) {
+        return $(`//android.widget.Button[@text="Add ${label}"]`);
+    }
+
     get retainedWeightField() {
-        return $(
-            '//android.widget.EditText[.//android.view.View[@content-desc="Weight above minimum size retained (kg)"]]',
-        );
+        return this.weightField('Weight above minimum size retained (kg)');
     }
 
     get belowMinWeightField() {
-        return $(
-            '//android.widget.EditText[.//android.view.View[@content-desc="Weight below minimum size retained (kg)"]]',
-        );
+        return this.weightField('Weight below minimum size retained (kg)');
     }
 
     get discardedWeightField() {
-        return $(
-            '//android.widget.EditText[.//android.view.View[@content-desc="Weight legally discarded (kg)"]]',
-        );
+        return this.weightField('Weight legally discarded (kg)');
     }
 
     get addBelowMinWeightButton() {
-        return $('//android.widget.Button[@text="Add weight below minimum size retained (kg)"]');
+        return this.addWeightButton('weight below minimum size retained (kg)');
     }
 
     get addDiscardedWeightButton() {
-        return $('//android.widget.Button[@text="Add weight legally discarded (kg)"]');
-    }
-
-    get removeBelowMinWeightButton() {
-        return $('//android.widget.Button[@text="Remove weight below minimum size retained (kg)"]');
-    }
-
-    get removeDiscardedWeightButton() {
-        return $('//android.widget.Button[@text="Remove weight legally discarded (kg)"]');
+        return this.addWeightButton('weight legally discarded (kg)');
     }
 
     get removeSpeciesLink() {
@@ -77,28 +71,28 @@ export class SelectedSpeciesPage extends BasePage {
         await button.click();
     }
 
+    private async enterWeight(
+        label: string,
+        field: ChainablePromiseElement,
+        weight: string | number,
+    ) {
+        logStep(`Entering ${label} weight ${weight}`);
+        await this.scrollUntilDisplayed(field);
+        await field.waitForDisplayed();
+        await field.clearValue();
+        await field.setValue(weight.toString());
+    }
+
     async enterRetainedWeight(weight: string | number) {
-        logStep(`Entering retained weight ${weight}`);
-        await this.scrollUntilDisplayed(this.retainedWeightField);
-        await this.retainedWeightField.waitForDisplayed();
-        await this.retainedWeightField.clearValue();
-        await this.retainedWeightField.setValue(weight.toString());
+        await this.enterWeight('retained', this.retainedWeightField, weight);
     }
 
     async enterBelowMinWeight(weight: string | number) {
-        logStep(`Entering below minimum weight ${weight}`);
-        await this.scrollUntilDisplayed(this.belowMinWeightField);
-        await this.belowMinWeightField.waitForDisplayed();
-        await this.belowMinWeightField.clearValue();
-        await this.belowMinWeightField.setValue(weight.toString());
+        await this.enterWeight('below minimum', this.belowMinWeightField, weight);
     }
 
     async enterDiscardedWeight(weight: string | number) {
-        logStep(`Entering discarded weight ${weight}`);
-        await this.scrollUntilDisplayed(this.discardedWeightField);
-        await this.discardedWeightField.waitForDisplayed();
-        await this.discardedWeightField.clearValue();
-        await this.discardedWeightField.setValue(weight.toString());
+        await this.enterWeight('discarded', this.discardedWeightField, weight);
     }
 
     async clickAddBelowMinWeight() {
@@ -109,16 +103,6 @@ export class SelectedSpeciesPage extends BasePage {
     async clickAddDiscardedWeight() {
         logStep('Clicking add discarded weight');
         await this.tap(this.addDiscardedWeightButton);
-    }
-
-    async clickRemoveBelowMinWeight() {
-        logStep('Clicking remove below minimum weight');
-        await this.tap(this.removeBelowMinWeightButton);
-    }
-
-    async clickRemoveDiscardedWeight() {
-        logStep('Clicking remove discarded weight');
-        await this.tap(this.removeDiscardedWeightButton);
     }
 
     async clickRemoveSpecies() {

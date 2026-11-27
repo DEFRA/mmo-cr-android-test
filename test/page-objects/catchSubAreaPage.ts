@@ -61,8 +61,7 @@ export class CatchSubAreaPage extends BasePage {
 
     async enterSubAreaCode(text: string) {
         logStep(`Entering sub area code: ${text}`);
-        await this.subAreaSearchField.waitForDisplayed();
-        await this.subAreaSearchField.setValue(text);
+        await this.setFieldValue(() => this.subAreaSearchField, text);
     }
 
     override async saveAndContinue() {
@@ -71,11 +70,8 @@ export class CatchSubAreaPage extends BasePage {
     }
 
     private async textsOf(element: WebdriverIO.Element): Promise<string[]> {
-        const texts: string[] = [];
-        for (const textView of await element.$$('android.widget.TextView')) {
-            texts.push(await textView.getText());
-        }
-        return texts;
+        const textViews = [...(await element.$$('android.widget.TextView'))];
+        return Promise.all(textViews.map((textView) => textView.getText()));
     }
 
     private async revealSuggestion(areaCode: string) {
@@ -91,11 +87,8 @@ export class CatchSubAreaPage extends BasePage {
         await driver.waitUntil(async () => (await this.suggestions.length) > 0, {
             timeoutMsg: 'No sub area suggestions were displayed.',
         });
-        const results: string[][] = [];
-        for (const suggestion of await this.suggestions) {
-            results.push(await this.textsOf(suggestion));
-        }
-        return results;
+        const suggestions = [...(await this.suggestions)];
+        return Promise.all(suggestions.map((suggestion) => this.textsOf(suggestion)));
     }
 
     async getSuggestionText(areaCode: string): Promise<string[]> {
@@ -119,16 +112,11 @@ export class CatchSubAreaPage extends BasePage {
 
     async getAvailableSubAreas(): Promise<string[]> {
         logStep('Getting available sub area codes');
-        const options = await this.subAreaOptions;
-        const codes: string[] = [];
-        for (const option of options) {
-            const textEl = await option.$('android.widget.TextView');
-            const text = await textEl.getText();
-            if (text !== 'Other') {
-                codes.push(text);
-            }
-        }
-        return codes;
+        const options = [...(await this.subAreaOptions)];
+        const texts = await Promise.all(
+            options.map((option) => option.$('android.widget.TextView').getText()),
+        );
+        return texts.filter((text) => text !== 'Other');
     }
 
     async selectSubArea(areaCode: string) {

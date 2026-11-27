@@ -65,12 +65,14 @@ export class HomePage extends BasePage {
         );
     }
 
-    async openDraftRecord() {
+    async openDraftRecord(): Promise<string | undefined> {
         logStep('Opening draft catch record');
         const draft = this.recordWithStatus('Draft');
         await this.waitForRecordWithStatus('Draft');
+        const description = await draft.getAttribute('content-desc');
         await draft.click();
         await this.completeDraftOption.waitForDisplayed();
+        return description ?? undefined;
     }
 
     async continueDraftRecord() {
@@ -97,13 +99,11 @@ export class HomePage extends BasePage {
     // Returns the Trip ID of the deleted draft so callers can confirm it has gone.
     async deleteDraftRecord(): Promise<string> {
         logStep('Deleting draft catch record');
-        await this.waitForRecordWithStatus('Draft');
-        const description = await this.recordWithStatus('Draft').getAttribute('content-desc');
+        const description = await this.openDraftRecord();
         const tripId = /Trip ID (\S+)/.exec(description ?? '')?.[1];
         if (!tripId) {
             throw new Error(`Could not read the Trip ID from draft record "${description}"`);
         }
-        await this.openDraftRecord();
         await this.deleteDraftOption.click();
         await this.saveAndContinue();
         await this.confirmDeleteDraftButton.waitForDisplayed();

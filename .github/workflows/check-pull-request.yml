@@ -43,10 +43,4 @@ jobs:
             - run: npm run format:check
             - run: npm run lint
             - run: npm run typecheck
-
-# Uncomment this to run the tests in your test suite
-#  tests:
-#    name: Run Journey Tests
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: DEFRA/cdp-node-journey-test-suite-template/run-journey-tests@main
+            - run: npm run steps:check

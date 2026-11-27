@@ -28,33 +28,34 @@ When('I select vessel {string}', async (vessel: string) => {
     await androidFlowNavigator.selectVessel(vessel);
 });
 
-When(/^I enter a trip start date of (today|\d+ days? ago)$/, async (when: string) => {
-    const { day, month, year } = dateFromPhrase(when);
-    await tripTodayPage.heading.waitForDisplayed();
-    await tripTodayPage.selectNo();
-    await tripStartDatePage.enterDateAndContinue(day, month, year);
-});
+When(
+    /^I (try to )?enter a trip start date of (today|\d+ days? ago)$/,
+    async (tryTo: string | undefined, when: string) => {
+        const { day, month, year } = dateFromPhrase(when);
+        await tripTodayPage.heading.waitForDisplayed();
+        await tripTodayPage.selectNo();
+        if (tryTo) {
+            await tripStartDatePage.enterDate(day, month, year);
+            await tripStartDatePage.saveAndContinue();
+        } else {
+            await tripStartDatePage.enterDateAndContinue(day, month, year);
+        }
+    },
+);
 
-When(/^I enter a trip end date of (today|\d+ days? ago)$/, async (when: string) => {
-    const { day, month, year } = dateFromPhrase(when);
-    await tripEndDatePage.heading.waitForDisplayed();
-    await tripEndDatePage.enterDateAndContinue(day, month, year);
-});
-
-When(/^I try to enter a trip start date of (today|\d+ days? ago)$/, async (when: string) => {
-    const { day, month, year } = dateFromPhrase(when);
-    await tripTodayPage.heading.waitForDisplayed();
-    await tripTodayPage.selectNo();
-    await tripStartDatePage.enterDate(day, month, year);
-    await tripStartDatePage.saveAndContinue();
-});
-
-When(/^I try to enter a trip end date of (today|\d+ days? ago)$/, async (when: string) => {
-    const { day, month, year } = dateFromPhrase(when);
-    await tripEndDatePage.heading.waitForDisplayed();
-    await tripEndDatePage.enterDate(day, month, year);
-    await tripEndDatePage.saveAndContinue();
-});
+When(
+    /^I (try to )?enter a trip end date of (today|\d+ days? ago)$/,
+    async (tryTo: string | undefined, when: string) => {
+        const { day, month, year } = dateFromPhrase(when);
+        await tripEndDatePage.heading.waitForDisplayed();
+        if (tryTo) {
+            await tripEndDatePage.enterDate(day, month, year);
+            await tripEndDatePage.saveAndContinue();
+        } else {
+            await tripEndDatePage.enterDateAndContinue(day, month, year);
+        }
+    },
+);
 
 When('I select a trip for today', async () => {
     await androidFlowNavigator.selectTripDates(true);

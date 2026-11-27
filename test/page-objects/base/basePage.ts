@@ -26,6 +26,9 @@ export class BasePage {
     }
 
     async scrollToTextContainingAnyOf(texts: string[]) {
+        if (await this.textContainingAnyOf(texts).isDisplayed()) {
+            return;
+        }
         for (const text of texts) {
             const element = await $(
                 `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().textContains("${text.replace(/"/g, '\\"')}"))`,
@@ -44,8 +47,13 @@ export class BasePage {
                 const field = getField();
                 await field.waitForDisplayed();
                 await field.setValue(value);
-                await driver.pause(300);
-                if ((await getField().getText()) === value) {
+                const matched = await browser
+                    .waitUntil(async () => (await getField().getText()) === value, {
+                        timeout: 600,
+                        interval: 100,
+                    })
+                    .catch(() => false);
+                if (matched) {
                     return;
                 }
                 logWarn(`Field text is not "${value}" (attempt ${attempt}), retrying`);
@@ -85,6 +93,9 @@ export class BasePage {
             direction = 'down',
         }: { maxSwipes?: number; swipeX?: number; direction?: 'up' | 'down' } = {},
     ) {
+        if (await element.isDisplayed()) {
+            return;
+        }
         const { width, height } = await driver.getWindowSize();
         const x = swipeX ?? Math.floor(width / 2);
         // Swiping the finger upwards reveals content further down the page, and vice versa.
@@ -92,7 +103,7 @@ export class BasePage {
             direction === 'down'
                 ? [Math.floor(height * 0.7), Math.floor(height * 0.4)]
                 : [Math.floor(height * 0.4), Math.floor(height * 0.7)];
-        for (let attempt = 0; attempt < maxSwipes && !(await element.isDisplayed()); attempt++) {
+        for (let attempt = 0; attempt < maxSwipes; attempt++) {
             await browser.performActions([
                 {
                     type: 'pointer',
@@ -107,6 +118,9 @@ export class BasePage {
                 },
             ]);
             await browser.pause(300);
+            if (await element.isDisplayed()) {
+                return;
+            }
         }
     }
 

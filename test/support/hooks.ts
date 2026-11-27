@@ -1,13 +1,15 @@
 import { After, Before } from '@wdio/cucumber-framework';
-import signInPage from '../page-objects/signInPage';
+import { BasePage } from '../page-objects/base/basePage';
 import NetworkHelper from '../helpers/networkHelper';
 
+const app = new BasePage();
+
 Before(async () => {
-    await signInPage.openApp();
+    await app.openApp();
 });
 
 After(async () => {
-    await signInPage.close();
+    await app.close();
 });
 
 After({ tags: '@offline' }, async () => {

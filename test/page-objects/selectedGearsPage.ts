@@ -25,8 +25,7 @@ export class SelectedGearsPage extends BasePage {
 
     async enterShots(shots: string | number) {
         logStep(`Entering shots ${shots}`);
-        await this.shotsField.waitForDisplayed();
-        await this.shotsField.setValue(shots.toString());
+        await this.setFieldValue(() => this.shotsField, shots.toString());
     }
 }
 

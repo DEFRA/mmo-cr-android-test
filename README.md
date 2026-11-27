@@ -190,7 +190,7 @@ npm run test:android:browserstack:feature -- test/features/signIn.feature
 CUCUMBER_TAGS='@signIn' npm run test:android:browserstack
 ```
 
-It shares the settings in [config/wdio.base.conf.ts](config/wdio.base.conf.ts) with the local config, but uses a 1-minute step timeout (5 minutes locally).
+It shares the settings in [config/wdio.base.conf.ts](config/wdio.base.conf.ts) with the local config, but uses a 1-minute step timeout (1.5 minutes locally).
 
 `npm test` runs the same config through the CDP proxy and is used by the CDP Portal. If any scenario fails, a `FAILED` file is written so `entrypoint.sh` exits with a non-zero code.
 

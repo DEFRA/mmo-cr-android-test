@@ -6,6 +6,15 @@ export class SignInPage extends BasePage {
         return $('//android.widget.TextView[@text="Sign in" and @heading="true"]');
     }
 
+    // Text locators are based on CRAR-282 acceptance criteria and are not live-verified.
+    get emailLabel() {
+        return $('//android.widget.TextView[@text="Email Address"]');
+    }
+
+    get passwordLabel() {
+        return $('//android.widget.TextView[@text="Password"]');
+    }
+
     get emailField() {
         return $('//android.widget.EditText[@password="false"]');
     }
@@ -22,6 +31,11 @@ export class SignInPage extends BasePage {
 
     get forgottenPasswordLink() {
         return $('//android.widget.Button[@text="Forgotten your password?"]');
+    }
+
+    // This text locator is based on CRAR-282 acceptance criteria and is not live-verified.
+    get helpHeading() {
+        return $('//android.widget.TextView[@text="Having trouble signing in?"]');
     }
 
     get createAccountLink() {
@@ -64,6 +78,11 @@ export class SignInPage extends BasePage {
         logStep('Signing in');
         await this.enterEmail(email);
         await this.enterPassword(password);
+        await this.submitSignInForm();
+    }
+
+    async submitSignInForm() {
+        logStep('Submitting sign-in form');
         await this.signInButton.click();
     }
 

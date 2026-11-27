@@ -8,7 +8,7 @@ export class SignInPage extends BasePage {
 
     // Text locators are based on CRAR-282 acceptance criteria and are not live-verified.
     get emailLabel() {
-        return $('//android.widget.TextView[@text="Email Address"]');
+        return $('//android.widget.TextView[@text="Email address"]');
     }
 
     get passwordLabel() {

@@ -82,7 +82,6 @@ export class SelectedSpeciesPage extends BasePage {
         await this.scrollUntilDisplayed(this.retainedWeightField);
         await this.retainedWeightField.waitForDisplayed();
         await this.retainedWeightField.clearValue();
-        await browser.pause(500);
         await this.retainedWeightField.setValue(weight.toString());
     }
 
@@ -91,7 +90,6 @@ export class SelectedSpeciesPage extends BasePage {
         await this.scrollUntilDisplayed(this.belowMinWeightField);
         await this.belowMinWeightField.waitForDisplayed();
         await this.belowMinWeightField.clearValue();
-        await browser.pause(500);
         await this.belowMinWeightField.setValue(weight.toString());
     }
 
@@ -100,7 +98,6 @@ export class SelectedSpeciesPage extends BasePage {
         await this.scrollUntilDisplayed(this.discardedWeightField);
         await this.discardedWeightField.waitForDisplayed();
         await this.discardedWeightField.clearValue();
-        await browser.pause(500);
         await this.discardedWeightField.setValue(weight.toString());
     }
 

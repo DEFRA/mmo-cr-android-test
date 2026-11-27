@@ -6,13 +6,12 @@ export class SignInPage extends BasePage {
         return $('//android.widget.TextView[@text="Sign in" and @heading="true"]');
     }
 
-    // Text locators are based on CRAR-282 acceptance criteria and are not live-verified.
     get emailLabel() {
-        return $('//android.widget.TextView[@text="Email address"]');
+        return $('//android.view.View[@content-desc="Email address"]');
     }
 
     get passwordLabel() {
-        return $('//android.widget.TextView[@text="Password"]');
+        return $('//android.view.View[@content-desc="Password"]');
     }
 
     get emailField() {
@@ -33,7 +32,6 @@ export class SignInPage extends BasePage {
         return $('//android.widget.Button[@text="Forgotten your password?"]');
     }
 
-    // This text locator is based on CRAR-282 acceptance criteria and is not live-verified.
     get helpHeading() {
         return $('//android.widget.TextView[@text="Having trouble signing in?"]');
     }

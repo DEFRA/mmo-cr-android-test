@@ -57,7 +57,6 @@ Feature: Record catch weights for selected species
         And I save and continue
         Then a message containing "must be higher than" is displayed
 
-    @weightValidation
     Scenario Outline: Reject invalid values in each species weight field
         When I select the species "Atlantic cod (COD)"
         And I add a below minimum size weight

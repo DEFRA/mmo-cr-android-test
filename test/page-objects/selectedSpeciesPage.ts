@@ -71,12 +71,6 @@ export class SelectedSpeciesPage extends BasePage {
         await row.click();
     }
 
-    private async fill(field: ChainablePromiseElement, weight: string | number) {
-        await this.scrollUntilDisplayed(field);
-        await field.waitForDisplayed();
-        await field.setValue(weight.toString());
-    }
-
     private async tap(button: ChainablePromiseElement) {
         await this.scrollUntilDisplayed(button);
         await button.waitForDisplayed();
@@ -85,17 +79,29 @@ export class SelectedSpeciesPage extends BasePage {
 
     async enterRetainedWeight(weight: string | number) {
         logStep(`Entering retained weight ${weight}`);
-        await this.fill(this.retainedWeightField, weight);
+        await this.scrollUntilDisplayed(this.retainedWeightField);
+        await this.retainedWeightField.waitForDisplayed();
+        await this.retainedWeightField.clearValue();
+        await browser.pause(500);
+        await this.retainedWeightField.setValue(weight.toString());
     }
 
     async enterBelowMinWeight(weight: string | number) {
         logStep(`Entering below minimum weight ${weight}`);
-        await this.fill(this.belowMinWeightField, weight);
+        await this.scrollUntilDisplayed(this.belowMinWeightField);
+        await this.belowMinWeightField.waitForDisplayed();
+        await this.belowMinWeightField.clearValue();
+        await browser.pause(500);
+        await this.belowMinWeightField.setValue(weight.toString());
     }
 
     async enterDiscardedWeight(weight: string | number) {
         logStep(`Entering discarded weight ${weight}`);
-        await this.fill(this.discardedWeightField, weight);
+        await this.scrollUntilDisplayed(this.discardedWeightField);
+        await this.discardedWeightField.waitForDisplayed();
+        await this.discardedWeightField.clearValue();
+        await browser.pause(500);
+        await this.discardedWeightField.setValue(weight.toString());
     }
 
     async clickAddBelowMinWeight() {

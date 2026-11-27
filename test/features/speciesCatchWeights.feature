@@ -12,11 +12,11 @@ Feature: Record catch weights for selected species
         And I select a trip for today
         And I select departure port "Hastings" and return port "Dover"
         And I select gear "Seine nets" with mesh size 10 and 10 shots
-        And I select catch area "38E95"
-        And I search "At" and add species "Atlantic salmon"
+        And I select a catch area from the map
+        And I search "At" and add species "Atlantic cod (COD)"
 
     Scenario: Display and edit weights for a selected species
-        When I select the species "Atlantic salmon"
+        When I select the species "Atlantic cod (COD)"
         Then the retained weight field is displayed
         When I add a below minimum size weight
         Then the below minimum size weight field is displayed
@@ -33,19 +33,19 @@ Feature: Record catch weights for selected species
         Then a message containing "Is there any catch from this trip that you will not be landing straight away?" is displayed
 
     Scenario: Require above minimum size retained weight
-        When I select the species "Atlantic salmon"
+        When I select the species "Atlantic cod (COD)"
         And I clear the retained weight
         And I save and continue
         Then a message containing "Enter the weight above minimum size retained" is displayed
 
     Scenario: Save a species without optional weights
-        When I select the species "Atlantic salmon"
+        When I select the species "Atlantic cod (COD)"
         And I enter "5" in the "above minimum size retained" weight field
         And I save and continue
         Then a message containing "Is there any catch from this trip that you will not be landing straight away?" is displayed
 
     Scenario: Require retained weight to exceed legally discarded weight
-        When I select the species "Atlantic salmon"
+        When I select the species "Atlantic cod (COD)"
         And I add a legally discarded weight
         And I enter "5" in the "above minimum size retained" weight field
         And I enter "10" in the "legally discarded" weight field
@@ -57,8 +57,9 @@ Feature: Record catch weights for selected species
         And I save and continue
         Then a message containing "must be higher than" is displayed
 
+    @weightValidation
     Scenario Outline: Reject invalid values in each species weight field
-        When I select the species "Atlantic salmon"
+        When I select the species "Atlantic cod (COD)"
         And I add a below minimum size weight
         And I add a legally discarded weight
         And I enter "5" in the "above minimum size retained" weight field
@@ -77,7 +78,7 @@ Feature: Record catch weights for selected species
         When I enter "<valid weight>" in the "<field>" weight field
         And I enter "10.55" in the "<field>" weight field
         And I save and continue
-        Then a message containing "number with up to one decimal place" is displayed
+        Then a message containing "number with up to 1 decimal place" is displayed
 
         When I enter "<valid weight>" in the "<field>" weight field
         And I enter "-5" in the "<field>" weight field
@@ -96,14 +97,14 @@ Feature: Record catch weights for selected species
             | legally discarded           | 1            |
 
     Scenario: Allow a weight at the 10,000 kg limit
-        When I select the species "Atlantic salmon"
+        When I select the species "Atlantic cod (COD)"
         And I add a below minimum size weight
         And I add a legally discarded weight
         And I enter "10000" in the "above minimum size retained" weight field
         And I enter "10.5" in the "below minimum size retained" weight field
-        And I enter "9999" in the "legally discarded" weight field
+        And I enter "999" in the "legally discarded" weight field
         And I save and continue
-        Then a message containing "Is there any catch from this trip that you will not be landing straight away?" is displayed
+        Then I should be on the delayed landing page
 
     Scenario: Open the add species screen
         When I choose to add another species
@@ -111,4 +112,4 @@ Feature: Record catch weights for selected species
 
     Scenario: Open species removal options
         When I choose to remove a species
-        Then a message containing "Remove" is displayed
+        Then I should be on the remove species page

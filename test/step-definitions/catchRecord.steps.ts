@@ -74,8 +74,12 @@ When(
     },
 );
 
-When('I select catch area {string}', async (area: string) => {
+When('I manually enter catch area {string}', async (area: string) => {
     await androidFlowNavigator.selectAreas(area);
+});
+
+When('I select a catch area from the map', async () => {
+    await androidFlowNavigator.selectAreas();
 });
 
 Then('the catch area map is displayed', async () => {

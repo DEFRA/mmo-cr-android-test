@@ -8,6 +8,10 @@ export class SelectedSpeciesPage extends BasePage {
         );
     }
 
+    get weightInstructions() {
+        return $('//android.widget.TextView[contains(@text, "Select all the species you caught")]');
+    }
+
     speciesItemRow(speciesName: string) {
         return $(
             `//android.view.View[@checkable="true" and .//android.widget.TextView[@text="${speciesName}"]]`,
@@ -16,19 +20,19 @@ export class SelectedSpeciesPage extends BasePage {
 
     get retainedWeightField() {
         return $(
-            '//android.widget.TextView[@text="Weight above minimum size retained (kg)"]/following-sibling::android.widget.EditText[1]',
+            '//android.widget.EditText[.//android.view.View[@content-desc="Weight above minimum size retained (kg)"]]',
         );
     }
 
     get belowMinWeightField() {
         return $(
-            '//android.widget.TextView[@text="Weight below minimum size retained (kg)"]/following-sibling::android.widget.EditText[1]',
+            '//android.widget.EditText[.//android.view.View[@content-desc="Weight below minimum size retained (kg)"]]',
         );
     }
 
     get discardedWeightField() {
         return $(
-            '//android.widget.TextView[@text="Weight legally discarded (kg)"]/following-sibling::android.widget.EditText[1]',
+            '//android.widget.EditText[.//android.view.View[@content-desc="Weight legally discarded (kg)"]]',
         );
     }
 
@@ -38,6 +42,14 @@ export class SelectedSpeciesPage extends BasePage {
 
     get addDiscardedWeightButton() {
         return $('//android.widget.Button[@text="Add weight legally discarded (kg)"]');
+    }
+
+    get removeBelowMinWeightButton() {
+        return $('//android.widget.Button[@text="Remove weight below minimum size retained (kg)"]');
+    }
+
+    get removeDiscardedWeightButton() {
+        return $('//android.widget.Button[@text="Remove weight legally discarded (kg)"]');
     }
 
     get removeSpeciesLink() {
@@ -94,6 +106,16 @@ export class SelectedSpeciesPage extends BasePage {
     async clickAddDiscardedWeight() {
         logStep('Clicking add discarded weight');
         await this.tap(this.addDiscardedWeightButton);
+    }
+
+    async clickRemoveBelowMinWeight() {
+        logStep('Clicking remove below minimum weight');
+        await this.tap(this.removeBelowMinWeightButton);
+    }
+
+    async clickRemoveDiscardedWeight() {
+        logStep('Clicking remove discarded weight');
+        await this.tap(this.removeDiscardedWeightButton);
     }
 
     async clickRemoveSpecies() {

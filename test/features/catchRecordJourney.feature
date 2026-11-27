@@ -11,7 +11,7 @@ Feature: Catch record end-to-end journey
         And I enter a trip end date of today
         And I select departure port "Hastings" and return port "Dover"
         And I select gear "Seine nets" with mesh size 10 and 10 shots
-        And I select catch area "38E95"
+        And I manually enter catch area "38E95"
         And I select species with the following weights:
             | species          | retained | below minimum | discarded |
             | Brown crab (TBC) | 5        | 1             | 1         |

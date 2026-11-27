@@ -75,7 +75,7 @@ export class AndroidFlowNavigator {
         if (catchArea === 'Other') {
             await this.selectFirstSubArea();
         } else {
-            await catchSubAreaPage.selectSubAreaByCodeAndContinue(catchArea);
+            await catchSubAreaPage.enterSubAreaCodeAndContinue(catchArea);
         }
     }
 

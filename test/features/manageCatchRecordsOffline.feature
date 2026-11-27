@@ -64,7 +64,7 @@ Feature:Create, save, submit and manage catch records offline
         And I enter a trip end date of 2 days ago
         And I select departure port "Hastings" and return port "Dover"
         And I select gear "Seine nets" with mesh size 10 and 10 shots
-        And I select catch area "38E95"
+        And I manually enter catch area "38E95"
         And I select species with the following weights:
             | species | retained | below minimum | discarded |
             | Brill   | 5        | 1             | 1         |
@@ -93,7 +93,7 @@ Feature:Create, save, submit and manage catch records offline
         And I select a trip for today
         And I select departure port "Hastings" and return port "Dover"
         And I select gear "Seine nets" with mesh size 10 and 10 shots
-        And I select catch area "38E95"
+        And I manually enter catch area "38E95"
         And I select species with the following weights:
             | species        | retained | below minimum | discarded |
             | Zebra seabream | 5        | 1             | 1         |

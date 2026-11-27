@@ -7,6 +7,7 @@ import gearMeasurementPage from '../page-objects/gearMeasurementPage';
 import gearPage from '../page-objects/gearPage';
 import homePage from '../page-objects/homePage';
 import lateSubmissionWarningPage from '../page-objects/lateSubmissionWarningPage';
+import removeSpeciesPage from '../page-objects/removeSpeciesPage';
 import returnPortPage from '../page-objects/returnPortPage';
 import selectVesselPage from '../page-objects/selectVesselPage';
 import selectedGearsPage from '../page-objects/selectedGearsPage';
@@ -36,6 +37,7 @@ const pages = {
     'catch sub area': () => catchSubAreaPage.heading,
     species: () => speciesPage.heading,
     'selected species': () => selectedSpeciesPage.heading,
+    'remove species': () => removeSpeciesPage.heading,
     'delayed landing': () => delayedLandingPage.heading,
     'catch record summary': () => catchRecordSummaryPage.heading,
     'submission success': () => submissionSuccessPage.heading,
